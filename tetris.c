@@ -4,7 +4,7 @@
 #define BOARD_ROWS 15
 #define BOARD_COLS 10
 
-/*
+/**
  * Enum to represent the possible types of tetrimino, as well as the type ("color", like in the "standardized" versions
  * of Tetris) of each block on the game board (when interpreted as a `enum block_type`).
  * 0 is not used as it represents "empty space".
@@ -19,7 +19,8 @@ enum tetrimino_type {
     TETRIMINO_O = 7
 };
 
-/* Enum to represent types of block that show up when the game board is printed. This includes the tetrimino types,
+/**
+ * Enum to represent types of block that show up when the game board is printed. This includes the tetrimino types,
  * used to representwhich are not redefined here (use `enum tetrimino_type`).
  */
 enum block_type {
@@ -28,7 +29,7 @@ enum block_type {
     BLOCK_GHOST = 8
 };
 
-/*
+/**
  * Representation of each tetromino (in one of the possible rotations) in a 4x4 grid.
  * Each one's blocks are already set to its own "type".
  * (relying on the literal values of `enum tetrimino_types` :/ but whatever)
@@ -132,7 +133,7 @@ static const char * const block_types[] = {
     /* BLOCK_GHOST -> */ "⣏⣹"
 };
 
-/*
+/**
  * Representation of the playing field.
  * Sadly for now its meaning is overloaded as it represents both the logical state of the board (presence or absence
  * of a block in a given cell) and the visual state ("color" of each block; "ghost" blocks) :/ but whatever
@@ -144,7 +145,7 @@ typedef struct Game {
     Board board;
 } Game;
 
-/*
+/**
  * Place a piece on the board with no "collision" checking and assuming it fits inside the bounds.
  * Note that x and y can actually be negative, and likewise y + 4 can be >= BOARD_WIDTH. It is the caller's
  * responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words,
@@ -160,7 +161,7 @@ void _place_piece(Board board, const Piece * piece, int y, int x) {
     }
 }
 
-void draw(const Game * game) {
+void draw(const Game *game) {
     int i, j;
 
     puts(frame_top);
