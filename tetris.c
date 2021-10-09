@@ -152,6 +152,7 @@ typedef unsigned char Board[BOARD_ROWS][BOARD_COLS];
 /* Struct representing the entire game state. */
 typedef struct Game {
     Board board;
+    Piece active_piece;
 } Game;
 
 /**
@@ -198,7 +199,9 @@ int collides(const Piece *p, const Board board) {
             /* only looking at the coordinates of actual blocks that form the piece */
             if (!p->shape[i][j]) continue;
             /* if the block collides with the outside frame */
-            if (p->y + i < 0 || p->y + i >= BOARD_ROWS || p->x + j < 0 || p->x + j >= BOARD_COLS) return 1;
+            if (p->y + i < 0 || p->y + i >= BOARD_ROWS
+             || p->x + j < 0 || p->x + j >= BOARD_COLS)
+               return 1;
             /* if the block collides with another block */
             if (board[p->y + i][p->x + j]) return 1;
         }
@@ -220,8 +223,35 @@ void drop_piece(Piece *piece, const Board board) {
     }
 }
 
-void draw(const Game *game) {
+/**
+ * Leave a piece's x value unchanged, and set its y value so that the piece is in the topmost position on the screen.
+ */
+void lift_piece(Piece *piece, const Board board) {
+    piece->y = 0;
+    do {
+        --piece->y;
+    } while (!collides(piece, board));
+    ++piece->y;
+}
+
+void handle_right(Game *game) {
+    ++game->active_piece.x;
+    if (collides(&game->active_piece, game->board))
+        --game->active_piece.x;
+}
+
+void handle_left(Game *game) {
+    --game->active_piece.x;
+    if (collides(&game->active_piece, game->board))
+        ++game->active_piece.x;
+}
+
+void draw(Game *game) {
     int i, j;
+
+    if (game->active_piece.type) {
+        place_piece(&game->active_piece, game->board);
+    }
 
     puts(frame_top);
     for (i = 0; i < BOARD_ROWS; ++i) {
@@ -233,6 +263,35 @@ void draw(const Game *game) {
     }
     puts(frame_bottom);
 
+    if (game->active_piece.type) {
+        set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
+    }
+
+}
+
+void game_loop(Game *game) {
+    char c;
+
+    do {
+        draw(game);
+
+        scanf("%c", &c);
+        switch (c) {
+        case 'h':
+            handle_left(game);
+            break;
+        case 'l':
+            handle_right(game);
+            break;
+        case 'j':
+            drop_piece(&game->active_piece, game->board);
+            place_piece(&game->active_piece, game->board);
+            game->active_piece.type = 0;
+            break;
+        default:
+            continue;
+        }
+    } while (c != 'j');
 }
 
 int main() {
@@ -258,15 +317,11 @@ int main() {
     
     Piece tee;
 
+    init_piece_shape(&game.active_piece, TETRIMINO_T);
+    rotate_shape_cw(game.active_piece.shape);
+    game.active_piece.y = -1; game.active_piece.x = 3;
 
-    draw(&game);
-
-    init_piece_shape(&tee, TETRIMINO_T);
-    rotate_shape_cw(tee.shape);
-    tee.y = -1; tee.x = 0;
-
-    drop_piece(&tee, game.board);
-    place_piece(&tee, game.board);
+    game_loop(&game);
 
     draw(&game);
 
