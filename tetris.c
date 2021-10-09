@@ -246,11 +246,26 @@ void handle_left(Game *game) {
         ++game->active_piece.x;
 }
 
+void handle_rotate(Game *game) {
+    rotate_shape_cw(game->active_piece.shape);
+    lift_piece(&game->active_piece, game->board);
+
+    /* we have to adjust the piece if the rotation brings some of its blocks out of bounds */
+    if (game->active_piece.x < 0)
+        while (collides(&game->active_piece, game->board)) ++game->active_piece.x;
+    else if (game->active_piece.x + 4 >= BOARD_COLS)
+        while (collides(&game->active_piece, game->board)) --game->active_piece.x;
+}
+
 void draw(Game *game) {
     int i, j;
+    Piece ghost;
 
     if (game->active_piece.type) {
+        memcpy(&ghost, &game->active_piece, sizeof ghost);
+        drop_piece(&ghost, game->board);
         place_piece(&game->active_piece, game->board);
+        set_as_piece(&ghost, game->board, BLOCK_GHOST);
     }
 
     puts(frame_top);
@@ -265,6 +280,7 @@ void draw(Game *game) {
 
     if (game->active_piece.type) {
         set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
+        set_as_piece(&ghost, game->board, BLOCK_EMPTY);
     }
 
 }
@@ -282,6 +298,9 @@ void game_loop(Game *game) {
             break;
         case 'l':
             handle_right(game);
+            break;
+        case 'r':
+            handle_rotate(game);
             break;
         case 'j':
             drop_piece(&game->active_piece, game->board);
