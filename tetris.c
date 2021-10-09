@@ -81,15 +81,24 @@ static TetriminoShape tetrimino_shapes[] = {
     }
 };
 
+/**
+ * Struct representing a piece "that we care about", containing its shape and coordinates.
+ * Note that a valid state *can* contain x and/or y that are out of bounds relative to the game board:
+ * but in that case any cell shape[i][j] *must* be 0 if board[y+i][x+j] is out of bounds.
+ */
 typedef struct Piece {
+    unsigned char type;
+    int y, x;
     TetriminoShape shape;
 } Piece;
 
-void init_piece(Piece *p, enum tetrimino_type t) {
+/* Convenience function to set the shape of a piece. */
+void init_piece_shape(Piece *p, enum tetrimino_type t) {
+    p->type = t;
     memcpy(&p->shape, tetrimino_shapes[t-1], sizeof p->shape);
 }
 
-void rotate_piece_cw(Piece *p) {
+void rotate_shape_cw(TetriminoShape shape) {
     /* 
      * (0,0) (0,1) (0,2) (0,3)      (3,0) (2,0) (1,0) (0,0)
      * (1,0) (1,1) (1,2) (1,3)  ->  (3,1) (2,1) (1,1) (0,1)
@@ -101,18 +110,18 @@ void rotate_piece_cw(Piece *p) {
 
     /* rotate outer ring */
     for (i = 0; i < 3; ++i) {
-        t = p->shape[0][i];
-        p->shape[0][i] = p->shape[3-i][0];
-        p->shape[3-i][0] = p->shape[3][3-i];
-        p->shape[3][3-i] = p->shape[i][3];
-        p->shape[i][3] = t;
+        t = shape[0][i];
+        shape[0][i] = shape[3-i][0];
+        shape[3-i][0] = shape[3][3-i];
+        shape[3][3-i] = shape[i][3];
+        shape[i][3] = t;
     }
     /* rotate inner ring */
-    t = p->shape[1][1];
-    p->shape[1][1] = p->shape[2][1];
-    p->shape[2][1] = p->shape[2][2];
-    p->shape[2][2] = p->shape[1][2];
-    p->shape[1][2] = t;
+    t = shape[1][1];
+    shape[1][1] = shape[2][1];
+    shape[2][1] = shape[2][2];
+    shape[2][2] = shape[1][2];
+    shape[1][2] = t;
 }
 
 /* String constants for drawing the frame. */
@@ -151,12 +160,62 @@ typedef struct Game {
  * responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words,
  * looking at piece->shape, **only zeroes** can end up outside of the board.
  */
-void _place_piece(Board board, const Piece * piece, int y, int x) {
-    int i, j, bk;
+void place_piece(const Piece *p, Board board) {
+    int i, j;
+    unsigned char bk;
 
     for (i = 0; i < 4; ++i) {
         for (j = 0; j < 4; ++j) {
-            if ((bk = piece->shape[i][j])) board[y+i][x+j] = bk;
+            if ((bk = p->shape[i][j])) board[p->y + i][p->x + j] = bk;
+        }
+    }
+}
+
+/**
+ * Similar to `place_piece`, but instead of copying over the (non-empty) blocks from the piece, 
+ * sets the board to `bk` in the shape of `piece`.
+ * Can be used to "cut out" a piece by filling with empty space or to draw "ghost pieces".
+ * Having both variants feels kind of useless :/ but whatever
+ */
+void set_as_piece(const Piece *p, Board board, unsigned char bk) {
+    int i, j;
+
+    for (i = 0; i < 4; ++i) {
+        for (j = 0; j < 4;++j) {
+            if (p->shape[i][j]) board[p->y + i][p->x + j] = bk;
+        }
+    }
+}
+
+/**
+ * Checks if the piece, when placed, would collide with existing blocks or with the outer bounds of the board.
+ */
+int collides(const Piece *p, const Board board) {
+    int i, j;
+
+    for (i = 0; i < 4; ++i) {
+        for (j = 0; j < 4; ++j) {
+            /* only looking at the coordinates of actual blocks that form the piece */
+            if (!p->shape[i][j]) continue;
+            /* if the block collides with the outside frame */
+            if (p->y + i < 0 || p->y + i >= BOARD_ROWS || p->x + j < 0 || p->x + j >= BOARD_COLS) return 1;
+            /* if the block collides with another block */
+            if (board[p->y + i][p->x + j]) return 1;
+        }
+    }
+    return 0;
+}
+
+/**
+ * Drops the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting
+ * its y value to put it as low as possible on the board without colliding with other pieces.
+ */
+void drop_piece(Piece *piece, const Board board) {
+    while (1) {
+        ++piece->y;
+        if (collides(piece, board)) {
+            --piece->y;
+            return;
         }
     }
 }
@@ -199,11 +258,15 @@ int main() {
     
     Piece tee;
 
-    init_piece(&tee, TETRIMINO_T);
-    rotate_piece_cw(&tee);
 
-    _place_piece(game.board, &tee, 3, 5);
-    _place_piece(game.board, &tee, -1, -1);
+    draw(&game);
+
+    init_piece_shape(&tee, TETRIMINO_T);
+    rotate_shape_cw(tee.shape);
+    tee.y = -1; tee.x = 0;
+
+    drop_piece(&tee, game.board);
+    place_piece(&tee, game.board);
 
     draw(&game);
 
