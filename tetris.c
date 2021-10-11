@@ -22,12 +22,14 @@ enum tetrimino_type {
 
 /**
  * Enum to represent types of block that show up when the game board is printed. This includes the tetrimino types,
- * used to representwhich are not redefined here (use `enum tetrimino_type`).
+ * which are not redefined here (use `enum tetrimino_type`).
  */
 enum block_type {
     BLOCK_EMPTY = 0,
     /* tetrimino block types --> 1 ... 7 */
-    BLOCK_GHOST = 8
+    BLOCK_GHOST = 8,
+    BLOCK_CLEAR = 9,
+    BLOCK_BADBK = 10
 };
 
 /**
@@ -139,7 +141,9 @@ static const char * const block_types[] = {
     /* TETRIMINO_S -> */ "░░",
     /* TETRIMINO_Z -> */ "▒▒",
     /* TETRIMINO_O -> */ "▓▓",
-    /* BLOCK_GHOST -> */ "⣏⣹"
+    /* BLOCK_GHOST -> */ "⣏⣹",
+    /* BLOCK_CLEAR -> */ "⣶⣶",
+    /* BLOCK_BADBK -> */ "‼︎‼︎"
 };
 
 /**
@@ -154,6 +158,18 @@ static const char *movement_prompt =
     "<h> move left    <l> move right\n"
     "    <r> rotate       <j> drop\n";
 
+
+enum game_state {
+    /* The player must choose the next piece. */
+    GAME_STATE_CHOOSE,
+    /* The player is moving the piece to the desired location. */
+    GAME_STATE_PLACE,
+    /* One or more lines have been cleared -- show it to the player before removing them */
+    GAME_STATE_CLEARED,
+
+    GAME_STATE_LOSE,
+    GAME_STATE_WIN
+};
 /**
  * Representation of the playing field.
  * Sadly for now its meaning is overloaded as it represents both the logical state of the board (presence or absence
@@ -163,6 +179,7 @@ typedef unsigned char Board[BOARD_ROWS][BOARD_COLS];
 
 /* Struct representing the entire game state. */
 typedef struct Game {
+    enum game_state state;
     Board board;
     Piece active_piece;
     unsigned char pieces_left[7];
@@ -270,15 +287,63 @@ void handle_rotate(Game *game) {
         while (collides(&game->active_piece, game->board)) --game->active_piece.x;
 }
 
+/**
+ * Sets each full line on the game board to `BLOCK_CLEAR`.
+ */
+int mark_cleared_lines(Game *game) {
+    int i, j, cleared_count = 0;
+
+    for (i = 0; i < BOARD_ROWS; ++i) {
+        int cleared = 1;
+        for (j = 0; j < BOARD_COLS; ++j)
+            if (!game->board[i][j]) cleared = 0;
+
+        if (cleared) {
+            memset(game->board[i], BLOCK_CLEAR, BOARD_COLS);
+            ++cleared_count;
+        }
+    }
+
+    return cleared_count;
+}
+
+/**
+ * Removes every cleared line previously marked by `mark_cleared_lines` (more accurately, where the *first* block is
+ * set to `BLOCK_CLEAR`). Shifts everything downwards.
+ */
+void remove_cleared_lines(Game *game) {
+    int i = BOARD_ROWS - 1;
+
+    while (i > 0) {
+        if (game->board[i][0] != BLOCK_CLEAR) {
+            --i;
+            continue;
+        }
+        
+        if (i != 0)
+            /* multidimensional arrays *should* be contiguous in memory so this *should* be valid
+               please daddy no undefined behaviour :,) */
+            memmove(
+                ((unsigned char *)game->board) + BOARD_COLS,
+                (unsigned char *)game->board,
+                i * BOARD_COLS
+            );
+        memset(game->board[0], BLOCK_EMPTY, sizeof game->board[0]);
+    }
+}
+
 void draw(Game *game) {
     int i, j;
     Piece ghost;
 
-    if (game->active_piece.type) {
+    if (game->state == GAME_STATE_PLACE) {
         memcpy(&ghost, &game->active_piece, sizeof ghost);
         drop_piece(&ghost, game->board);
-        place_piece(&game->active_piece, game->board);
+        if (ghost.y - game->active_piece.y >= 3)
+            place_piece(&game->active_piece, game->board);
         set_as_piece(&ghost, game->board, BLOCK_GHOST);
+    } else if (game->state == GAME_STATE_LOSE) {
+        set_as_piece(&game->active_piece, game->board, BLOCK_BADBK);
     }
 
     puts(frame_top);
@@ -291,71 +356,116 @@ void draw(Game *game) {
     }
     puts(frame_bottom);
 
-    if (game->active_piece.type) {
+    switch (game->state) {
+    case GAME_STATE_PLACE:
         set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
         set_as_piece(&ghost, game->board, BLOCK_EMPTY);
 
         printf(movement_prompt, 0);
-    } else {
+        break;
+    case GAME_STATE_CHOOSE:
         printf(piece_choice_prompt, game->pieces_left[0], game->pieces_left[1], game->pieces_left[2],
               game->pieces_left[3], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
+        break;
+    case GAME_STATE_CLEARED:
+        puts("nice!");
+        break;
+    case GAME_STATE_LOSE:
+        puts("...game over!");
+        break;
+    case GAME_STATE_WIN:
+        puts("congratulations!!!");
+        break;
     }
 
 }
 
 void game_loop(Game *game) {
     char c;
-    unsigned char exit = 0;
 
-    do {
+    while (game->state != GAME_STATE_LOSE && game->state != GAME_STATE_WIN) {
         draw(game);
 
         do { scanf("%c", &c); } while (isspace(c));
-        if (game->active_piece.type) {
-            switch (c) {
-            case 'h':
-                handle_left(game);
-                break;
-            case 'l':
-                handle_right(game);
-                break;
-            case 'r':
-                handle_rotate(game);
-                break;
-            case 'j':
-                drop_piece(&game->active_piece, game->board);
-                place_piece(&game->active_piece, game->board);
-                game->active_piece.type = 0;
-                break;
-            default: continue;
-            }
-        } else {
-            unsigned char t;
-            switch (c) {
-            case 'i': t = TETRIMINO_I; break;
-            case 't': t = TETRIMINO_T; break;
-            case 'j': t = TETRIMINO_J; break;
-            case 'l': t = TETRIMINO_L; break;
-            case 's': t = TETRIMINO_S; break;
-            case 'z': t = TETRIMINO_Z; break;
-            case 'o': t = TETRIMINO_O; break;
-            default: continue;
-            }
-            if (game->pieces_left[t-1] <= 0) continue;
-            --game->pieces_left[t-1];
+        switch (game->state) {
+        case GAME_STATE_PLACE:
+            {
+                int cleared_lines;
+                switch (c) {
+                case 'h':
+                    handle_left(game);
+                    break;
+                case 'l':
+                    handle_right(game);
+                    break;
+                case 'r':
+                    handle_rotate(game);
+                    break;
+                case 'j':
+                    drop_piece(&game->active_piece, game->board);
+                    place_piece(&game->active_piece, game->board);
 
-            game->active_piece.type = t;
-            init_piece_shape(&game->active_piece);
-            game->active_piece.x = 3;
-            lift_piece(&game->active_piece, game->board);
-            if (collides(&game->active_piece, game->board)) 
-                exit = 1;
+                    cleared_lines = mark_cleared_lines(game);
+                    if (cleared_lines > 0)
+                        game->state = GAME_STATE_CLEARED;
+                    else
+                        game->state = GAME_STATE_CHOOSE;
+                    break;
+                default: continue;
+                }
+            }
+            break;
+        case GAME_STATE_CHOOSE:
+            {
+                unsigned char t;
+                for (t = 0; t < 7; ++t)
+                    if (game->pieces_left[t]) break;
+                /* if 0 of each piece is left */
+                if (t == 7) {
+                    game->state = GAME_STATE_WIN;
+                    break;
+                }
+                switch (c) {
+                case 'i': t = TETRIMINO_I; break;
+                case 't': t = TETRIMINO_T; break;
+                case 'j': t = TETRIMINO_J; break;
+                case 'l': t = TETRIMINO_L; break;
+                case 's': t = TETRIMINO_S; break;
+                case 'z': t = TETRIMINO_Z; break;
+                case 'o': t = TETRIMINO_O; break;
+                default: continue;
+                }
+                if (game->pieces_left[t-1] <= 0) continue;
+                --game->pieces_left[t-1];
+
+                game->active_piece.type = t;
+                init_piece_shape(&game->active_piece);
+                game->active_piece.x = 3;
+                lift_piece(&game->active_piece, game->board);
+                if (collides(&game->active_piece, game->board)) 
+                    game->state = GAME_STATE_LOSE;
+                else
+                    game->state = GAME_STATE_PLACE;
+            }
+            break;
+        case GAME_STATE_CLEARED:
+            {
+                remove_cleared_lines(game);
+                game->state = GAME_STATE_CHOOSE;
+            }
+            break;
+        case GAME_STATE_LOSE: 
+        case GAME_STATE_WIN: ; /* loop condition */
         }
-    } while (!exit);
+    }
+
+    /* draw one last time after the player lost */
+    draw(game);
 }
 
 int main() {
     Game game = {
+        /* state = */ GAME_STATE_CHOOSE,
         /* board = */ {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -372,17 +482,12 @@ int main() {
             {1, 2, 0, 0, 0, 3, 3, 3, 0, 0},
             {1, 2, 2, 5, 5, 0, 4, 3, 7, 7},
             {1, 2, 5, 5, 4, 4, 4, 0, 7, 7},
-        }
+        },
+        /* active_piece = */ {0,},
+        /* pieces_left = */ {20, 20, 20, 20, 20, 20, 20},
     };
 
-    memset(game.pieces_left, 20, sizeof game.pieces_left);
-
-    game.active_piece.type = 0;
-
     game_loop(&game);
-
-    draw(&game);
-    puts("...game over!");
 
     return 0;
 }
