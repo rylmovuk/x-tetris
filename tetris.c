@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -93,9 +94,8 @@ typedef struct Piece {
 } Piece;
 
 /* Convenience function to set the shape of a piece. */
-void init_piece_shape(Piece *p, enum tetrimino_type t) {
-    p->type = t;
-    memcpy(&p->shape, tetrimino_shapes[t-1], sizeof p->shape);
+void init_piece_shape(Piece *p) {
+    memcpy(&p->shape, tetrimino_shapes[p->type-1], sizeof p->shape);
 }
 
 void rotate_shape_cw(TetriminoShape shape) {
@@ -143,6 +143,18 @@ static const char * const block_types[] = {
 };
 
 /**
+ * Format used to show the number of pieces left when letting the player choose the next piece.
+ * Sorry for all the string concatenaton jank -- wanted the source code to look aligned like the end result.
+ */
+static const char *piece_choice_prompt =
+    " █ x%-2d  █▄ x%-2d  █▀ x%-2d  █  x%-2d  █▄ x%-2d  ▄█ x%-2d  ██ x%-2d\n"
+    " █ <i> "" ▀  <t> "" ▀  <j> "" ▀▀ <l> ""  ▀ <s> "" ▀  <z> ""    <o>\n";
+
+static const char *movement_prompt =
+    "<h> move left    <l> move right\n"
+    "    <r> rotate       <j> drop\n";
+
+/**
  * Representation of the playing field.
  * Sadly for now its meaning is overloaded as it represents both the logical state of the board (presence or absence
  * of a block in a given cell) and the visual state ("color" of each block; "ghost" blocks) :/ but whatever
@@ -153,6 +165,7 @@ typedef unsigned char Board[BOARD_ROWS][BOARD_COLS];
 typedef struct Game {
     Board board;
     Piece active_piece;
+    unsigned char pieces_left[7];
 } Game;
 
 /**
@@ -281,36 +294,64 @@ void draw(Game *game) {
     if (game->active_piece.type) {
         set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
         set_as_piece(&ghost, game->board, BLOCK_EMPTY);
+
+        printf(movement_prompt, 0);
+    } else {
+        printf(piece_choice_prompt, game->pieces_left[0], game->pieces_left[1], game->pieces_left[2],
+              game->pieces_left[3], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
     }
 
 }
 
 void game_loop(Game *game) {
     char c;
+    unsigned char exit = 0;
 
     do {
         draw(game);
 
-        scanf("%c", &c);
-        switch (c) {
-        case 'h':
-            handle_left(game);
-            break;
-        case 'l':
-            handle_right(game);
-            break;
-        case 'r':
-            handle_rotate(game);
-            break;
-        case 'j':
-            drop_piece(&game->active_piece, game->board);
-            place_piece(&game->active_piece, game->board);
-            game->active_piece.type = 0;
-            break;
-        default:
-            continue;
+        do { scanf("%c", &c); } while (isspace(c));
+        if (game->active_piece.type) {
+            switch (c) {
+            case 'h':
+                handle_left(game);
+                break;
+            case 'l':
+                handle_right(game);
+                break;
+            case 'r':
+                handle_rotate(game);
+                break;
+            case 'j':
+                drop_piece(&game->active_piece, game->board);
+                place_piece(&game->active_piece, game->board);
+                game->active_piece.type = 0;
+                break;
+            default: continue;
+            }
+        } else {
+            unsigned char t;
+            switch (c) {
+            case 'i': t = TETRIMINO_I; break;
+            case 't': t = TETRIMINO_T; break;
+            case 'j': t = TETRIMINO_J; break;
+            case 'l': t = TETRIMINO_L; break;
+            case 's': t = TETRIMINO_S; break;
+            case 'z': t = TETRIMINO_Z; break;
+            case 'o': t = TETRIMINO_O; break;
+            default: continue;
+            }
+            if (game->pieces_left[t-1] <= 0) continue;
+            --game->pieces_left[t-1];
+
+            game->active_piece.type = t;
+            init_piece_shape(&game->active_piece);
+            game->active_piece.x = 3;
+            lift_piece(&game->active_piece, game->board);
+            if (collides(&game->active_piece, game->board)) 
+                exit = 1;
         }
-    } while (c != 'j');
+    } while (!exit);
 }
 
 int main() {
@@ -333,16 +374,15 @@ int main() {
             {1, 2, 5, 5, 4, 4, 4, 0, 7, 7},
         }
     };
-    
-    Piece tee;
 
-    init_piece_shape(&game.active_piece, TETRIMINO_T);
-    rotate_shape_cw(game.active_piece.shape);
-    game.active_piece.y = -1; game.active_piece.x = 3;
+    memset(game.pieces_left, 20, sizeof game.pieces_left);
+
+    game.active_piece.type = 0;
 
     game_loop(&game);
 
     draw(&game);
+    puts("...game over!");
 
     return 0;
 }
