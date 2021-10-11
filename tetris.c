@@ -5,6 +5,8 @@
 #define BOARD_ROWS 15
 #define BOARD_COLS 10
 
+#include "graphics.h"
+
 /**
  * Enum to represent the possible types of tetrimino, as well as the type ("color", like in the "standardized" versions
  * of Tetris) of each block on the game board (when interpreted as a `enum block_type`).
@@ -125,39 +127,6 @@ void rotate_shape_cw(TetriminoShape shape) {
     shape[2][2] = shape[1][2];
     shape[1][2] = t;
 }
-
-/* String constants for drawing the frame. */
-static char *    frame_top = "┏━━━━━━━━━━━━━━━━━━━━┓";
-static char * frame_bottom = "┗━━━━━━━━━━━━━━━━━━━━┛";
-static char * frame_border = "┃";
-
-/* Strings each block inside the game board gets translated to. */
-static const char * const block_types[] = {
-    /* BLOCK_EMPTY -> */ "  ",
-    /* TETRIMINO_I -> */ "░░",
-    /* TETRIMINO_T -> */ "▒▒",
-    /* TETRIMINO_J -> */ "▓▓",
-    /* TETRIMINO_L -> */ "██",
-    /* TETRIMINO_S -> */ "░░",
-    /* TETRIMINO_Z -> */ "▒▒",
-    /* TETRIMINO_O -> */ "▓▓",
-    /* BLOCK_GHOST -> */ "⣏⣹",
-    /* BLOCK_CLEAR -> */ "⣶⣶",
-    /* BLOCK_BADBK -> */ "‼︎‼︎"
-};
-
-/**
- * Format used to show the number of pieces left when letting the player choose the next piece.
- * Sorry for all the string concatenaton jank -- wanted the source code to look aligned like the end result.
- */
-static const char *piece_choice_prompt =
-    " █ x%-2d  █▄ x%-2d  █▀ x%-2d  █  x%-2d  █▄ x%-2d  ▄█ x%-2d  ██ x%-2d\n"
-    " █ <i> "" ▀  <t> "" ▀  <j> "" ▀▀ <l> ""  ▀ <s> "" ▀  <z> ""    <o>\n";
-
-static const char *movement_prompt =
-    "<h> move left    <l> move right\n"
-    "    <r> rotate       <j> drop\n";
-
 
 enum game_state {
     /* The player must choose the next piece. */
