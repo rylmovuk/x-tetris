@@ -364,88 +364,128 @@ void draw(Game *game) {
 
 }
 
-void game_loop(Game *game) {
-    char c;
+/**
+ * A function to handle one input from a sequence of inputs for a given game state.
+ * Returns 1 the screen needs to be redrawn after the current input. The rest of the sequence is discarded.
+ * Returns 0 if we can go on to the next input without redrawing -- even if the state has changed.
+ */
+typedef int (*InputHandlerFn)(Game *, char);
 
-    while (game->state != GAME_STATE_LOSE && game->state != GAME_STATE_WIN) {
+int state_place_handler(Game *game, char c) {
+    switch (c) {
+    case 'h':
+        handle_left(game);
+        break;
+    case 'l':
+        handle_right(game);
+        break;
+    case 'r':
+        handle_rotate(game);
+        break;
+    case 'j':
+        drop_piece(&game->active_piece, game->board);
+        place_piece(&game->active_piece, game->board);
+
+        game->lines_cleared = mark_cleared_lines(game->board);
+        if (game->lines_cleared) {
+            game->state = GAME_STATE_CLEARED;
+        } else {
+            /* check win condition */
+            int i;
+            for (i = 0; i < 7; ++i) if (game->pieces_left[i]) break;
+            if (i == 7)
+                game->state = GAME_STATE_WIN;
+            else
+                game->state = GAME_STATE_CHOOSE;
+        }
+        return 1;
+    default:
+        /* unrecognized character -- stop handling input */
+        return 1;
+    case ' ': ; /* whitespace to separate inputs is ok, like ' hh rrrr j' */
+    }
+    return 0;
+}
+
+int state_choose_handler(Game *game, char c) {
+    unsigned char t;
+    switch (c) {
+    case 'i': t = TETRIMINO_I; break;
+    case 't': t = TETRIMINO_T; break;
+    case 'j': t = TETRIMINO_J; break;
+    case 'l': t = TETRIMINO_L; break;
+    case 's': t = TETRIMINO_S; break;
+    case 'z': t = TETRIMINO_Z; break;
+    case 'o': t = TETRIMINO_O; break;
+    default: /* invalid input */ return 1;
+    }
+    if (game->pieces_left[t-1] <= 0) return 1;
+    --game->pieces_left[t-1];
+
+    game->active_piece.type = t;
+    init_piece_shape(&game->active_piece);
+    /* place in the middle */
+    game->active_piece.x = 3;
+    lift_piece(&game->active_piece, game->board);
+    if (collides(&game->active_piece, game->board)) {
+        game->state = GAME_STATE_LOSE;
+        return 1;
+    } else {
+        game->state = GAME_STATE_PLACE;
+        /* allow chaining the choice of a piece with movement controls, like 'trhhj'*/
+        return 0;
+    }
+}
+
+int state_cleared_handler(Game *game, char c) { 
+    int i;
+
+    remove_cleared_lines(game->board);
+    game->score += score_per_lines[game->lines_cleared - 1];
+
+    game->lines_cleared = 0;
+    /* check win condition */
+    for (i = 0; i < 7; ++i)
+        if (game->pieces_left[i]) break;
+    /* if all the piece counts are 0 */
+    if (i == 7)
+        game->state = GAME_STATE_WIN;
+    else 
+        game->state = GAME_STATE_CHOOSE;
+    /* redraw in any case */
+    return 1;
+}
+int do_nothing_handler(Game *game, char c) {
+    return c == '\n';
+}
+
+static InputHandlerFn input_handlers[] = {
+    /*  GAME_STATE_CHOOSE -> */ state_choose_handler,
+    /*   GAME_STATE_PLACE -> */ state_place_handler,
+    /*    GAME_STATE_LOSE -> */ do_nothing_handler,
+    /*     GAME_STATE_WIN -> */ do_nothing_handler,
+    /* GAME_STATE_CLEARED -> */ state_cleared_handler,
+};
+
+void game_loop(Game *game) {
+    /* stop reading at 32 chars -- who would chain so many inputs anyway? */
+    const int limit = 32;
+
+    while (game->state != GAME_STATE_WIN && game->state != GAME_STATE_LOSE) {
+        int c, n_read = 0;
+
         draw(game);
 
-        do { scanf("%c", &c); } while (isspace(c));
-        switch (game->state) {
-        case GAME_STATE_PLACE:
-            {
-                int cleared_lines;
-                switch (c) {
-                case 'h':
-                    handle_left(game);
-                    break;
-                case 'l':
-                    handle_right(game);
-                    break;
-                case 'r':
-                    handle_rotate(game);
-                    break;
-                case 'j':
-                    drop_piece(&game->active_piece, game->board);
-                    place_piece(&game->active_piece, game->board);
-
-                    game->lines_cleared = mark_cleared_lines(game->board);
-                    if (game->lines_cleared)
-                        game->state = GAME_STATE_CLEARED;
-                    else
-                        game->state = GAME_STATE_CHOOSE;
-                    break;
-                default: continue;
-                }
-            }
-            break;
-        case GAME_STATE_CHOOSE:
-            {
-                unsigned char t;
-                for (t = 0; t < 7; ++t)
-                    if (game->pieces_left[t]) break;
-                /* if 0 of each piece is left */
-                if (t == 7) {
-                    game->state = GAME_STATE_WIN;
-                    break;
-                }
-                switch (c) {
-                case 'i': t = TETRIMINO_I; break;
-                case 't': t = TETRIMINO_T; break;
-                case 'j': t = TETRIMINO_J; break;
-                case 'l': t = TETRIMINO_L; break;
-                case 's': t = TETRIMINO_S; break;
-                case 'z': t = TETRIMINO_Z; break;
-                case 'o': t = TETRIMINO_O; break;
-                default: continue;
-                }
-                if (game->pieces_left[t-1] <= 0) continue;
-                --game->pieces_left[t-1];
-
-                game->active_piece.type = t;
-                init_piece_shape(&game->active_piece);
-                game->active_piece.x = 3;
-                lift_piece(&game->active_piece, game->board);
-                if (collides(&game->active_piece, game->board)) 
-                    game->state = GAME_STATE_LOSE;
-                else
-                    game->state = GAME_STATE_PLACE;
-            }
-            break;
-        case GAME_STATE_CLEARED:
-            {
-                remove_cleared_lines(game->board);
-                game->state = GAME_STATE_CHOOSE;
-                game->score += score_per_lines[game->lines_cleared - 1];
-                game->lines_cleared = 0;
-            }
-            break;
-        case GAME_STATE_LOSE: 
-        case GAME_STATE_WIN: ; /* loop condition */
+        /* read 1 char at a time, stop at EOF or when we read too many chars */
+        while ((c = getchar()) != EOF && n_read++ < limit) {
+            /* note that the handlers get the newline character too -- they are expected to return 1 in that case */
+            if (input_handlers[game->state](game, c)) break;
         }
-    }
 
-    /* draw one last time after the player lost */
+        /* skip to end of line if we stopped reading before newline */
+        while (c != EOF && c != '\n')
+            c = getchar();
+    }   
     draw(game);
 }
 
