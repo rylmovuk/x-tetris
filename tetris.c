@@ -128,16 +128,20 @@ void rotate_shape_cw(TetriminoShape shape) {
     shape[1][2] = t;
 }
 
+/* Points that get added to the score for clearing 1, 2, 3 or 4 lines respectively. */
+static int score_per_lines[] = {1, 3, 6, 12};
+
 enum game_state {
     /* The player must choose the next piece. */
-    GAME_STATE_CHOOSE,
+    GAME_STATE_CHOOSE = 0,
     /* The player is moving the piece to the desired location. */
-    GAME_STATE_PLACE,
-    /* One or more lines have been cleared -- show it to the player before removing them */
-    GAME_STATE_CLEARED,
+    GAME_STATE_PLACE = 1,
 
-    GAME_STATE_LOSE,
-    GAME_STATE_WIN
+    GAME_STATE_LOSE = 2,
+    GAME_STATE_WIN = 3,
+
+    /* One or more lines have been cleared -- show it to the player before removing them */
+    GAME_STATE_CLEARED = 4
 };
 /**
  * Representation of the playing field.
@@ -151,7 +155,9 @@ typedef struct Game {
     enum game_state state;
     Board board;
     Piece active_piece;
+    int score;
     unsigned char pieces_left[7];
+    int lines_cleared;
 } Game;
 
 /**
@@ -259,16 +265,16 @@ void handle_rotate(Game *game) {
 /**
  * Sets each full line on the game board to `BLOCK_CLEAR`.
  */
-int mark_cleared_lines(Game *game) {
+int mark_cleared_lines(Board board) {
     int i, j, cleared_count = 0;
 
     for (i = 0; i < BOARD_ROWS; ++i) {
         int cleared = 1;
         for (j = 0; j < BOARD_COLS; ++j)
-            if (!game->board[i][j]) cleared = 0;
+            if (!board[i][j]) cleared = 0;
 
         if (cleared) {
-            memset(game->board[i], BLOCK_CLEAR, BOARD_COLS);
+            memset(board[i], BLOCK_CLEAR, BOARD_COLS);
             ++cleared_count;
         }
     }
@@ -280,11 +286,11 @@ int mark_cleared_lines(Game *game) {
  * Removes every cleared line previously marked by `mark_cleared_lines` (more accurately, where the *first* block is
  * set to `BLOCK_CLEAR`). Shifts everything downwards.
  */
-void remove_cleared_lines(Game *game) {
+void remove_cleared_lines(Board board) {
     int i = BOARD_ROWS - 1;
 
     while (i > 0) {
-        if (game->board[i][0] != BLOCK_CLEAR) {
+        if (board[i][0] != BLOCK_CLEAR) {
             --i;
             continue;
         }
@@ -293,11 +299,11 @@ void remove_cleared_lines(Game *game) {
             /* multidimensional arrays *should* be contiguous in memory so this *should* be valid
                please daddy no undefined behaviour :,) */
             memmove(
-                ((unsigned char *)game->board) + BOARD_COLS,
-                (unsigned char *)game->board,
+                ((unsigned char *)board) + BOARD_COLS,
+                (unsigned char *)board,
                 i * BOARD_COLS
             );
-        memset(game->board[0], BLOCK_EMPTY, sizeof game->board[0]);
+        memset(board[0], BLOCK_EMPTY, sizeof board[0]);
     }
 }
 
@@ -321,30 +327,39 @@ void draw(Game *game) {
         for (j = 0; j < BOARD_COLS; ++j) {
             fputs(block_types[game->board[i][j]], stdout);
         }
-        puts(frame_border);
+        fputs(frame_border, stdout);
+
+        fputs("  ", stdout);
+        /* here we render the UI on the side of the board
+           we do this ugly and opaque dance because we render everything at once, line by line,
+           without relying on terminal capabilities. */
+        switch (i) {
+        case 2: /* -- display score */
+            printf(interface[i], game->score);
+            break;
+        case 5: /* -- message line 1 */
+            /* lines_cleared should be 0 whenever, after the last dropped piece, no lines were cleared */
+            printf(interface[i], messages[game->state + game->lines_cleared][0]);
+            break;
+        case 6: /* -- message line 2 */
+            printf(interface[i], messages[game->state + game->lines_cleared][1]);
+            break;
+        case 10: /* -- pieces left: I T J L */
+            printf(interface[i], game->pieces_left[0], game->pieces_left[1], game->pieces_left[2], game->pieces_left[3]); 
+            break;
+        case 13: /* -- pieces left: S Z O */
+            printf(interface[i], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
+            break;
+        default: /* every other line is to be printed as-is */
+            fputs(interface[i], stdout);
+        }
+        putchar('\n');
     }
     puts(frame_bottom);
 
-    switch (game->state) {
-    case GAME_STATE_PLACE:
+    if (game->state == GAME_STATE_PLACE) {
         set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
         set_as_piece(&ghost, game->board, BLOCK_EMPTY);
-
-        printf(movement_prompt, 0);
-        break;
-    case GAME_STATE_CHOOSE:
-        printf(piece_choice_prompt, game->pieces_left[0], game->pieces_left[1], game->pieces_left[2],
-              game->pieces_left[3], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
-        break;
-    case GAME_STATE_CLEARED:
-        puts("nice!");
-        break;
-    case GAME_STATE_LOSE:
-        puts("...game over!");
-        break;
-    case GAME_STATE_WIN:
-        puts("congratulations!!!");
-        break;
     }
 
 }
@@ -374,8 +389,8 @@ void game_loop(Game *game) {
                     drop_piece(&game->active_piece, game->board);
                     place_piece(&game->active_piece, game->board);
 
-                    cleared_lines = mark_cleared_lines(game);
-                    if (cleared_lines > 0)
+                    game->lines_cleared = mark_cleared_lines(game->board);
+                    if (game->lines_cleared)
                         game->state = GAME_STATE_CLEARED;
                     else
                         game->state = GAME_STATE_CHOOSE;
@@ -419,8 +434,10 @@ void game_loop(Game *game) {
             break;
         case GAME_STATE_CLEARED:
             {
-                remove_cleared_lines(game);
+                remove_cleared_lines(game->board);
                 game->state = GAME_STATE_CHOOSE;
+                game->score += score_per_lines[game->lines_cleared - 1];
+                game->lines_cleared = 0;
             }
             break;
         case GAME_STATE_LOSE: 
@@ -453,7 +470,8 @@ int main() {
             {1, 2, 5, 5, 4, 4, 4, 0, 7, 7},
         },
         /* active_piece = */ {0,},
-        /* pieces_left = */ {20, 20, 20, 20, 20, 20, 20},
+        /*        score = */ 0,
+        /*  pieces_left = */ {20, 20, 20, 20, 20, 20, 20},
     };
 
     game_loop(&game);
