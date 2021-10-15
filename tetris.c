@@ -311,6 +311,7 @@ void draw(Game *game) {
     int i, j;
     Piece ghost;
 
+    /* prepare board state */
     if (game->state == GAME_STATE_PLACE) {
         memcpy(&ghost, &game->active_piece, sizeof ghost);
         drop_piece(&ghost, game->board);
@@ -347,8 +348,20 @@ void draw(Game *game) {
         case 10: /* -- pieces left: I T J L */
             printf(interface[i], game->pieces_left[0], game->pieces_left[1], game->pieces_left[2], game->pieces_left[3]); 
             break;
+        case 11: /* -- piece keys: i t j l */
+            if (game->state == GAME_STATE_CHOOSE)
+                printf(interface[i], piece_keys[0], piece_keys[1], piece_keys[2], piece_keys[3]);
+            else
+                printf(interface[i], "", "", "", "");
+            break;
         case 13: /* -- pieces left: S Z O */
             printf(interface[i], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
+            break;
+        case 14: /* -- piece keys: s z o */
+            if (game->state == GAME_STATE_CHOOSE)
+                printf(interface[i], piece_keys[4], piece_keys[5], piece_keys[6]);
+            else
+                printf(interface[i], "", "", "");
             break;
         default: /* every other line is to be printed as-is */
             fputs(interface[i], stdout);
@@ -357,11 +370,16 @@ void draw(Game *game) {
     }
     puts(frame_bottom);
 
+    fputs(prompt[game->state], stdout);
+
+    /* done drawing */
+    fflush(stdout);
+
+    /* clean up board state */
     if (game->state == GAME_STATE_PLACE) {
         set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
         set_as_piece(&ghost, game->board, BLOCK_EMPTY);
     }
-
 }
 
 /**
@@ -373,16 +391,20 @@ typedef int (*InputHandlerFn)(Game *, char);
 
 int state_place_handler(Game *game, char c) {
     switch (c) {
+    case 'H':
     case 'h':
         handle_left(game);
         break;
+    case 'L':
     case 'l':
         handle_right(game);
         break;
     case 'r':
+    case 'R':
         handle_rotate(game);
         break;
     case 'j':
+    case 'J':
         drop_piece(&game->active_piece, game->board);
         place_piece(&game->active_piece, game->board);
 
@@ -410,13 +432,13 @@ int state_place_handler(Game *game, char c) {
 int state_choose_handler(Game *game, char c) {
     unsigned char t;
     switch (c) {
-    case 'i': t = TETRIMINO_I; break;
-    case 't': t = TETRIMINO_T; break;
-    case 'j': t = TETRIMINO_J; break;
-    case 'l': t = TETRIMINO_L; break;
-    case 's': t = TETRIMINO_S; break;
-    case 'z': t = TETRIMINO_Z; break;
-    case 'o': t = TETRIMINO_O; break;
+    case 'i': case 'I': t = TETRIMINO_I; break;
+    case 't': case 'T': t = TETRIMINO_T; break;
+    case 'j': case 'J': t = TETRIMINO_J; break;
+    case 'l': case 'L': t = TETRIMINO_L; break;
+    case 's': case 'S': t = TETRIMINO_S; break;
+    case 'z': case 'Z': t = TETRIMINO_Z; break;
+    case 'o': case 'O': t = TETRIMINO_O; break;
     default: /* invalid input */ return 1;
     }
     if (game->pieces_left[t-1] <= 0) return 1;
@@ -513,6 +535,9 @@ int main() {
         /*        score = */ 0,
         /*  pieces_left = */ {20, 20, 20, 20, 20, 20, 20},
     };
+
+    /* since we redraw everything at once, buffering is very useful for performance */
+    setvbuf(stdout, NULL, _IOFBF, 1024);
 
     game_loop(&game);
 

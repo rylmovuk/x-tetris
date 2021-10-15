@@ -25,7 +25,7 @@ static const char * const block_types[] = {
  * "close enough" to the end result.
  */
 static const char *interface[] = {
-    "   =*= X - T E T R I S =*=   ",
+    "  ⧕※⧔  𝕏 - T E T R I S  ⧕※⧔  ",
     "                             ",
     "        score:   %3d         ",
     "                             ",
@@ -36,11 +36,13 @@ static const char *interface[] = {
     "                           ╰ ",
     "                             ",
     "█ x%-2d  █▄ x%-2d   █ x%-2d  █  x%-2d",
-    "█ <i> "" ▀  <t> "" ▀▀ <j> "" ▀▀ <l>",
+    "█ %3s "" ▀  %3s "" ▀▀ %3s "" ▀▀ %3s",
     "                             ",
     "    █▄ x%-2d  ▄█ x%-2d  ██ x%-2d   ",
-    "     ▀ <s> "" ▀  <z>  ""   <o>   ",
+    "     ▀ %3s "" ▀  %3s  ""   %3s   ",
 };
+
+static char *piece_keys[] = {"⟨i⟩", "⟨t⟩", "⟨j⟩", "⟨l⟩", "⟨s⟩", "⟨z⟩", "⟨o⟩"};
 
 /* FIXME: get rid of at least some of the hardcoded values
    -- e.g. dont redefine score values here */
@@ -49,8 +51,8 @@ static const char *(messages[][2]) = {
     {"  choose which tetrimino ",
      "    you want to place    "},
     /* GAME_STATE_PLACE -> */
-    {"<h>, <l> move left, right",
-     "  <r> rotate   <j> drop  "},
+    {"⟨h⟩, ⟨l⟩ move left, right",
+     "  ⟨r⟩ rotate   ⟨j⟩ drop  "},
     /* GAME_STATE_LOSE -> */
     {"    oh no... you lost!   ",
      "can't place another piece"},
@@ -68,6 +70,14 @@ static const char *(messages[][2]) = {
      "   you earned 6 points   "},
     {"      !! TETRIS !!       ",
      "  you earned 12 points   "}
+};
+
+static char *prompt[] = {
+    "[itjlszo] ▷ ",
+    "[hlrj]+ ▷ ",
+    "",
+    "",
+    "[⏎] ▷ ",
 };
 #else
 /* String constants for drawing the frame. */
@@ -107,11 +117,13 @@ static const char *interface[] = {
     "                           \\ ",
     "                             ",
     "I x%-2d   T x%-2d   J x%-2d   L x%-2d",
-    "  <i> ""    <t> ""    <j> ""    <l>",
+    "  %3s ""    %3s ""    %3s ""    %3s",
     "                             ",
     "     S x%-2d   Z x%-2d   O x%-2d   ",
-    "       <s> ""    <z>  ""   <o>   ",
+    "       %3s ""    %3s  ""   %3s   ",
 };
+
+static char *piece_keys[] = {"<i>", "<t>", "<j>", "<l>", "<s>", "<z>", "<o>"};
 
 /* FIXME: get rid of at least some of the hardcoded values
    -- e.g. dont redefine score values here */
@@ -139,5 +151,13 @@ static const char *(messages[][2]) = {
      "   you earned 6 points   "},
     {"      !! TETRIS !!       ",
      "   you earned 12 point   "}
+};
+
+static char *prompt[] = {
+    "[itjlszo] > ",
+    "[hlrj]+ > ",
+    "",
+    "",
+    "[<enter>] > ",
 };
 #endif
