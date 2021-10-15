@@ -1,12 +1,14 @@
 .PHONY: all clean
 
 CFLAGS=-ansi -pedantic
-CDEFINES=-DUTF8_SUPPORT
 
 tetris: tetris.c graphics.h
-	$(CC) $(CFLAGS) $(CDEFINES) $@.c -o $@
+	$(CC) $(CFLAGS) -DUTF8_SUPPORT tetris.c -o $@
 
-all: tetris
+tetris-compat: tetris.c graphics.h
+	$(CC) $(CFLAGS) tetris.c -o $@
+
+all: tetris tetris-compat
 
 clean:
-	rm tetris
+	rm tetris tetris-compat
