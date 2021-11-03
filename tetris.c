@@ -4,6 +4,7 @@
 
 #define BOARD_ROWS 15
 #define BOARD_COLS 10
+#define STARTING_PIECES 20
 
 #include "graphics.h"
 
@@ -41,7 +42,7 @@ enum block_type {
  * Indices are <value of `enum tetrimino_type`> - 1.
  */
 typedef unsigned char TetriminoShape[4][4];
-static TetriminoShape tetrimino_shapes[] = {
+static const TetriminoShape tetrimino_shapes[] = {
     {
         {0, 1, 0, 0},
         {0, 1, 0, 0},
@@ -129,7 +130,7 @@ void rotate_shape_cw(TetriminoShape shape) {
 }
 
 /* Points that get added to the score for clearing 1, 2, 3 or 4 lines respectively. */
-static int score_per_lines[] = {1, 3, 6, 12};
+static const int score_per_lines[] = {1, 3, 6, 12};
 
 enum game_state {
     /* The player must choose the next piece. */
@@ -306,6 +307,70 @@ void remove_cleared_lines(Board board) {
         memset(board[0], BLOCK_EMPTY, sizeof board[0]);
     }
 }
+/**
+ * Returns whether the player has won, i.e. has used all of their pieces.
+ */
+int check_win_condition(Game *game) {
+    int i;
+    for (i = 0; i < 7; ++i) 
+        if (game->pieces_left[i] != 0) return 0;
+    return 1;
+}
+
+void board_draw_line(Board board, int line) {
+    int col;
+
+    if (line == 0) {
+        fputs(frame_top, stdout);
+    } else if (line == BOARD_ROWS+1) {
+        fputs(frame_bottom, stdout);
+    } else {
+        --line; /* line 0 used to be the border; now we look at the lines inside the board */
+        fputs(frame_border, stdout);
+        for (col = 0; col < BOARD_COLS; ++col) {
+            fputs(block_types[board[line][col]], stdout);
+        }
+        fputs(frame_border, stdout);
+    }
+}
+
+void ui_draw_line(Game *game, int line) {
+    /* here we render the UI on the side of the board
+        we do this ugly and opaque dance because we render everything directly to stdout, line by line,
+        without relying on terminal capabilities. */
+    switch (line) {
+    case 3: /* -- display score */
+        printf(interface[line], game->score);
+        break;
+    case 6: /* -- message line 1 */
+        /* lines_cleared should be 0 whenever, after the last dropped piece, no lines were cleared */
+        printf(interface[line], messages[game->state + game->lines_cleared][0]);
+        break;
+    case 7: /* -- message line 2 */
+        printf(interface[line], messages[game->state + game->lines_cleared][1]);
+        break;
+    case 11: /* -- pieces left: I T J L */
+        printf(interface[line], game->pieces_left[0], game->pieces_left[1], game->pieces_left[2], game->pieces_left[3]); 
+        break;
+    case 12: /* -- piece keys: i t j l */
+        if (game->state == GAME_STATE_CHOOSE)
+            printf(interface[line], piece_keys[0], piece_keys[1], piece_keys[2], piece_keys[3]);
+        else
+            printf(interface[line], "", "", "", "");
+        break;
+    case 14: /* -- pieces left: S Z O */
+        printf(interface[line], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
+        break;
+    case 15: /* -- piece keys: s z o */
+        if (game->state == GAME_STATE_CHOOSE)
+            printf(interface[line], piece_keys[4], piece_keys[5], piece_keys[6]);
+        else
+            printf(interface[line], "", "", "");
+        break;
+    default: /* every other line is to be printed as-is */
+        fputs(interface[line], stdout);
+    }
+}
 
 void draw(Game *game) {
     int i, j;
@@ -322,53 +387,13 @@ void draw(Game *game) {
         set_as_piece(&game->active_piece, game->board, BLOCK_BADBK);
     }
 
-    puts(frame_top);
-    for (i = 0; i < BOARD_ROWS; ++i) {
-        fputs(frame_border, stdout);
-        for (j = 0; j < BOARD_COLS; ++j) {
-            fputs(block_types[game->board[i][j]], stdout);
-        }
-        fputs(frame_border, stdout);
-
+    for (i = 0; i < BOARD_ROWS+2; ++i) {
+        board_draw_line(game->board, i);
         fputs("  ", stdout);
-        /* here we render the UI on the side of the board
-           we do this ugly and opaque dance because we render everything at once, line by line,
-           without relying on terminal capabilities. */
-        switch (i) {
-        case 2: /* -- display score */
-            printf(interface[i], game->score);
-            break;
-        case 5: /* -- message line 1 */
-            /* lines_cleared should be 0 whenever, after the last dropped piece, no lines were cleared */
-            printf(interface[i], messages[game->state + game->lines_cleared][0]);
-            break;
-        case 6: /* -- message line 2 */
-            printf(interface[i], messages[game->state + game->lines_cleared][1]);
-            break;
-        case 10: /* -- pieces left: I T J L */
-            printf(interface[i], game->pieces_left[0], game->pieces_left[1], game->pieces_left[2], game->pieces_left[3]); 
-            break;
-        case 11: /* -- piece keys: i t j l */
-            if (game->state == GAME_STATE_CHOOSE)
-                printf(interface[i], piece_keys[0], piece_keys[1], piece_keys[2], piece_keys[3]);
-            else
-                printf(interface[i], "", "", "", "");
-            break;
-        case 13: /* -- pieces left: S Z O */
-            printf(interface[i], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
-            break;
-        case 14: /* -- piece keys: s z o */
-            if (game->state == GAME_STATE_CHOOSE)
-                printf(interface[i], piece_keys[4], piece_keys[5], piece_keys[6]);
-            else
-                printf(interface[i], "", "", "");
-            break;
-        default: /* every other line is to be printed as-is */
-            fputs(interface[i], stdout);
-        }
+        ui_draw_line(game, i);
+        
         putchar('\n');
     }
-    puts(frame_bottom);
 
     fputs(prompt[game->state], stdout);
 
@@ -412,13 +437,7 @@ int state_place_handler(Game *game, char c) {
         if (game->lines_cleared) {
             game->state = GAME_STATE_CLEARED;
         } else {
-            /* check win condition */
-            int i;
-            for (i = 0; i < 7; ++i) if (game->pieces_left[i]) break;
-            if (i == 7)
-                game->state = GAME_STATE_WIN;
-            else
-                game->state = GAME_STATE_CHOOSE;
+            game->state = check_win_condition(game) ? GAME_STATE_WIN : GAME_STATE_CHOOSE;
         }
         return 1;
     default:
@@ -466,19 +485,12 @@ int state_cleared_handler(Game *game, char c) {
     game->score += score_per_lines[game->lines_cleared - 1];
 
     game->lines_cleared = 0;
-    /* check win condition */
-    for (i = 0; i < 7; ++i)
-        if (game->pieces_left[i]) break;
-    /* if all the piece counts are 0 */
-    if (i == 7)
-        game->state = GAME_STATE_WIN;
-    else 
-        game->state = GAME_STATE_CHOOSE;
+    game->state = check_win_condition(game) ? GAME_STATE_WIN : GAME_STATE_CHOOSE;
     /* redraw in any case */
     return 1;
 }
 int do_nothing_handler(Game *game, char c) {
-    return c == '\n';
+    return 1;
 }
 
 static InputHandlerFn input_handlers[] = {
@@ -500,8 +512,8 @@ void game_loop(Game *game) {
 
         /* read 1 char at a time, stop at EOF or when we read too many chars */
         while ((c = getchar()) != EOF && n_read++ < limit) {
-            /* note that the handlers get the newline character too -- they are expected to return 1 in that case */
-            if (input_handlers[game->state](game, c)) break;
+            /* if the line is empty (we get a \n right away), we still call the handler once */
+            if (input_handlers[game->state](game, c) || c == '\n') break;
         }
 
         /* skip to end of line if we stopped reading before newline */
@@ -511,34 +523,21 @@ void game_loop(Game *game) {
     draw(game);
 }
 
+void game_init(Game *game) {
+    /* most field are initializable to zero */
+    memset(game, 0, sizeof *game);
+
+    game->state = GAME_STATE_CHOOSE;
+    memset(game->pieces_left, STARTING_PIECES, sizeof game->pieces_left);
+}
+
 int main() {
-    Game game = {
-        /* state = */ GAME_STATE_CHOOSE,
-        /* board = */ {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 2, 0, 0, 0, 3, 3, 3, 0, 0},
-            {1, 2, 2, 5, 5, 0, 4, 3, 7, 7},
-            {1, 2, 5, 5, 4, 4, 4, 0, 7, 7},
-        },
-        /* active_piece = */ {0,},
-        /*        score = */ 0,
-        /*  pieces_left = */ {20, 20, 20, 20, 20, 20, 20},
-    };
+    Game game;
 
     /* since we redraw everything at once, buffering is very useful for performance */
     setvbuf(stdout, NULL, _IOFBF, 1024);
 
+    game_init(&game);
     game_loop(&game);
 
     return 0;

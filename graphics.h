@@ -25,6 +25,7 @@ static const char * const block_types[] = {
  * "close enough" to the end result.
  */
 static const char *interface[] = {
+    "                             ",
     "  ⧕※⧔  𝕏 - T E T R I S  ⧕※⧔  ",
     "                             ",
     "        score:   %3d         ",
@@ -40,6 +41,7 @@ static const char *interface[] = {
     "                             ",
     "    █▄ x%-2d  ▄█ x%-2d  ██ x%-2d   ",
     "     ▀ %3s "" ▀  %3s  ""   %3s   ",
+    "                             ",
 };
 
 static char *piece_keys[] = {"⟨i⟩", "⟨t⟩", "⟨j⟩", "⟨l⟩", "⟨s⟩", "⟨z⟩", "⟨o⟩"};
@@ -106,6 +108,7 @@ static const char * const block_types[] = {
  * "close enough" to the end result.
  */
 static const char *interface[] = {
+    "                             ",
     "   =*= X - T E T R I S =*=   ",
     "                             ",
     "        score:   %3d         ",
@@ -121,6 +124,7 @@ static const char *interface[] = {
     "                             ",
     "     S x%-2d   Z x%-2d   O x%-2d   ",
     "       %3s ""    %3s  ""   %3s   ",
+    "                             ",
 };
 
 static char *piece_keys[] = {"<i>", "<t>", "<j>", "<l>", "<s>", "<z>", "<o>"};
