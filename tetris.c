@@ -8,6 +8,7 @@
 
 #include "graphics.h"
 
+#pragma region Types
 /**
  * Enum to represent the possible types of tetrimino, as well as the type ("color", like in the "standardized" versions
  * of Tetris) of each block on the game board (when interpreted as a `enum block_type`).
@@ -37,100 +38,20 @@ enum block_type {
 
 /**
  * Representation of each tetromino (in one of the possible rotations) in a 4x4 grid.
- * Each one's blocks are already set to its own "type".
- * (relying on the literal values of `enum tetrimino_types` :/ but whatever)
  * Indices are <value of `enum tetrimino_type`> - 1.
  */
 typedef unsigned char TetriminoShape[4][4];
-static const TetriminoShape tetrimino_shapes[] = {
-    {
-        {0, 1, 0, 0},
-        {0, 1, 0, 0},
-        {0, 1, 0, 0},
-        {0, 1, 0, 0},
-    },
-    {
-        {0, 2, 0, 0},
-        {0, 2, 2, 0},
-        {0, 2, 0, 0},
-        {0, 0, 0, 0},
-    },
-    {
-        {0, 0, 3, 0},
-        {0, 0, 3, 0},
-        {0, 3, 3, 0},
-        {0, 0, 0, 0},
-    },
-    {
-        {0, 4, 0, 0},
-        {0, 4, 0, 0},
-        {0, 4, 4, 0},
-        {0, 0, 0, 0},
-    },
-    {
-        {0, 5, 0, 0},
-        {0, 5, 5, 0},
-        {0, 0, 5, 0},
-        {0, 0, 0, 0},
-    },
-    {
-        {0, 0, 6, 0},
-        {0, 6, 6, 0},
-        {0, 6, 0, 0},
-        {0, 0, 0, 0},
-    },
-    {
-        {0, 0, 0, 0},
-        {0, 7, 7, 0},
-        {0, 7, 7, 0},
-        {0, 0, 0, 0},
-    }
-};
 
 /**
  * Struct representing a piece "that we care about", containing its shape and coordinates.
  * Note that a valid state *can* contain x and/or y that are out of bounds relative to the game board:
- * but in that case any cell shape[i][j] *must* be 0 if board[y+i][x+j] is out of bounds.
+ * but in that case any cell at `shape[i][j]` *must* be 0 if `board[y+i][x+j]` is out of bounds.
  */
 typedef struct Piece {
     unsigned char type;
     int y, x;
     TetriminoShape shape;
 } Piece;
-
-/* Convenience function to set the shape of a piece. */
-void init_piece_shape(Piece *p) {
-    memcpy(&p->shape, tetrimino_shapes[p->type-1], sizeof p->shape);
-}
-
-void rotate_shape_cw(TetriminoShape shape) {
-    /* 
-     * (0,0) (0,1) (0,2) (0,3)      (3,0) (2,0) (1,0) (0,0)
-     * (1,0) (1,1) (1,2) (1,3)  ->  (3,1) (2,1) (1,1) (0,1)
-     * (2,0) (2,1) (2,2) (2,3)      (3,2) (2,2) (1,2) (0,2)
-     * (3,0) (3,1) (3,2) (3,3)      (3,3) (2,3) (1,3) (0,3)
-     */
-    int i, j;
-    unsigned char t;
-
-    /* rotate outer ring */
-    for (i = 0; i < 3; ++i) {
-        t = shape[0][i];
-        shape[0][i] = shape[3-i][0];
-        shape[3-i][0] = shape[3][3-i];
-        shape[3][3-i] = shape[i][3];
-        shape[i][3] = t;
-    }
-    /* rotate inner ring */
-    t = shape[1][1];
-    shape[1][1] = shape[2][1];
-    shape[2][1] = shape[2][2];
-    shape[2][2] = shape[1][2];
-    shape[1][2] = t;
-}
-
-/* Points that get added to the score for clearing 1, 2, 3 or 4 lines respectively. */
-static const int score_per_lines[] = {1, 3, 6, 12};
 
 enum game_state {
     /* The player must choose the next piece. */
@@ -162,34 +83,145 @@ typedef struct Game {
 } Game;
 
 /**
- * Place a piece on the board with no "collision" checking and assuming it fits inside the bounds.
+ * A function to handle one input from a sequence of inputs for a given game state.
+ * Returns 1 the screen needs to be redrawn after the current input. The rest of the sequence is discarded.
+ * Returns 0 if we can go on to the next input without redrawing -- even if the state has changed.
+ */
+typedef int (InputHandlerFn)(Game *, char);
+#pragma endregion Types
+
+#pragma region Func_prototypes
+static void init_piece_shape(Piece *);
+static void rotate_shape_cw(TetriminoShape);
+static void place_piece(const Piece *, Board, unsigned char);
+static int collides(const Piece *, const Board);
+static void drop_piece(Piece *, const Board);
+static void lift_piece(Piece *, const Board);
+static void handle_right(Game *);
+static void handle_left(Game *);
+static void handle_rotate(Game *);
+static int check_win_condition(Game *);
+static int mark_cleared_lines(Board);
+static void remove_cleared_lines(Board);
+static void board_draw_line(Board, int);
+static void ui_draw_line(Game *, int);
+static void draw(Game *);
+
+static InputHandlerFn state_place_handler,
+               state_choose_handler,
+               state_cleared_handler,
+               do_nothing_handler;
+
+static void game_init(Game *game);
+static void game_loop(Game *game);
+
+#pragma endregion Func_prototypes
+
+#pragma region Static_data
+static const TetriminoShape tetrimino_shapes[] = {
+    {
+        {0, 1, 0, 0},
+        {0, 1, 0, 0},
+        {0, 1, 0, 0},
+        {0, 1, 0, 0},
+    },
+    {
+        {0, 1, 0, 0},
+        {0, 1, 1, 0},
+        {0, 1, 0, 0},
+        {0, 0, 0, 0},
+    },
+    {
+        {0, 0, 1, 0},
+        {0, 0, 1, 0},
+        {0, 1, 1, 0},
+        {0, 0, 0, 0},
+    },
+    {
+        {0, 1, 0, 0},
+        {0, 1, 0, 0},
+        {0, 1, 1, 0},
+        {0, 0, 0, 0},
+    },
+    {
+        {0, 1, 0, 0},
+        {0, 1, 1, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 0},
+    },
+    {
+        {0, 0, 1, 0},
+        {0, 1, 1, 0},
+        {0, 1, 0, 0},
+        {0, 0, 0, 0},
+    },
+    {
+        {0, 0, 0, 0},
+        {0, 1, 1, 0},
+        {0, 1, 1, 0},
+        {0, 0, 0, 0},
+    }
+};
+
+/* Points that get added to the score for clearing 1, 2, 3 or 4 lines respectively. */
+static const int score_per_lines[] = {1, 3, 6, 12};
+
+static InputHandlerFn *input_handlers[] = {
+    /*  GAME_STATE_CHOOSE -> */ state_choose_handler,
+    /*   GAME_STATE_PLACE -> */ state_place_handler,
+    /*    GAME_STATE_LOSE -> */ do_nothing_handler,
+    /*     GAME_STATE_WIN -> */ do_nothing_handler,
+    /* GAME_STATE_CLEARED -> */ state_cleared_handler,
+};
+#pragma endregion Static_data
+
+/* Convenience function to set the shape of a piece. */
+void init_piece_shape(Piece *p) {
+    memcpy(&p->shape, tetrimino_shapes[p->type-1], sizeof p->shape);
+}
+
+void rotate_shape_cw(TetriminoShape shape) {
+    /* 
+     * Dumb but it works :P
+     *
+     * (0,0) (0,1) (0,2) (0,3)      (3,0) (2,0) (1,0) (0,0)
+     * (1,0) (1,1) (1,2) (1,3)  ->  (3,1) (2,1) (1,1) (0,1)
+     * (2,0) (2,1) (2,2) (2,3)      (3,2) (2,2) (1,2) (0,2)
+     * (3,0) (3,1) (3,2) (3,3)      (3,3) (2,3) (1,3) (0,3)
+     */
+    int i, j;
+    unsigned char t;
+
+    /* rotate outer ring */
+    for (i = 0; i < 3; ++i) {
+        t = shape[0][i];
+        shape[0][i] = shape[3-i][0];
+        shape[3-i][0] = shape[3][3-i];
+        shape[3][3-i] = shape[i][3];
+        shape[i][3] = t;
+    }
+    /* rotate inner ring */
+    t = shape[1][1];
+    shape[1][1] = shape[2][1];
+    shape[2][1] = shape[2][2];
+    shape[2][2] = shape[1][2];
+    shape[1][2] = t;
+}
+
+/**
+ * Place a piece on the board with no "collision" checking and assuming it fits inside the bounds,
+ * setting each cell occupied by the piece to `type`.
+ * Can be used to "cut out" a piece by filling with empty space or to draw "ghost pieces".
  * Note that x and y can actually be negative, and likewise y + 4 can be >= BOARD_WIDTH. It is the caller's
  * responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words,
  * looking at piece->shape, **only zeroes** can end up outside of the board.
  */
-void place_piece(const Piece *p, Board board) {
+void place_piece(const Piece *p, Board board, unsigned char type) {
     int i, j;
-    unsigned char bk;
 
     for (i = 0; i < 4; ++i) {
         for (j = 0; j < 4; ++j) {
-            if ((bk = p->shape[i][j])) board[p->y + i][p->x + j] = bk;
-        }
-    }
-}
-
-/**
- * Similar to `place_piece`, but instead of copying over the (non-empty) blocks from the piece, 
- * sets the board to `bk` in the shape of `piece`.
- * Can be used to "cut out" a piece by filling with empty space or to draw "ghost pieces".
- * Having both variants feels kind of useless :/ but whatever
- */
-void set_as_piece(const Piece *p, Board board, unsigned char bk) {
-    int i, j;
-
-    for (i = 0; i < 4; ++i) {
-        for (j = 0; j < 4;++j) {
-            if (p->shape[i][j]) board[p->y + i][p->x + j] = bk;
+            if (p->shape[i][j]) board[p->y + i][p->x + j] = type;
         }
     }
 }
@@ -220,7 +252,7 @@ int collides(const Piece *p, const Board board) {
  * its y value to put it as low as possible on the board without colliding with other pieces.
  */
 void drop_piece(Piece *piece, const Board board) {
-    while (1) {
+    for (;;) {
         ++piece->y;
         if (collides(piece, board)) {
             --piece->y;
@@ -233,11 +265,13 @@ void drop_piece(Piece *piece, const Board board) {
  * Leave a piece's x value unchanged, and set its y value so that the piece is in the topmost position on the screen.
  */
 void lift_piece(Piece *piece, const Board board) {
+    int i, j;
     piece->y = 0;
-    do {
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 4; ++j)
+            if (piece->shape[i][j]) return;
         --piece->y;
-    } while (!collides(piece, board));
-    ++piece->y;
+    }
 }
 
 void handle_right(Game *game) {
@@ -284,8 +318,8 @@ int mark_cleared_lines(Board board) {
 }
 
 /**
- * Removes every cleared line previously marked by `mark_cleared_lines` (more accurately, where the *first* block is
- * set to `BLOCK_CLEAR`). Shifts everything downwards.
+ * Removes every cleared line previously marked by `mark_cleared_lines` (more accurately, where at least
+ * the *first* block is set to `BLOCK_CLEAR`). Shifts everything downwards.
  */
 void remove_cleared_lines(Board board) {
     int i = BOARD_ROWS - 1;
@@ -381,10 +415,10 @@ void draw(Game *game) {
         memcpy(&ghost, &game->active_piece, sizeof ghost);
         drop_piece(&ghost, game->board);
         if (ghost.y - game->active_piece.y >= 3)
-            place_piece(&game->active_piece, game->board);
-        set_as_piece(&ghost, game->board, BLOCK_GHOST);
+            place_piece(&game->active_piece, game->board, game->active_piece.type);
+        place_piece(&ghost, game->board, BLOCK_GHOST);
     } else if (game->state == GAME_STATE_LOSE) {
-        set_as_piece(&game->active_piece, game->board, BLOCK_BADBK);
+        place_piece(&game->active_piece, game->board, BLOCK_BADBK);
     }
 
     for (i = 0; i < BOARD_ROWS+2; ++i) {
@@ -402,17 +436,10 @@ void draw(Game *game) {
 
     /* clean up board state */
     if (game->state == GAME_STATE_PLACE) {
-        set_as_piece(&game->active_piece, game->board, BLOCK_EMPTY);
-        set_as_piece(&ghost, game->board, BLOCK_EMPTY);
+        place_piece(&game->active_piece, game->board, BLOCK_EMPTY);
+        place_piece(&ghost, game->board, BLOCK_EMPTY);
     }
 }
-
-/**
- * A function to handle one input from a sequence of inputs for a given game state.
- * Returns 1 the screen needs to be redrawn after the current input. The rest of the sequence is discarded.
- * Returns 0 if we can go on to the next input without redrawing -- even if the state has changed.
- */
-typedef int (*InputHandlerFn)(Game *, char);
 
 int state_place_handler(Game *game, char c) {
     switch (c) {
@@ -431,7 +458,7 @@ int state_place_handler(Game *game, char c) {
     case 'j':
     case 'J':
         drop_piece(&game->active_piece, game->board);
-        place_piece(&game->active_piece, game->board);
+        place_piece(&game->active_piece, game->board, game->active_piece.type);
 
         game->lines_cleared = mark_cleared_lines(game->board);
         if (game->lines_cleared) {
@@ -492,14 +519,6 @@ int state_cleared_handler(Game *game, char c) {
 int do_nothing_handler(Game *game, char c) {
     return 1;
 }
-
-static InputHandlerFn input_handlers[] = {
-    /*  GAME_STATE_CHOOSE -> */ state_choose_handler,
-    /*   GAME_STATE_PLACE -> */ state_place_handler,
-    /*    GAME_STATE_LOSE -> */ do_nothing_handler,
-    /*     GAME_STATE_WIN -> */ do_nothing_handler,
-    /* GAME_STATE_CLEARED -> */ state_cleared_handler,
-};
 
 void game_loop(Game *game) {
     /* stop reading at 32 chars -- who would chain so many inputs anyway? */
