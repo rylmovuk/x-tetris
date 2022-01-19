@@ -31,16 +31,16 @@ static const char *interface[] = {
     "        score:   %3d         ",
     "                             ",
     "╭───────────────────────────╮",
-    "│ "        "%25s"         " │",
-    "│ "        "%25s"         " │",
+    "│ "         "%s"          " │",
+    "│ "         "%s"          " │",
     "╰──────────────────────────┬╯",
     "                           ╰ ",
     "                             ",
     "█ x%-2d  █▄ x%-2d   █ x%-2d  █  x%-2d",
-    "█ %3s "" ▀  %3s "" ▀▀ %3s "" ▀▀ %3s",
+    "█ %s " " ▀  %s " " ▀▀ %s " " ▀▀ %s",
     "                             ",
     "    █▄ x%-2d  ▄█ x%-2d  ██ x%-2d   ",
-    "     ▀ %3s "" ▀  %3s  ""   %3s   ",
+    "     ▀ %s " " ▀  %s  " "   %s   ",
     "                             ",
 };
 
@@ -104,7 +104,7 @@ static const char * const block_types[] = {
 
 /**
  * All the information that gets displayed on the side of the main board.
- * Sorry for all the string concatenaton jank -- wanted the source code to look aligned
+ * Sorry for all the string concatenation jank -- wanted the source code to look aligned
  * "close enough" to the end result.
  */
 static const char *interface[] = {
@@ -154,7 +154,7 @@ static const char *(messages[][2]) = {
     {"        triple!!!        ",
      "   you earned 6 points   "},
     {"      !! TETRIS !!       ",
-     "   you earned 12 point   "}
+     "   you earned 12 points  "}
 };
 
 static char *prompt[] = {

@@ -2,95 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#define BOARD_ROWS 15
-#define BOARD_COLS 10
-#define STARTING_PIECES 20
-
+#include "constants.h"
+#include "tetris.h"
+#include "iohandler.h"
 #include "graphics.h"
 
-#pragma region Types
-/**
- * Enum to represent the possible types of tetrimino, as well as the type ("color", like in the "standardized" versions
- * of Tetris) of each block on the game board (when interpreted as a `enum block_type`).
- * 0 is not used as it represents "empty space".
- */
-enum tetrimino_type {
-    TETRIMINO_I = 1,
-    TETRIMINO_T = 2,
-    TETRIMINO_J = 3,
-    TETRIMINO_L = 4,
-    TETRIMINO_S = 5,
-    TETRIMINO_Z = 6,
-    TETRIMINO_O = 7
-};
-
-/**
- * Enum to represent types of block that show up when the game board is printed. This includes the tetrimino types,
- * which are not redefined here (use `enum tetrimino_type`).
- */
-enum block_type {
-    BLOCK_EMPTY = 0,
-    /* tetrimino block types --> 1 ... 7 */
-    BLOCK_GHOST = 8,
-    BLOCK_CLEAR = 9,
-    BLOCK_BADBK = 10
-};
-
-/**
- * Representation of each tetromino (in one of the possible rotations) in a 4x4 grid.
- * Indices are <value of `enum tetrimino_type`> - 1.
- */
-typedef unsigned char TetriminoShape[4][4];
-
-/**
- * Struct representing a piece "that we care about", containing its shape and coordinates.
- * Note that a valid state *can* contain x and/or y that are out of bounds relative to the game board:
- * but in that case any cell at `shape[i][j]` *must* be 0 if `board[y+i][x+j]` is out of bounds.
- */
-typedef struct Piece {
-    unsigned char type;
-    int y, x;
-    TetriminoShape shape;
-} Piece;
-
-enum game_state {
-    /* The player must choose the next piece. */
-    GAME_STATE_CHOOSE = 0,
-    /* The player is moving the piece to the desired location. */
-    GAME_STATE_PLACE = 1,
-
-    GAME_STATE_LOSE = 2,
-    GAME_STATE_WIN = 3,
-
-    /* One or more lines have been cleared -- show it to the player before removing them */
-    GAME_STATE_CLEARED = 4
-};
-/**
- * Representation of the playing field.
- * Sadly for now its meaning is overloaded as it represents both the logical state of the board (presence or absence
- * of a block in a given cell) and the visual state ("color" of each block; "ghost" blocks) :/ but whatever
- */
-typedef unsigned char Board[BOARD_ROWS][BOARD_COLS];
-
-/* Struct representing the entire game state. */
-typedef struct Game {
-    enum game_state state;
-    Board board;
-    Piece active_piece;
-    int score;
-    unsigned char pieces_left[7];
-    int lines_cleared;
-} Game;
-
-/**
- * A function to handle one input from a sequence of inputs for a given game state.
- * Returns 1 the screen needs to be redrawn after the current input. The rest of the sequence is discarded.
- * Returns 0 if we can go on to the next input without redrawing -- even if the state has changed.
- */
-typedef int (InputHandlerFn)(Game *, char);
-#pragma endregion Types
-
-#pragma region Func_prototypes
+/* --- Function prototypes --- */
 static void init_piece_shape(Piece *);
 static void rotate_shape_cw(TetriminoShape);
 static void place_piece(const Piece *, Board, unsigned char);
@@ -108,16 +25,18 @@ static void ui_draw_line(Game *, int);
 static void draw(Game *);
 
 static InputHandlerFn state_place_handler,
-               state_choose_handler,
-               state_cleared_handler,
-               do_nothing_handler;
+                      state_choose_handler,
+                      state_cleared_handler,
+                      do_nothing_handler;
 
 static void game_init(Game *game);
 static void game_loop(Game *game);
 
-#pragma endregion Func_prototypes
-
-#pragma region Static_data
+/* --- Static data --- */
+/**
+ * Representation of each tetrimino (in one of the possible rotations) in a 
+ * Indices are <value of `enum tetrimino_type`> - 1.
+ */
 static const TetriminoShape tetrimino_shapes[] = {
     {
         {0, 1, 0, 0},
@@ -163,9 +82,6 @@ static const TetriminoShape tetrimino_shapes[] = {
     }
 };
 
-/* Points that get added to the score for clearing 1, 2, 3 or 4 lines respectively. */
-static const int score_per_lines[] = {1, 3, 6, 12};
-
 static InputHandlerFn *input_handlers[] = {
     /*  GAME_STATE_CHOOSE -> */ state_choose_handler,
     /*   GAME_STATE_PLACE -> */ state_place_handler,
@@ -173,7 +89,10 @@ static InputHandlerFn *input_handlers[] = {
     /*     GAME_STATE_WIN -> */ do_nothing_handler,
     /* GAME_STATE_CLEARED -> */ state_cleared_handler,
 };
-#pragma endregion Static_data
+
+Io_handler *g_io_handler;
+
+/* --- Functions --- */
 
 /* Convenience function to set the shape of a piece. */
 void init_piece_shape(Piece *p) {
@@ -298,7 +217,7 @@ void handle_rotate(Game *game) {
 }
 
 /**
- * Sets each full line on the game board to `BLOCK_CLEAR`.
+ * Sets each full line on the game board to `BLOCK_CLEAR`. Returns the amount of cleared lines.
  */
 int mark_cleared_lines(Board board) {
     int i, j, cleared_count = 0;
@@ -331,8 +250,7 @@ void remove_cleared_lines(Board board) {
         }
         
         if (i != 0)
-            /* multidimensional arrays *should* be contiguous in memory so this *should* be valid
-               please daddy no undefined behaviour :,) */
+            /* multidimensional arrays are contiguous in memory so this is valid */
             memmove(
                 ((unsigned char *)board) + BOARD_COLS,
                 (unsigned char *)board,
@@ -343,6 +261,7 @@ void remove_cleared_lines(Board board) {
 }
 /**
  * Returns whether the player has won, i.e. has used all of their pieces.
+ * @param game State of the game
  */
 int check_win_condition(Game *game) {
     int i;
@@ -387,7 +306,7 @@ void ui_draw_line(Game *game, int line) {
         printf(interface[line], game->pieces_left[0], game->pieces_left[1], game->pieces_left[2], game->pieces_left[3]); 
         break;
     case 12: /* -- piece keys: i t j l */
-        if (game->state == GAME_STATE_CHOOSE)
+        if (game->state == Game_state_choose)
             printf(interface[line], piece_keys[0], piece_keys[1], piece_keys[2], piece_keys[3]);
         else
             printf(interface[line], "", "", "", "");
@@ -396,7 +315,7 @@ void ui_draw_line(Game *game, int line) {
         printf(interface[line], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
         break;
     case 15: /* -- piece keys: s z o */
-        if (game->state == GAME_STATE_CHOOSE)
+        if (game->state == Game_state_choose)
             printf(interface[line], piece_keys[4], piece_keys[5], piece_keys[6]);
         else
             printf(interface[line], "", "", "");
@@ -411,23 +330,17 @@ void draw(Game *game) {
     Piece ghost;
 
     /* prepare board state */
-    if (game->state == GAME_STATE_PLACE) {
+    if (game->state == Game_state_place) {
         memcpy(&ghost, &game->active_piece, sizeof ghost);
         drop_piece(&ghost, game->board);
         if (ghost.y - game->active_piece.y >= 3)
             place_piece(&game->active_piece, game->board, game->active_piece.type);
         place_piece(&ghost, game->board, BLOCK_GHOST);
-    } else if (game->state == GAME_STATE_LOSE) {
+    } else if (game->state == Game_state_lose) {
         place_piece(&game->active_piece, game->board, BLOCK_BADBK);
     }
 
-    for (i = 0; i < BOARD_ROWS+2; ++i) {
-        board_draw_line(game->board, i);
-        fputs("  ", stdout);
-        ui_draw_line(game, i);
-        
-        putchar('\n');
-    }
+    iohandler_draw_1p(g_io_handler, game);
 
     fputs(prompt[game->state], stdout);
 
@@ -435,7 +348,7 @@ void draw(Game *game) {
     fflush(stdout);
 
     /* clean up board state */
-    if (game->state == GAME_STATE_PLACE) {
+    if (game->state == Game_state_place) {
         place_piece(&game->active_piece, game->board, BLOCK_EMPTY);
         place_piece(&ghost, game->board, BLOCK_EMPTY);
     }
@@ -462,9 +375,9 @@ int state_place_handler(Game *game, char c) {
 
         game->lines_cleared = mark_cleared_lines(game->board);
         if (game->lines_cleared) {
-            game->state = GAME_STATE_CLEARED;
+            game->state = Game_state_cleared;
         } else {
-            game->state = check_win_condition(game) ? GAME_STATE_WIN : GAME_STATE_CHOOSE;
+            game->state = check_win_condition(game) ? Game_state_win : Game_state_choose;
         }
         return 1;
     default:
@@ -496,10 +409,10 @@ int state_choose_handler(Game *game, char c) {
     game->active_piece.x = 3;
     lift_piece(&game->active_piece, game->board);
     if (collides(&game->active_piece, game->board)) {
-        game->state = GAME_STATE_LOSE;
+        game->state = Game_state_lose;
         return 1;
     } else {
-        game->state = GAME_STATE_PLACE;
+        game->state = Game_state_place;
         /* allow chaining the choice of a piece with movement controls, like 'trhhj'*/
         return 0;
     }
@@ -512,7 +425,7 @@ int state_cleared_handler(Game *game, char c) {
     game->score += score_per_lines[game->lines_cleared - 1];
 
     game->lines_cleared = 0;
-    game->state = check_win_condition(game) ? GAME_STATE_WIN : GAME_STATE_CHOOSE;
+    game->state = check_win_condition(game) ? Game_state_win : Game_state_choose;
     /* redraw in any case */
     return 1;
 }
@@ -524,7 +437,7 @@ void game_loop(Game *game) {
     /* stop reading at 32 chars -- who would chain so many inputs anyway? */
     const int limit = 32;
 
-    while (game->state != GAME_STATE_WIN && game->state != GAME_STATE_LOSE) {
+    while (game->state != Game_state_win && game->state != Game_state_lose) {
         int c, n_read = 0;
 
         draw(game);
@@ -546,18 +459,19 @@ void game_init(Game *game) {
     /* most field are initializable to zero */
     memset(game, 0, sizeof *game);
 
-    game->state = GAME_STATE_CHOOSE;
+    game->state = Game_state_choose;
     memset(game->pieces_left, STARTING_PIECES, sizeof game->pieces_left);
 }
 
 int main() {
     Game game;
+    g_io_handler = iohandler_create();
 
     /* since we redraw everything at once, buffering is very useful for performance */
-    setvbuf(stdout, NULL, _IOFBF, 1024);
 
     game_init(&game);
     game_loop(&game);
 
+    iohandler_destroy(g_io_handler);
     return 0;
 }
