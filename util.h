@@ -4,7 +4,21 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+/**
+ * Allocate an object of the given size, logging to `stderr` and exiting on failure.
+ * @returns guaranteed non-null pointer to the allocated memory.
+ */
 void * malloc_or_die(size_t sz);
+
+/**
+ * Allocate `obj_count` independent objects of size `obj_size`.  
+ * The return value points to `obj_count` pointers to each individual object.  
+ * Logs to `stderr` and exits if any allocation fails.
+ * 
+ * @param  obj_count Number of objects to allocate.
+ * @param  obj_size  Size of a single object.
+ * @returns an array of (non-null) pointers to each allocated object.
+ */
 void * alloc_many_or_die(size_t, size_t);
 
 /* typedef struct dynstr {

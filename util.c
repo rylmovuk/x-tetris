@@ -5,7 +5,8 @@
 #include "util.h"
 
 void *
-malloc_or_die(size_t size) {
+malloc_or_die(size_t size)
+{
     void *p = malloc(size);
     if (!p) {
         perror("cannot malloc");
@@ -14,17 +15,9 @@ malloc_or_die(size_t size) {
     return p;
 }
 
-/**
- * Allocates `obj_count` independent objects of size `obj_size`. 
- * The return value points to `obj_count` pointers to each individual object. 
- * Logs to `stderr` and exits if any allocation fails.
- * 
- * @param  obj_count Number of objects to allocate.
- * @param  obj_size  Size of a single object.
- * @return Array of pointers to each allocated object.
- */
 void *
-alloc_many_or_die(size_t obj_count, size_t obj_size) {
+alloc_many_or_die(size_t obj_count, size_t obj_size)
+{
     int i;
     void **p = malloc(obj_count * sizeof(void *));
     if (p) {
