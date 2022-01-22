@@ -74,18 +74,14 @@ typedef struct Game {
     int lines_cleared;
 } Game;
 
-/**
- * A function to handle one input from a sequence of inputs for a given game state.
- * Returns 1 the screen needs to be redrawn after the current input. The rest of the sequence is discarded.
- * Returns 0 if we can go on to the next input without redrawing -- even if the state has changed.
- */
-typedef int (InputHandlerFn)(Game *, char);
-
 enum Game_action {
+    Game_action_queue_empty = 0,
+
+    Game_action_finish_clearing,
     Game_action_left,
     Game_action_right,
     Game_action_rotate,
-    Game_action_place,
+    Game_action_drop,
     Game_action_choose_i,
     Game_action_choose_t,
     Game_action_choose_j,

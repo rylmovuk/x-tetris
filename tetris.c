@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "constants.h"
@@ -8,6 +9,7 @@
 #include "graphics.h"
 
 /* --- Function prototypes --- */
+
 static void init_piece_shape(Piece *);
 static void rotate_shape_cw(TetriminoShape);
 static void place_piece(const Piece *, Board, unsigned char);
@@ -20,17 +22,16 @@ static void handle_rotate(Game *);
 static int check_win_condition(Game *);
 static int mark_cleared_lines(Board);
 static void remove_cleared_lines(Board);
-static void board_draw_line(Board, int);
-static void ui_draw_line(Game *, int);
-static void draw(Game *);
+static int do_game_step(Game *, enum Game_action);
+static void draw(Game *, Io_handler *);
+static void atexit_fn(void);
 
-static InputHandlerFn state_place_handler,
-                      state_choose_handler,
-                      state_cleared_handler,
-                      do_nothing_handler;
+static void state_place_handler(Game *, enum Game_action);
+static void state_choose_handler(Game *, enum Game_action);
+static void state_cleared_handler(Game *);
 
-static void game_init(Game *game);
-static void game_loop(Game *game);
+static void game_init(Game *);
+static void game_loop(Game *, Io_handler *);
 
 /* --- Static data --- */
 /**
@@ -82,23 +83,20 @@ static const TetriminoShape tetrimino_shapes[] = {
     }
 };
 
-static InputHandlerFn *input_handlers[] = {
-    /*  GAME_STATE_CHOOSE -> */ state_choose_handler,
-    /*   GAME_STATE_PLACE -> */ state_place_handler,
-    /*    GAME_STATE_LOSE -> */ do_nothing_handler,
-    /*     GAME_STATE_WIN -> */ do_nothing_handler,
-    /* GAME_STATE_CLEARED -> */ state_cleared_handler,
-};
-
-Io_handler *g_io_handler;
+Io_handler *g_io_handler = NULL;
 
 /* --- Functions --- */
 
-/* Convenience function to set the shape of a piece. */
+/**
+ * Convenience function to set the shape of a piece during initialization, by reading the `type` field.
+ */
 void init_piece_shape(Piece *p) {
     memcpy(&p->shape, tetrimino_shapes[p->type-1], sizeof p->shape);
 }
 
+/**
+ * Rotate a shape clockwise.
+ */
 void rotate_shape_cw(TetriminoShape shape) {
     /* 
      * Dumb but it works :P
@@ -108,7 +106,7 @@ void rotate_shape_cw(TetriminoShape shape) {
      * (2,0) (2,1) (2,2) (2,3)      (3,2) (2,2) (1,2) (0,2)
      * (3,0) (3,1) (3,2) (3,3)      (3,3) (2,3) (1,3) (0,3)
      */
-    int i, j;
+    int i;
     unsigned char t;
 
     /* rotate outer ring */
@@ -146,7 +144,7 @@ void place_piece(const Piece *p, Board board, unsigned char type) {
 }
 
 /**
- * Checks if the piece, when placed, would collide with existing blocks or with the outer bounds of the board.
+ * Check if the piece, when placed, would collide with existing blocks or with the outer bounds of the board.
  */
 int collides(const Piece *p, const Board board) {
     int i, j;
@@ -167,7 +165,7 @@ int collides(const Piece *p, const Board board) {
 }
 
 /**
- * Drops the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting
+ * Drop the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting
  * its y value to put it as low as possible on the board without colliding with other pieces.
  */
 void drop_piece(Piece *piece, const Board board) {
@@ -193,18 +191,27 @@ void lift_piece(Piece *piece, const Board board) {
     }
 }
 
+/**
+ * Move the active piece right by one, if possible.
+ */
 void handle_right(Game *game) {
     ++game->active_piece.x;
     if (collides(&game->active_piece, game->board))
         --game->active_piece.x;
 }
 
+/**
+ * Move the active piece left by one, if possible.
+ */
 void handle_left(Game *game) {
     --game->active_piece.x;
     if (collides(&game->active_piece, game->board))
         ++game->active_piece.x;
 }
 
+/**
+ * Rotate the active piece, dealing with possible collisions.
+ */
 void handle_rotate(Game *game) {
     rotate_shape_cw(game->active_piece.shape);
     lift_piece(&game->active_piece, game->board);
@@ -217,7 +224,8 @@ void handle_rotate(Game *game) {
 }
 
 /**
- * Sets each full line on the game board to `BLOCK_CLEAR`. Returns the amount of cleared lines.
+ * Set each full line on the game board to `BLOCK_CLEAR`.
+ * @returns the amount of lines to be cleared.
  */
 int mark_cleared_lines(Board board) {
     int i, j, cleared_count = 0;
@@ -237,8 +245,8 @@ int mark_cleared_lines(Board board) {
 }
 
 /**
- * Removes every cleared line previously marked by `mark_cleared_lines` (more accurately, where at least
- * the *first* block is set to `BLOCK_CLEAR`). Shifts everything downwards.
+ * Remove every cleared line previously marked by `mark_cleared_lines` (more accurately, where at least
+ * the *first* block is set to `BLOCK_CLEAR`). Shift everything downwards.
  */
 void remove_cleared_lines(Board board) {
     int i = BOARD_ROWS - 1;
@@ -260,8 +268,7 @@ void remove_cleared_lines(Board board) {
     }
 }
 /**
- * Returns whether the player has won, i.e. has used all of their pieces.
- * @param game State of the game
+ * Check whether the player has won, i.e. has used all of their pieces.
  */
 int check_win_condition(Game *game) {
     int i;
@@ -270,63 +277,11 @@ int check_win_condition(Game *game) {
     return 1;
 }
 
-void board_draw_line(Board board, int line) {
-    int col;
-
-    if (line == 0) {
-        fputs(frame_top, stdout);
-    } else if (line == BOARD_ROWS+1) {
-        fputs(frame_bottom, stdout);
-    } else {
-        --line; /* line 0 used to be the border; now we look at the lines inside the board */
-        fputs(frame_border, stdout);
-        for (col = 0; col < BOARD_COLS; ++col) {
-            fputs(block_types[board[line][col]], stdout);
-        }
-        fputs(frame_border, stdout);
-    }
-}
-
-void ui_draw_line(Game *game, int line) {
-    /* here we render the UI on the side of the board
-        we do this ugly and opaque dance because we render everything directly to stdout, line by line,
-        without relying on terminal capabilities. */
-    switch (line) {
-    case 3: /* -- display score */
-        printf(interface[line], game->score);
-        break;
-    case 6: /* -- message line 1 */
-        /* lines_cleared should be 0 whenever, after the last dropped piece, no lines were cleared */
-        printf(interface[line], messages[game->state + game->lines_cleared][0]);
-        break;
-    case 7: /* -- message line 2 */
-        printf(interface[line], messages[game->state + game->lines_cleared][1]);
-        break;
-    case 11: /* -- pieces left: I T J L */
-        printf(interface[line], game->pieces_left[0], game->pieces_left[1], game->pieces_left[2], game->pieces_left[3]); 
-        break;
-    case 12: /* -- piece keys: i t j l */
-        if (game->state == Game_state_choose)
-            printf(interface[line], piece_keys[0], piece_keys[1], piece_keys[2], piece_keys[3]);
-        else
-            printf(interface[line], "", "", "", "");
-        break;
-    case 14: /* -- pieces left: S Z O */
-        printf(interface[line], game->pieces_left[4], game->pieces_left[5], game->pieces_left[6]);
-        break;
-    case 15: /* -- piece keys: s z o */
-        if (game->state == Game_state_choose)
-            printf(interface[line], piece_keys[4], piece_keys[5], piece_keys[6]);
-        else
-            printf(interface[line], "", "", "");
-        break;
-    default: /* every other line is to be printed as-is */
-        fputs(interface[line], stdout);
-    }
-}
-
-void draw(Game *game) {
-    int i, j;
+/**
+ * Prepare the game state for drawing (possibly breaking invariants assumed elsewhere in the game logic!),
+ * send the state to the I/O function for display, then restore everything to its original value.
+ */
+void draw(Game *game, Io_handler *io_handler) {
     Piece ghost;
 
     /* prepare board state */
@@ -340,9 +295,7 @@ void draw(Game *game) {
         place_piece(&game->active_piece, game->board, BLOCK_BADBK);
     }
 
-    iohandler_draw_1p(g_io_handler, game);
-
-    fputs(prompt[game->state], stdout);
+    iohandler_draw_1p(io_handler, game);
 
     /* done drawing */
     fflush(stdout);
@@ -354,22 +307,18 @@ void draw(Game *game) {
     }
 }
 
-int state_place_handler(Game *game, char c) {
-    switch (c) {
-    case 'H':
-    case 'h':
+void state_place_handler(Game *game, enum Game_action act) {
+    switch (act) {
+    case Game_action_left:
         handle_left(game);
         break;
-    case 'L':
-    case 'l':
+    case Game_action_right:
         handle_right(game);
         break;
-    case 'r':
-    case 'R':
+    case Game_action_rotate:
         handle_rotate(game);
         break;
-    case 'j':
-    case 'J':
+    case Game_action_drop:
         drop_piece(&game->active_piece, game->board);
         place_piece(&game->active_piece, game->board, game->active_piece.type);
 
@@ -379,80 +328,72 @@ int state_place_handler(Game *game, char c) {
         } else {
             game->state = check_win_condition(game) ? Game_state_win : Game_state_choose;
         }
-        return 1;
-    default:
-        /* unrecognized character -- stop handling input */
-        return 1;
-    case ' ': ; /* whitespace to separate inputs is ok, like ' hh rrrr j' */
+        break;
+    default: break;
+    /* exhaustive */
     }
-    return 0;
 }
 
-int state_choose_handler(Game *game, char c) {
-    unsigned char t;
-    switch (c) {
-    case 'i': case 'I': t = TETRIMINO_I; break;
-    case 't': case 'T': t = TETRIMINO_T; break;
-    case 'j': case 'J': t = TETRIMINO_J; break;
-    case 'l': case 'L': t = TETRIMINO_L; break;
-    case 's': case 'S': t = TETRIMINO_S; break;
-    case 'z': case 'Z': t = TETRIMINO_Z; break;
-    case 'o': case 'O': t = TETRIMINO_O; break;
-    default: /* invalid input */ return 1;
-    }
-    if (game->pieces_left[t-1] <= 0) return 1;
+void state_choose_handler(Game *game, enum Game_action act) {
+    unsigned char t = act - Game_action_choose_i + TETRIMINO_I;
+
+    if (game->pieces_left[t-1] <= 0) return;
     --game->pieces_left[t-1];
 
     game->active_piece.type = t;
     init_piece_shape(&game->active_piece);
     /* place in the middle */
-    game->active_piece.x = 3;
+    game->active_piece.x = BOARD_COLS / 2 - 2;
     lift_piece(&game->active_piece, game->board);
     if (collides(&game->active_piece, game->board)) {
         game->state = Game_state_lose;
-        return 1;
     } else {
         game->state = Game_state_place;
-        /* allow chaining the choice of a piece with movement controls, like 'trhhj'*/
-        return 0;
     }
 }
 
-int state_cleared_handler(Game *game, char c) { 
-    int i;
-
+void state_cleared_handler(Game *game) { 
     remove_cleared_lines(game->board);
     game->score += score_per_lines[game->lines_cleared - 1];
 
     game->lines_cleared = 0;
     game->state = check_win_condition(game) ? Game_state_win : Game_state_choose;
-    /* redraw in any case */
-    return 1;
 }
-int do_nothing_handler(Game *game, char c) {
-    return 1;
+/**
+ * Given one of the game actions as received from IO, advances the game state as needed.
+ * The return value determines whether other actions can be chained after the current one.
+ * @returns 1 if the function can be called again in the same game loop iteration, otherwise 0.
+ */
+int
+do_game_step(Game *game, enum Game_action act) {
+    if (act == Game_action_queue_empty)
+        return 0;
+
+    switch (game->state) {
+    case Game_state_choose:
+        state_choose_handler(game, act);
+        return 1;
+    case Game_state_place:
+        state_place_handler(game, act);
+        /* can chain move&rotate actions; have to pause for the drop action */
+        return act != Game_action_drop;
+    case Game_state_cleared:
+        state_cleared_handler(game);
+        /* fallthrough */
+    case Game_state_lose:
+    case Game_state_win:
+        return 1;
+    }
 }
 
-void game_loop(Game *game) {
-    /* stop reading at 32 chars -- who would chain so many inputs anyway? */
-    const int limit = 32;
-
+void game_loop(Game *game, Io_handler *io_handler) {
+    /* draw, then handle as many actions as we can */
     while (game->state != Game_state_win && game->state != Game_state_lose) {
-        int c, n_read = 0;
+        draw(game, io_handler);
 
-        draw(game);
-
-        /* read 1 char at a time, stop at EOF or when we read too many chars */
-        while ((c = getchar()) != EOF && n_read++ < limit) {
-            /* if the line is empty (we get a \n right away), we still call the handler once */
-            if (input_handlers[game->state](game, c) || c == '\n') break;
-        }
-
-        /* skip to end of line if we stopped reading before newline */
-        while (c != EOF && c != '\n')
-            c = getchar();
+        while (do_game_step(game, iohandler_next_action_1p(io_handler, game))) /* nop */;
     }   
-    draw(game);
+    draw(game, io_handler);
 }
 
 void game_init(Game *game) {
@@ -463,15 +404,18 @@ void game_init(Game *game) {
     memset(game->pieces_left, STARTING_PIECES, sizeof game->pieces_left);
 }
 
+void
+atexit_fn() {
+    if (g_io_handler)
+        iohandler_destroy(g_io_handler);
+}
 int main() {
     Game game;
     g_io_handler = iohandler_create();
-
-    /* since we redraw everything at once, buffering is very useful for performance */
+    atexit(&atexit_fn);
 
     game_init(&game);
-    game_loop(&game);
+    game_loop(&game, g_io_handler);
 
-    iohandler_destroy(g_io_handler);
     return 0;
 }
