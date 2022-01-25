@@ -7,6 +7,7 @@
 #include "constants.h"
 #include "tetris.h"
 #include "iohandler.h"
+#include "opponentai.h"
 #include "graphics.h"
 
 /* ------ Function prototypes ------ */
@@ -32,9 +33,10 @@ static void state_choose_handler(Game *, enum Game_action);
 static void state_cleared_handler(Game *);
 
 static int action_belongs_to_state(enum Game_action, enum Game_state);
+static int run_menu(char const * const *, int);
 
-static void game_init(Game *);
-static void game_loop(Game *, Io_handler *);
+static void game_init(Game *, enum Game_kind);
+static void game_loop(Game *, Io_handler *, Opponent_ai *);
 
 /* ------ Static data ------ */
 /**
@@ -86,7 +88,11 @@ static const Tetrimino_shape tetrimino_shapes[] = {
     }
 };
 
+
+Game g_game;
 Io_handler *g_io_handler = NULL;
+Opponent_ai *g_opp_ai = NULL;
+
 
 /* ------ Functions ------ */
 
@@ -213,7 +219,7 @@ void
 handle_right(Game *game)
 {
     ++game->active_piece.x;
-    if (collides(&game->active_piece, game->board))
+    if (collides(&game->active_piece, game->board[game->current_player]))
         --game->active_piece.x;
 }
 
@@ -224,7 +230,7 @@ void
 handle_left(Game *game)
 {
     --game->active_piece.x;
-    if (collides(&game->active_piece, game->board))
+    if (collides(&game->active_piece, game->board[game->current_player]))
         ++game->active_piece.x;
 }
 
@@ -235,13 +241,13 @@ void
 handle_rotate(Game *game)
 {
     rotate_shape_cw(game->active_piece.shape);
-    lift_piece(&game->active_piece, game->board);
+    lift_piece(&game->active_piece, game->board[game->current_player]);
 
     /* we have to adjust the piece if the rotation brings some of its blocks out of bounds */
     if (game->active_piece.x < 0)
-        while (collides(&game->active_piece, game->board)) ++game->active_piece.x;
+        while (collides(&game->active_piece, game->board[game->current_player])) ++game->active_piece.x;
     else if (game->active_piece.x + 4 >= BOARD_COLS)
-        while (collides(&game->active_piece, game->board)) --game->active_piece.x;
+        while (collides(&game->active_piece, game->board[game->current_player])) --game->active_piece.x;
 }
 
 /**
@@ -316,12 +322,12 @@ draw(Game *game, Io_handler *io_handler)
     /* prepare board state */
     if (game->state == Game_state_Place) {
         memcpy(&ghost, &game->active_piece, sizeof ghost);
-        drop_piece(&ghost, game->board);
+        drop_piece(&ghost, game->board[game->current_player]);
         if (ghost.y - game->active_piece.y >= 3)
-            place_piece(&game->active_piece, game->board, game->active_piece.type);
-        place_piece(&ghost, game->board, Block_type_Ghost);
+            place_piece(&game->active_piece, game->board[game->current_player], game->active_piece.type);
+        place_piece(&ghost, game->board[game->current_player], Block_type_Ghost);
     } else if (game->state == Game_state_Lose) {
-        place_piece(&game->active_piece, game->board, Block_type_Badbk);
+        place_piece(&game->active_piece, game->board[game->current_player], Block_type_Badbk);
     }
 
     iohandler_draw_1p(io_handler, game);
@@ -331,8 +337,8 @@ draw(Game *game, Io_handler *io_handler)
 
     /* clean up board state */
     if (game->state == Game_state_Place) {
-        place_piece(&game->active_piece, game->board, Block_type_Empty);
-        place_piece(&ghost, game->board, Block_type_Empty);
+        place_piece(&game->active_piece, game->board[game->current_player], Block_type_Empty);
+        place_piece(&ghost, game->board[game->current_player], Block_type_Empty);
     }
 }
 
@@ -354,14 +360,16 @@ state_place_handler(Game *game, enum Game_action act)
         handle_rotate(game);
         break;
     case Game_action_Drop:
-        drop_piece(&game->active_piece, game->board);
-        place_piece(&game->active_piece, game->board, game->active_piece.type);
+        drop_piece(&game->active_piece, game->board[game->current_player]);
+        place_piece(&game->active_piece, game->board[game->current_player], game->active_piece.type);
 
-        game->lines_cleared = mark_cleared_lines(game->board);
+        game->lines_cleared = mark_cleared_lines(game->board[game->current_player]);
         if (game->lines_cleared) {
             game->state = Game_state_Cleared;
         } else {
             game->state = check_win_condition(game) ? Game_state_Win : Game_state_Choose;
+            if (game->kind != Game_kind_Singleplayer)
+                game->current_player = !game->current_player;
         }
         break;
     default: break;
@@ -385,8 +393,8 @@ state_choose_handler(Game *game, enum Game_action act)
     init_piece_shape(&game->active_piece);
     /* place in the middle */
     game->active_piece.x = BOARD_COLS / 2 - 2;
-    lift_piece(&game->active_piece, game->board);
-    if (collides(&game->active_piece, game->board)) {
+    lift_piece(&game->active_piece, game->board[game->current_player]);
+    if (collides(&game->active_piece, game->board[game->current_player])) {
         game->state = Game_state_Lose;
     } else {
         game->state = Game_state_Place;
@@ -399,11 +407,13 @@ state_choose_handler(Game *game, enum Game_action act)
 void
 state_cleared_handler(Game *game)
 {
-    remove_cleared_lines(game->board);
-    game->score += score_per_lines[game->lines_cleared - 1];
+    remove_cleared_lines(game->board[game->current_player]);
+    game->score[game->current_player] += score_per_lines[game->lines_cleared - 1];
 
     game->lines_cleared = 0;
     game->state = check_win_condition(game) ? Game_state_Win : Game_state_Choose;
+    if (game->kind != Game_kind_Singleplayer)
+        game->current_player = !game->current_player;
 }
 
 /**
@@ -451,7 +461,7 @@ action_belongs_to_state(enum Game_action act, enum Game_state state)
  * Run the game: keep executing the game loop until the game ends.
  */
 void
-game_loop(Game *game, Io_handler *io_handler)
+game_loop(Game *game, Io_handler *io_handler, Opponent_ai *opp_ai)
 {
     /* draw, then handle as many actions as we can */
     for (;;) {
@@ -461,6 +471,9 @@ game_loop(Game *game, Io_handler *io_handler)
             break;
 
         while (do_game_step(game, iohandler_next_action_1p(io_handler, game))) /* nop */;
+
+        if (game->kind == Game_kind_Vs_ai && game->current_player == 1)
+            while (do_game_step(game, ai_next_action(opp_ai, game))) /* nop */;
     }
 }
 
@@ -468,15 +481,17 @@ game_loop(Game *game, Io_handler *io_handler)
  * Set the game state to the initial configuration.
  */
 void
-game_init(Game *game)
+game_init(Game *game, enum Game_kind kind)
 {
     game->state = Game_state_Choose;
-    memset(game->board, 0, BOARD_COLS * BOARD_ROWS);
+    memset(game->board, 0, BOARD_COLS * BOARD_ROWS * 2);
 
     /* game->active_piece = uninitialized  -- chosen later */
-    game->score = 0;
-    memset(game->pieces_left, STARTING_PIECES, sizeof game->pieces_left);
+    game->current_player = 0;
+    game->score[0] = game->score[1] = 0;
+    memset(game->pieces_left, STARTING_PIECES * (kind == Game_kind_Singleplayer ? 1 : 2), sizeof game->pieces_left);
     game->lines_cleared = 0;
+    game->kind = kind;
 }
 
 void
@@ -484,17 +499,49 @@ atexit_fn()
 {
     if (g_io_handler)
         iohandler_destroy(g_io_handler);
+    if (g_opp_ai)
+        ai_destroy(g_opp_ai);
+}
+
+int
+run_menu(char const * const *entries, int entries_n)
+{
+    int i, ans;
+
+    for (;;) {
+        for (i = 0; i < entries_n; ++i) {
+            printf("%d.  %s\n", i+1, entries[i]);
+        }
+        if (1 == scanf("%d%*1[\n]", &ans)
+            && (--ans, 0 <= ans && ans < entries_n))
+            break;
+
+        scanf("%*[^\n]%*1[\n]"); /* discard until end of line */       
+    }
+
+    return ans;
 }
 
 int
 main()
 {
-    Game game;
-    g_io_handler = iohandler_create();
+    char const * const menu_items[] = {
+        "Single player",
+        "Multiplayer -- two players",
+        "Multiplayer -- vs. AI"
+    };
+    int choice;
+
+    puts("Welcome! Choose game mode:");
+    choice = run_menu(menu_items, 3);
+
+    game_init(&g_game, (enum Game_kind) choice);
+    g_io_handler = iohandler_create(choice != 0);
+    if (choice != 0)
+        g_opp_ai = ai_create();
     atexit(&atexit_fn);
 
-    game_init(&game);
-    game_loop(&game, g_io_handler);
+    game_loop(&g_game, g_io_handler, g_opp_ai);
 
     return EXIT_SUCCESS;
 }

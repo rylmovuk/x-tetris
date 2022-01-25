@@ -61,6 +61,12 @@ enum Game_state {
     Game_state_Cleared
 };
 
+enum Game_kind {
+    Game_kind_Singleplayer,
+    Game_kind_Vs_player,
+    Game_kind_Vs_ai
+};
+
 /**
  * Representation of the playing field.  
  * Does not only represent the presence or absence of a block: the meaning of the cells is related to (but still distinct
@@ -75,12 +81,14 @@ typedef unsigned char Board[BOARD_ROWS][BOARD_COLS];
  * Struct representing the entire game state.
  */
 typedef struct Game {
+    enum Game_kind kind;
     enum Game_state state;
-    Board board;
+    Board board[2];
     Piece active_piece;
-    int score;
+    int score[2];
     unsigned char pieces_left[7];
     int lines_cleared;
+    int current_player;
 } Game;
 
 /**

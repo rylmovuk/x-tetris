@@ -10,7 +10,7 @@ typedef struct Io_handler Io_handler;
  * Caller owns the returned object and must call `iohandler_destroy` to correctly clean up.  
  * @returns a pointer to a valid instance of Io_handler.
  */
-Io_handler * iohandler_create();
+Io_handler * iohandler_create(int);
 /**
  * Deinitialize and deallocate an Io_handler, which must have been initialized by `iohandler_create`.  
  */
