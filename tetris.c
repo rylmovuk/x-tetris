@@ -437,11 +437,25 @@ state_cleared_handler(Game *game)
 {
     remove_cleared_lines(game->board[game->current_player]);
     game->score[game->current_player] += score_per_lines[game->lines_cleared - 1];
+    if (game->kind != Game_kind_Singleplayer) {
+        game->current_player = !game->current_player;
+        if (game->lines_cleared >= 3) {
+            /* bonus for clearing many lines: do the other player dirty :P */
+            int i, j;
+            for (i = 0; i < game->lines_cleared; ++i) {
+                unsigned char *const row = game->board[game->current_player][BOARD_ROWS-1-i];
+                for (j = 0; j < BOARD_COLS; ++j) {
+                    if (row[j]) 
+                        row[j] = Block_type_Empty;
+                    else
+                        row[j] = Tetrimino_type_I + (rand() % 7);
+                }
+            }
+        }
+    }
 
     game->lines_cleared = 0;
     game->state = check_win_condition(game) ? Game_state_Win : Game_state_Choose;
-    if (game->kind != Game_kind_Singleplayer)
-        game->current_player = !game->current_player;
 }
 
 /**
