@@ -367,6 +367,7 @@ iohandler_draw_1p(Io_handler *ioh, Game const *game)
     else
         update_screen_2p(ioh->screen, game);
 
+    fputs("\n\n\n\n\n", stdout);
     for (i = 0; i < SCREEN_LINES; ++i) {
         puts(ioh->screen[i]);
     }

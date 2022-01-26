@@ -240,14 +240,22 @@ handle_left(Game *game)
 void
 handle_rotate(Game *game)
 {
-    rotate_shape_cw(game->active_piece.shape);
-    lift_piece(&game->active_piece, game->board[game->current_player]);
+    Piece rotated = game->active_piece;
+    rotate_shape_cw(rotated.shape);
+    lift_piece(&rotated, game->board[game->current_player]);
 
     /* we have to adjust the piece if the rotation brings some of its blocks out of bounds */
-    if (game->active_piece.x < 0)
-        while (collides(&game->active_piece, game->board[game->current_player])) ++game->active_piece.x;
-    else if (game->active_piece.x + 4 >= BOARD_COLS)
-        while (collides(&game->active_piece, game->board[game->current_player])) --game->active_piece.x;
+    if (rotated.x < 0)
+        while (collides(&rotated, game->board[game->current_player]) && rotated.x + 2 < BOARD_COLS)
+            ++rotated.x;
+    else if (rotated.x + 4 >= BOARD_COLS)
+        while (collides(&rotated, game->board[game->current_player]) && rotated.x + 2 > 0)
+            --rotated.x;
+
+    /* if after adjustment it still collides, abort */
+    if (collides(&rotated, game->board[game->current_player]))
+        return;
+    game->active_piece = rotated;
 }
 
 /**
@@ -384,6 +392,8 @@ state_place_handler(Game *game, enum Game_action act)
 void
 state_choose_handler(Game *game, enum Game_action act)
 {
+    int const center = BOARD_COLS / 2 - 2;
+    int rots, i;
     unsigned char t = act - Game_action_Choose_I + Tetrimino_type_I;
 
     if (game->pieces_left[t-1] <= 0) return;
@@ -391,14 +401,32 @@ state_choose_handler(Game *game, enum Game_action act)
 
     game->active_piece.type = t;
     init_piece_shape(&game->active_piece);
-    /* place in the middle */
-    game->active_piece.x = BOARD_COLS / 2 - 2;
-    lift_piece(&game->active_piece, game->board[game->current_player]);
-    if (collides(&game->active_piece, game->board[game->current_player])) {
-        game->state = Game_state_Lose;
-    } else {
-        game->state = Game_state_Place;
+
+    /* we must place the piece, but there might be little space, so we try every trick to make it fit; even
+       though most of the times we will return at the earliest collision check */
+    /* assume we are successful */
+    game->state = Game_state_Place;
+    for (rots = 0; rots < 4; ++rots) {
+        game->active_piece.x = center;
+        lift_piece(&game->active_piece, game->board[game->current_player]);
+        if (!collides(&game->active_piece, game->board[game->current_player]))
+            return;
+        /* start moving away further from the center */
+        for (i = 1; i < 5; ++i) {
+            game->active_piece.x = center + i;
+            if (!collides(&game->active_piece, game->board[game->current_player]))
+                return;
+            game->active_piece.x = center - i;
+            if (!collides(&game->active_piece, game->board[game->current_player]))
+                return;
+        }
+        /* try another rotation */
+        rotate_shape_cw(game->active_piece.shape);
     }
+    /* nope, we tried our best, but we can't place it */
+    game->active_piece.x = center;
+    lift_piece(&game->active_piece, game->board[game->current_player]);
+    game->state = Game_state_Lose;
 }
 
 /**
