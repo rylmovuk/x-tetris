@@ -8,7 +8,6 @@
 #include "tetris.h"
 #include "iohandler.h"
 #include "opponentai.h"
-#include "graphics.h"
 
 /* ------ Function prototypes ------ */
 
@@ -568,7 +567,7 @@ main()
     };
     int choice;
 
-    puts("Welcome! Choose game mode:");
+    puts("### X - TETRIS ###\nWelcome! Choose a game mode:");
     choice = run_menu(menu_items, 3);
 
     game_init(&g_game, (enum Game_kind) choice);
