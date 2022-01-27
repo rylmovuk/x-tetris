@@ -114,4 +114,11 @@ enum Game_action {
 
     Game_action_Finish_clearing = Game_state_Cleared << 5
 };
+
+void init_piece_shape(Piece *);
+void rotate_shape_cw(Tetrimino_shape);
+void place_piece(const Piece *, Board, unsigned char);
+int collides(const Piece *, const Board);
+void drop_piece(Piece *, const Board);
+void lift_piece(Piece *, const Board);
 #endif /* ifndef XTETRIS_TETRIS_H */

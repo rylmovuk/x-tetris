@@ -12,12 +12,6 @@
 
 /* ------ Function prototypes ------ */
 
-static void init_piece_shape(Piece *);
-static void rotate_shape_cw(Tetrimino_shape);
-static void place_piece(const Piece *, Board, unsigned char);
-static int collides(const Piece *, const Board);
-static void drop_piece(Piece *, const Board);
-static void lift_piece(Piece *, const Board);
 static void handle_right(Game *);
 static void handle_left(Game *);
 static void handle_rotate(Game *);
