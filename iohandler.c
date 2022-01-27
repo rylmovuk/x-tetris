@@ -81,8 +81,8 @@ static char const cleared_lines_messages[][MSG_LENGTH] = {
 static char const *prompts[] = {
     /* Game_state_Choose  -> */ "[itjlszo] > ",
     /* Game_state_Place   -> */ "[hlrj]+ > ",
-    /* Game_state_Lose    -> */ "",
-    /* Game_state_Win     -> */ "",
+    /* Game_state_Lose    -> */ "(game over)",
+    /* Game_state_Win     -> */ "(game over)",
     /* Game_state_Cleared -> */ "[<enter>] > ",
 };
 
@@ -312,12 +312,21 @@ update_screen_2p(char **scr, Game const *game) {
             memcpy(&scr[line+1][col], buf, MSG_LENGTH);
             break;
         case Game_state_Lose:
-            memcpy(&scr[line][col], "    oh no... you lost!   ", MSG_LENGTH);
-            memcpy(&scr[line+1][col], "can't place another piece", MSG_LENGTH);
+            sprintf(buf, "   player %c, you win!!!  ", game->current_player ? '1' : '2');
+            memcpy(&scr[line][col], buf, MSG_LENGTH);
+            sprintf(buf, " P%c is stuck... too bad! ", game->current_player ? '2' : '1');
+            memcpy(&scr[line+1][col], buf, MSG_LENGTH);
             break;
         case Game_state_Win:
-            memcpy(&scr[line][col], "congratulations! you won!", MSG_LENGTH);
-            memcpy(&scr[line+1][col], " check your final score  ", MSG_LENGTH);
+            if (game->score[0] == game->score[1]) {
+                memcpy(&scr[line][col], "    wow!! it's a tie!    ", MSG_LENGTH);
+                memcpy(&scr[line+1][col], " you got the same score! ", MSG_LENGTH);
+            } else {
+                sprintf(buf, " congrats, P%c! you won!!!", (game->score[0] > game->score[1] ? '1' : '2'));
+                memcpy(&scr[line][col], buf, MSG_LENGTH);
+                memcpy(&scr[line+1][col], " you got a higher score! ", MSG_LENGTH);
+            }
+                
             break;
         case Game_state_Cleared:
             memcpy(&scr[line][col], cleared_lines_messages[game->lines_cleared-1], MSG_LENGTH);
