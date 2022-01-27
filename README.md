@@ -1,18 +1,19 @@
 # X-Tetris
 
-An attempt at making a terminal based game, inspired by Tetris, that relies only on the C standard library (and that tries to make as few assumptions about the OS / terminal environment as possible).
+An attempt at making a terminal based game, inspired by Tetris, that relies only on the C standard library (and that tries to make as few assumptions about the OS / terminal environment as possible). 
+(As such, cursor movement, color sequences, non-ascii characters etc. are avoided.)
 
 ## Build
 
-- Ascii compatible version:
-    ```sh
-    make tetris-compat
-    ./tetris-compat
-    ```
-- Unicode graphics version for UTF-8 compatible terminals:
-    ```sh
-    make tetris
-    ./tetris
-    ```
+Default: release build in root directory
+```sh
+# make clean
+make
+./x-tetris
+```
 
-You can use `make all` to build all the executables.
+For debug & release versions under build/:
+```sh
+make debug
+make release
+```
