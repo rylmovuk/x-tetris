@@ -567,7 +567,12 @@ main()
     };
     int choice;
 
-    puts("### X - TETRIS ###\nWelcome! Choose a game mode:");
+    puts(
+        " _       _____  ____ _____  ___   _   __ \n"
+        "\\ \\_/ __  | |  | |_   | |  | |_) | | ( (`\n"
+        "/_/ \\     |_|  |_|__  |_|  |_| \\ |_| _)_)\n"
+    );
+    puts("Welcome! Choose a game mode:");
     choice = run_menu(menu_items, 3);
 
     game_init(&g_game, (enum Game_kind) choice);
