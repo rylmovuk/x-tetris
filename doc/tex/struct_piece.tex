@@ -1,0 +1,52 @@
+\hypertarget{struct_piece}{}\doxysection{Piece Struct Reference}
+\label{struct_piece}\index{Piece@{Piece}}
+
+
+{\ttfamily \#include $<$tetris.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+unsigned char \mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}}
+\item 
+int \mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}}
+\item 
+int \mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}}
+\item 
+\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}} \mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Struct representing a piece \char`\"{}that we care about\char`\"{}, containing its shape and coordinates. Note that a valid state {\itshape can} contain x and/or y that are out of bounds relative to the game board\+: but in that case any cell at {\ttfamily shape\mbox{[}i\mbox{]}\mbox{[}j\mbox{]}} {\itshape must} be 0 if {\ttfamily board\mbox{[}y+i\mbox{]}\mbox{[}x+j\mbox{]}} is out of bounds. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{struct_piece_ab192dd2218a56fcdea112d61113b361e}\label{struct_piece_ab192dd2218a56fcdea112d61113b361e}} 
+\index{Piece@{Piece}!shape@{shape}}
+\index{shape@{shape}!Piece@{Piece}}
+\doxysubsubsection{\texorpdfstring{shape}{shape}}
+{\footnotesize\ttfamily \mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}} Piece\+::shape}
+
+\mbox{\Hypertarget{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}\label{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}} 
+\index{Piece@{Piece}!type@{type}}
+\index{type@{type}!Piece@{Piece}}
+\doxysubsubsection{\texorpdfstring{type}{type}}
+{\footnotesize\ttfamily unsigned char Piece\+::type}
+
+\mbox{\Hypertarget{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}\label{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}} 
+\index{Piece@{Piece}!x@{x}}
+\index{x@{x}!Piece@{Piece}}
+\doxysubsubsection{\texorpdfstring{x}{x}}
+{\footnotesize\ttfamily int Piece\+::x}
+
+\mbox{\Hypertarget{struct_piece_a97d61c9e42873e2274620c91178e879b}\label{struct_piece_a97d61c9e42873e2274620c91178e879b}} 
+\index{Piece@{Piece}!y@{y}}
+\index{y@{y}!Piece@{Piece}}
+\doxysubsubsection{\texorpdfstring{y}{y}}
+{\footnotesize\ttfamily int Piece\+::y}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{tetris_8h}{tetris.\+h}}\end{DoxyCompactItemize}

@@ -1,0 +1,507 @@
+\hypertarget{tetris_8h}{}\doxysection{tetris.\+h File Reference}
+\label{tetris_8h}\index{tetris.h@{tetris.h}}
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_piece}{Piece}}
+\item 
+struct \mbox{\hyperlink{struct_game}{Game}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef unsigned char \mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}}\mbox{[}4\mbox{]}\mbox{[}4\mbox{]}
+\item 
+typedef struct \mbox{\hyperlink{struct_piece}{Piece}} \mbox{\hyperlink{tetris_8h_aa4af7edfda369a730cbb122096033fa6}{Piece}}
+\item 
+typedef unsigned char \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}\mbox{[}\mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\+\_\+\+ROWS}}\mbox{]}\mbox{[}\mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\+\_\+\+COLS}}\mbox{]}
+\item 
+typedef struct \mbox{\hyperlink{struct_game}{Game}} \mbox{\hyperlink{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}{Game}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}{Tetrimino\+\_\+type}} \{ \newline
+\mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}{Tetrimino\+\_\+type\+\_\+I}} = 1
+, \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a522a63cf0cf42e8e57dcb189cbee06b5}{Tetrimino\+\_\+type\+\_\+T}}
+, \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a920f0f6047370f07387897bd674ef87b}{Tetrimino\+\_\+type\+\_\+J}}
+, \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a908e729a4392fc00acf18df840a035f2}{Tetrimino\+\_\+type\+\_\+L}}
+, \newline
+\mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a777b9090cb0c97b42b0343a063c52ebf}{Tetrimino\+\_\+type\+\_\+S}}
+, \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a21511387c2096866955bcdb4bccc3269}{Tetrimino\+\_\+type\+\_\+Z}}
+, \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a2113653042b8a52f5f5013254d03bede}{Tetrimino\+\_\+type\+\_\+O}}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}{Block\+\_\+type}} \{ \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a4dcfcb5b3a5780ac8849159ba91c58f0}{Block\+\_\+type\+\_\+\+Empty}} = 0
+, \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a2213d9bd6d67d80014cf8d88532379e8}{Block\+\_\+type\+\_\+\+Ghost}} = 8
+, \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a3e705d0d8fd9bb7d0ed4eebd98dae5dc}{Block\+\_\+type\+\_\+\+Clear}}
+, \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a03362100e003766141e31ae583548ef4}{Block\+\_\+type\+\_\+\+Badbk}}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\+\_\+state}} \{ \newline
+\mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\+\_\+state\+\_\+\+Choose}} = 1
+, \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\+\_\+state\+\_\+\+Place}}
+, \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\+\_\+state\+\_\+\+Lose}}
+, \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\+\_\+state\+\_\+\+Win}}
+, \newline
+\mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\+\_\+state\+\_\+\+Cleared}}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764c}{Game\+\_\+kind}} \{ \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160}{Game\+\_\+kind\+\_\+\+Singleplayer}}
+, \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860}{Game\+\_\+kind\+\_\+\+Vs\+\_\+player}}
+, \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca77efbdfbda479f73dffea6fd26b3c806}{Game\+\_\+kind\+\_\+\+Vs\+\_\+ai}}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \{ \newline
+\mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}{Game\+\_\+action\+\_\+\+Queue\+\_\+empty}} = 0
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}{Game\+\_\+action\+\_\+\+Choose\+\_\+I}} = Game\+\_\+state\+\_\+\+Choose \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e}{Game\+\_\+action\+\_\+\+Choose\+\_\+T}}
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8}{Game\+\_\+action\+\_\+\+Choose\+\_\+J}}
+, \newline
+\mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90}{Game\+\_\+action\+\_\+\+Choose\+\_\+L}}
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e}{Game\+\_\+action\+\_\+\+Choose\+\_\+S}}
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb}{Game\+\_\+action\+\_\+\+Choose\+\_\+Z}}
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb}{Game\+\_\+action\+\_\+\+Choose\+\_\+O}}
+, \newline
+\mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}{Game\+\_\+action\+\_\+\+Left}} = Game\+\_\+state\+\_\+\+Place \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}{Game\+\_\+action\+\_\+\+Right}}
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}{Game\+\_\+action\+\_\+\+Rotate}}
+, \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}{Game\+\_\+action\+\_\+\+Drop}}
+, \newline
+\mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}{Game\+\_\+action\+\_\+\+Finish\+\_\+clearing}} = Game\+\_\+state\+\_\+\+Cleared \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}{init\+\_\+piece\+\_\+shape}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$)
+\item 
+void \mbox{\hyperlink{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}{rotate\+\_\+shape\+\_\+cw}} (\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}})
+\item 
+void \mbox{\hyperlink{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}{place\+\_\+piece}} (const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$, \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}, unsigned char)
+\item 
+int \mbox{\hyperlink{tetris_8h_a3059d73b19301c1d0c51365996be6058}{collides}} (const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}})
+\item 
+void \mbox{\hyperlink{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}{drop\+\_\+piece}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}})
+\item 
+void \mbox{\hyperlink{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}{lift\+\_\+piece}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}\label{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}} 
+\index{tetris.h@{tetris.h}!Board@{Board}}
+\index{Board@{Board}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Board}{Board}}
+{\footnotesize\ttfamily typedef unsigned char Board\mbox{[}\mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\+\_\+\+ROWS}}\mbox{]}\mbox{[}\mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\+\_\+\+COLS}}\mbox{]}}
+
+Representation of the playing field. ~\newline
+ Does not only represent the presence or absence of a block\+: the meaning of the cells is related to (but still distinct from) the visual presentation the user sees in the end. ~\newline
+
+\begin{DoxyItemize}
+\item Normally it includes the \char`\"{}type\char`\"{} (\char`\"{}color\char`\"{}) of each block. ~\newline
+
+\item When some lines are cleared, the blocks in these lines are marked, and removed only on the next game update.
+\item In the draw stage, the board includes the active piece at the top, and the \char`\"{}ghost\char`\"{} piece at the bottom. 
+\end{DoxyItemize}\mbox{\Hypertarget{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}\label{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}} 
+\index{tetris.h@{tetris.h}!Game@{Game}}
+\index{Game@{Game}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game}{Game}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_game}{Game}} \mbox{\hyperlink{struct_game}{Game}}}
+
+Struct representing the entire game state. \mbox{\Hypertarget{tetris_8h_aa4af7edfda369a730cbb122096033fa6}\label{tetris_8h_aa4af7edfda369a730cbb122096033fa6}} 
+\index{tetris.h@{tetris.h}!Piece@{Piece}}
+\index{Piece@{Piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Piece}{Piece}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_piece}{Piece}} \mbox{\hyperlink{struct_piece}{Piece}}}
+
+Struct representing a piece \char`\"{}that we care about\char`\"{}, containing its shape and coordinates. Note that a valid state {\itshape can} contain x and/or y that are out of bounds relative to the game board\+: but in that case any cell at {\ttfamily shape\mbox{[}i\mbox{]}\mbox{[}j\mbox{]}} {\itshape must} be 0 if {\ttfamily board\mbox{[}y+i\mbox{]}\mbox{[}x+j\mbox{]}} is out of bounds. \mbox{\Hypertarget{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}\label{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}} 
+\index{tetris.h@{tetris.h}!Tetrimino\_shape@{Tetrimino\_shape}}
+\index{Tetrimino\_shape@{Tetrimino\_shape}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Tetrimino\_shape}{Tetrimino\_shape}}
+{\footnotesize\ttfamily typedef unsigned char Tetrimino\+\_\+shape\mbox{[}4\mbox{]}\mbox{[}4\mbox{]}}
+
+4x4 grid to represent each tetrimino shape. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}\label{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}} 
+\index{tetris.h@{tetris.h}!Block\_type@{Block\_type}}
+\index{Block\_type@{Block\_type}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Block\_type}{Block\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}{Block\+\_\+type}}}
+
+Enum to represent types of block that show up when the game board is printed. This includes the tetrimino types, which are not redefined here (use {\ttfamily enum Tetrimino\+\_\+type}). \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Block\_type\_Empty@{Block\_type\_Empty}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Block\_type\_Empty@{Block\_type\_Empty}}}\mbox{\Hypertarget{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a4dcfcb5b3a5780ac8849159ba91c58f0}\label{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a4dcfcb5b3a5780ac8849159ba91c58f0}} 
+Block\+\_\+type\+\_\+\+Empty&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Block\_type\_Ghost@{Block\_type\_Ghost}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Block\_type\_Ghost@{Block\_type\_Ghost}}}\mbox{\Hypertarget{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a2213d9bd6d67d80014cf8d88532379e8}\label{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a2213d9bd6d67d80014cf8d88532379e8}} 
+Block\+\_\+type\+\_\+\+Ghost&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Block\_type\_Clear@{Block\_type\_Clear}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Block\_type\_Clear@{Block\_type\_Clear}}}\mbox{\Hypertarget{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a3e705d0d8fd9bb7d0ed4eebd98dae5dc}\label{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a3e705d0d8fd9bb7d0ed4eebd98dae5dc}} 
+Block\+\_\+type\+\_\+\+Clear&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Block\_type\_Badbk@{Block\_type\_Badbk}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Block\_type\_Badbk@{Block\_type\_Badbk}}}\mbox{\Hypertarget{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a03362100e003766141e31ae583548ef4}\label{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a03362100e003766141e31ae583548ef4}} 
+Block\+\_\+type\+\_\+\+Badbk&\\
+\hline
+
+\end{DoxyEnumFields}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{29                 \{}
+\DoxyCodeLine{30     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a4dcfcb5b3a5780ac8849159ba91c58f0}{Block\_type\_Empty}} = 0,}
+\DoxyCodeLine{31     \textcolor{comment}{/* tetrimino block types -\/-\/> 1 ... 7 */}}
+\DoxyCodeLine{32     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a2213d9bd6d67d80014cf8d88532379e8}{Block\_type\_Ghost}} = 8,}
+\DoxyCodeLine{33     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a3e705d0d8fd9bb7d0ed4eebd98dae5dc}{Block\_type\_Clear}},}
+\DoxyCodeLine{34     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a03362100e003766141e31ae583548ef4}{Block\_type\_Badbk}}}
+\DoxyCodeLine{35 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733c}\label{tetris_8h_a80edd34c3b94a368ca215539076f733c}} 
+\index{tetris.h@{tetris.h}!Game\_action@{Game\_action}}
+\index{Game\_action@{Game\_action}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game\_action}{Game\_action}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}}}
+
+A player action that can be performed. An \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} transforms valid player inputs into these actions. ~\newline
+ Each action is only valid for a certain state. To check that the action is coherent with the state (for debugging purposes), use {\ttfamily (game\+\_\+action \& 0xe0) == (game\+\_\+state \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5)}. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Queue\_empty@{Game\_action\_Queue\_empty}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Queue\_empty@{Game\_action\_Queue\_empty}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}} 
+Game\+\_\+action\+\_\+\+Queue\+\_\+empty&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_I@{Game\_action\_Choose\_I}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_I@{Game\_action\_Choose\_I}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}\label{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+I&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_T@{Game\_action\_Choose\_T}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_T@{Game\_action\_Choose\_T}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e}\label{tetris_8h_a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+T&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_J@{Game\_action\_Choose\_J}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_J@{Game\_action\_Choose\_J}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+J&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_L@{Game\_action\_Choose\_L}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_L@{Game\_action\_Choose\_L}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90}\label{tetris_8h_a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+L&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_S@{Game\_action\_Choose\_S}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_S@{Game\_action\_Choose\_S}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+S&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_Z@{Game\_action\_Choose\_Z}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_Z@{Game\_action\_Choose\_Z}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb}\label{tetris_8h_a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+Z&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Choose\_O@{Game\_action\_Choose\_O}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Choose\_O@{Game\_action\_Choose\_O}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb}} 
+Game\+\_\+action\+\_\+\+Choose\+\_\+O&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Left@{Game\_action\_Left}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Left@{Game\_action\_Left}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}} 
+Game\+\_\+action\+\_\+\+Left&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Right@{Game\_action\_Right}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Right@{Game\_action\_Right}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}} 
+Game\+\_\+action\+\_\+\+Right&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Rotate@{Game\_action\_Rotate}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Rotate@{Game\_action\_Rotate}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}} 
+Game\+\_\+action\+\_\+\+Rotate&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Drop@{Game\_action\_Drop}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Drop@{Game\_action\_Drop}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}\label{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}} 
+Game\+\_\+action\+\_\+\+Drop&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_action\_Finish\_clearing@{Game\_action\_Finish\_clearing}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_action\_Finish\_clearing@{Game\_action\_Finish\_clearing}}}\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}\label{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}} 
+Game\+\_\+action\+\_\+\+Finish\+\_\+clearing&\\
+\hline
+
+\end{DoxyEnumFields}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{111                  \{}
+\DoxyCodeLine{112     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}{Game\_action\_Queue\_empty}} = 0,}
+\DoxyCodeLine{113 }
+\DoxyCodeLine{114     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}{Game\_action\_Choose\_I}} = \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}} << 5,}
+\DoxyCodeLine{115     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e}{Game\_action\_Choose\_T}},}
+\DoxyCodeLine{116     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8}{Game\_action\_Choose\_J}},}
+\DoxyCodeLine{117     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90}{Game\_action\_Choose\_L}},}
+\DoxyCodeLine{118     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e}{Game\_action\_Choose\_S}},}
+\DoxyCodeLine{119     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb}{Game\_action\_Choose\_Z}},}
+\DoxyCodeLine{120     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb}{Game\_action\_Choose\_O}},}
+\DoxyCodeLine{121 }
+\DoxyCodeLine{122     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}{Game\_action\_Left}} = \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}} << 5,}
+\DoxyCodeLine{123     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}{Game\_action\_Right}},}
+\DoxyCodeLine{124     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}{Game\_action\_Rotate}},}
+\DoxyCodeLine{125     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}{Game\_action\_Drop}},}
+\DoxyCodeLine{126 }
+\DoxyCodeLine{127     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}{Game\_action\_Finish\_clearing}} = \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}} << 5}
+\DoxyCodeLine{128 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_abb3bdc682854082cbc8eb050784e764c}\label{tetris_8h_abb3bdc682854082cbc8eb050784e764c}} 
+\index{tetris.h@{tetris.h}!Game\_kind@{Game\_kind}}
+\index{Game\_kind@{Game\_kind}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game\_kind}{Game\_kind}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764c}{Game\+\_\+kind}}}
+
+A possible kind of game\+: single-\//multiplayer, 2 player or vs AI. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_kind\_Singleplayer@{Game\_kind\_Singleplayer}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_kind\_Singleplayer@{Game\_kind\_Singleplayer}}}\mbox{\Hypertarget{tetris_8h_abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160}\label{tetris_8h_abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160}} 
+Game\+\_\+kind\+\_\+\+Singleplayer&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_kind\_Vs\_player@{Game\_kind\_Vs\_player}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_kind\_Vs\_player@{Game\_kind\_Vs\_player}}}\mbox{\Hypertarget{tetris_8h_abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860}\label{tetris_8h_abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860}} 
+Game\+\_\+kind\+\_\+\+Vs\+\_\+player&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_kind\_Vs\_ai@{Game\_kind\_Vs\_ai}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_kind\_Vs\_ai@{Game\_kind\_Vs\_ai}}}\mbox{\Hypertarget{tetris_8h_abb3bdc682854082cbc8eb050784e764ca77efbdfbda479f73dffea6fd26b3c806}\label{tetris_8h_abb3bdc682854082cbc8eb050784e764ca77efbdfbda479f73dffea6fd26b3c806}} 
+Game\+\_\+kind\+\_\+\+Vs\+\_\+ai&\\
+\hline
+
+\end{DoxyEnumFields}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{70                \{}
+\DoxyCodeLine{71     \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160}{Game\_kind\_Singleplayer}},}
+\DoxyCodeLine{72     \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860}{Game\_kind\_Vs\_player}},}
+\DoxyCodeLine{73     \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca77efbdfbda479f73dffea6fd26b3c806}{Game\_kind\_Vs\_ai}}}
+\DoxyCodeLine{74 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4}} 
+\index{tetris.h@{tetris.h}!Game\_state@{Game\_state}}
+\index{Game\_state@{Game\_state}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game\_state}{Game\_state}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\+\_\+state}}}
+
+One of the possible named states the game can be in. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_state\_Choose@{Game\_state\_Choose}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_state\_Choose@{Game\_state\_Choose}}}\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}} 
+Game\+\_\+state\+\_\+\+Choose&The player must choose the next piece. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_state\_Place@{Game\_state\_Place}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_state\_Place@{Game\_state\_Place}}}\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}} 
+Game\+\_\+state\+\_\+\+Place&The player is moving the piece to the desired location. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_state\_Lose@{Game\_state\_Lose}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_state\_Lose@{Game\_state\_Lose}}}\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}} 
+Game\+\_\+state\+\_\+\+Lose&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_state\_Win@{Game\_state\_Win}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_state\_Win@{Game\_state\_Win}}}\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}} 
+Game\+\_\+state\+\_\+\+Win&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Game\_state\_Cleared@{Game\_state\_Cleared}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Game\_state\_Cleared@{Game\_state\_Cleared}}}\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}} 
+Game\+\_\+state\+\_\+\+Cleared&One or more lines have been cleared -- show it to the player before removing them \\
+\hline
+
+\end{DoxyEnumFields}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{56                 \{}
+\DoxyCodeLine{58     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}} = 1,}
+\DoxyCodeLine{60     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}},}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}},}
+\DoxyCodeLine{63     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}},}
+\DoxyCodeLine{64 }
+\DoxyCodeLine{66     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}}
+\DoxyCodeLine{67 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}} 
+\index{tetris.h@{tetris.h}!Tetrimino\_type@{Tetrimino\_type}}
+\index{Tetrimino\_type@{Tetrimino\_type}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Tetrimino\_type}{Tetrimino\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}{Tetrimino\+\_\+type}}}
+
+Enum to represent the possible types of tetrimino, as well as the type (\char`\"{}color\char`\"{}, like in the \char`\"{}standardized\char`\"{} versions of Tetris) of each block on the game board (when interpreted as a {\ttfamily enum Block\+\_\+type}). 0 is not used as it represents \char`\"{}empty space\char`\"{}. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_I@{Tetrimino\_type\_I}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_I@{Tetrimino\_type\_I}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}} 
+Tetrimino\+\_\+type\+\_\+I&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_T@{Tetrimino\_type\_T}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_T@{Tetrimino\_type\_T}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a522a63cf0cf42e8e57dcb189cbee06b5}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a522a63cf0cf42e8e57dcb189cbee06b5}} 
+Tetrimino\+\_\+type\+\_\+T&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_J@{Tetrimino\_type\_J}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_J@{Tetrimino\_type\_J}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a920f0f6047370f07387897bd674ef87b}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a920f0f6047370f07387897bd674ef87b}} 
+Tetrimino\+\_\+type\+\_\+J&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_L@{Tetrimino\_type\_L}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_L@{Tetrimino\_type\_L}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a908e729a4392fc00acf18df840a035f2}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a908e729a4392fc00acf18df840a035f2}} 
+Tetrimino\+\_\+type\+\_\+L&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_S@{Tetrimino\_type\_S}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_S@{Tetrimino\_type\_S}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a777b9090cb0c97b42b0343a063c52ebf}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a777b9090cb0c97b42b0343a063c52ebf}} 
+Tetrimino\+\_\+type\+\_\+S&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_Z@{Tetrimino\_type\_Z}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_Z@{Tetrimino\_type\_Z}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a21511387c2096866955bcdb4bccc3269}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a21511387c2096866955bcdb4bccc3269}} 
+Tetrimino\+\_\+type\+\_\+Z&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Tetrimino\_type\_O@{Tetrimino\_type\_O}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Tetrimino\_type\_O@{Tetrimino\_type\_O}}}\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a2113653042b8a52f5f5013254d03bede}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a2113653042b8a52f5f5013254d03bede}} 
+Tetrimino\+\_\+type\+\_\+O&\\
+\hline
+
+\end{DoxyEnumFields}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{15                     \{}
+\DoxyCodeLine{16     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}{Tetrimino\_type\_I}} = 1,}
+\DoxyCodeLine{17     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a522a63cf0cf42e8e57dcb189cbee06b5}{Tetrimino\_type\_T}},}
+\DoxyCodeLine{18     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a920f0f6047370f07387897bd674ef87b}{Tetrimino\_type\_J}},}
+\DoxyCodeLine{19     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a908e729a4392fc00acf18df840a035f2}{Tetrimino\_type\_L}},}
+\DoxyCodeLine{20     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a777b9090cb0c97b42b0343a063c52ebf}{Tetrimino\_type\_S}},}
+\DoxyCodeLine{21     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a21511387c2096866955bcdb4bccc3269}{Tetrimino\_type\_Z}},}
+\DoxyCodeLine{22     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a2113653042b8a52f5f5013254d03bede}{Tetrimino\_type\_O}}}
+\DoxyCodeLine{23 \};}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{tetris_8h_a3059d73b19301c1d0c51365996be6058}\label{tetris_8h_a3059d73b19301c1d0c51365996be6058}} 
+\index{tetris.h@{tetris.h}!collides@{collides}}
+\index{collides@{collides}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{collides()}{collides()}}
+{\footnotesize\ttfamily int collides (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Check if the piece, when placed, would collide with existing blocks or with the outer bounds of the board. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{159 \{}
+\DoxyCodeLine{160     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{161 }
+\DoxyCodeLine{162     \textcolor{keywordflow}{for} (i = 0; i < 4; ++i) \{}
+\DoxyCodeLine{163         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j) \{}
+\DoxyCodeLine{164             \textcolor{comment}{/* only looking at the coordinates of actual blocks that form the piece */}}
+\DoxyCodeLine{165             \textcolor{keywordflow}{if} (!p-\/>\mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}}[i][j]) \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{166             \textcolor{comment}{/* if the block collides with the outside frame */}}
+\DoxyCodeLine{167             \textcolor{keywordflow}{if} (p-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}} + i < 0 || p-\/>y + i >= \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}}
+\DoxyCodeLine{168              || p-\/>\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}} + j < 0 || p-\/>x + j >= \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}})}
+\DoxyCodeLine{169                \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{170             \textcolor{comment}{/* if the block collides with another block */}}
+\DoxyCodeLine{171             \textcolor{keywordflow}{if} (board[p-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}} + i][p-\/>\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}} + j]) \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{172         \}}
+\DoxyCodeLine{173     \}}
+\DoxyCodeLine{174     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{175 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}\label{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}} 
+\index{tetris.h@{tetris.h}!drop\_piece@{drop\_piece}}
+\index{drop\_piece@{drop\_piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{drop\_piece()}{drop\_piece()}}
+{\footnotesize\ttfamily void drop\+\_\+piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{piece,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Drop the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting its y value to put it as low as possible on the board without colliding with other pieces. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{179 \{}
+\DoxyCodeLine{180     \textcolor{keywordflow}{for} (;;) \{}
+\DoxyCodeLine{181         ++piece-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}};}
+\DoxyCodeLine{182         \textcolor{keywordflow}{if} (\mbox{\hyperlink{tetris_8c_ae93305c912b6fb144419f2188274e01a}{collides}}(piece, board)) \{}
+\DoxyCodeLine{183             -\/-\/piece-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}};}
+\DoxyCodeLine{184             \textcolor{keywordflow}{return};}
+\DoxyCodeLine{185         \}}
+\DoxyCodeLine{186     \}}
+\DoxyCodeLine{187 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}\label{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}} 
+\index{tetris.h@{tetris.h}!init\_piece\_shape@{init\_piece\_shape}}
+\index{init\_piece\_shape@{init\_piece\_shape}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_piece\_shape()}{init\_piece\_shape()}}
+{\footnotesize\ttfamily void init\+\_\+piece\+\_\+shape (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p }\end{DoxyParamCaption})}
+
+Convenience function to set the shape of a piece during initialization, by reading the {\ttfamily type} field. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{111 \{}
+\DoxyCodeLine{112     memcpy(\&p-\/>\mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}}, \mbox{\hyperlink{tetris_8c_a8585a23c91db48b58766175c462653db}{tetrimino\_shapes}}[p-\/>\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}}-\/1], \textcolor{keyword}{sizeof} p-\/>\mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}});}
+\DoxyCodeLine{113 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}\label{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}} 
+\index{tetris.h@{tetris.h}!lift\_piece@{lift\_piece}}
+\index{lift\_piece@{lift\_piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{lift\_piece()}{lift\_piece()}}
+{\footnotesize\ttfamily void lift\+\_\+piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{piece,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Leave a piece\textquotesingle{}s x value unchanged, and set its y value so that the piece is in the topmost position on the screen. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{191 \{}
+\DoxyCodeLine{192     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{193     piece-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}} = 0;}
+\DoxyCodeLine{194     \textcolor{keywordflow}{for} (i = 0; i < 3; ++i) \{}
+\DoxyCodeLine{195         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j)}
+\DoxyCodeLine{196             \textcolor{keywordflow}{if} (piece-\/>\mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}}[i][j]) \textcolor{keywordflow}{return};}
+\DoxyCodeLine{197         -\/-\/piece-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}};}
+\DoxyCodeLine{198     \}}
+\DoxyCodeLine{199 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}\label{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}} 
+\index{tetris.h@{tetris.h}!place\_piece@{place\_piece}}
+\index{place\_piece@{place\_piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{place\_piece()}{place\_piece()}}
+{\footnotesize\ttfamily void place\+\_\+piece (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p,  }\item[{\mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}}]{board,  }\item[{unsigned char}]{type }\end{DoxyParamCaption})}
+
+Place a piece on the board with no \char`\"{}collision\char`\"{} checking and assuming it fits inside the bounds, setting each cell occupied by the piece to {\ttfamily type}. Can be used to \char`\"{}cut out\char`\"{} a piece by filling with empty space or to draw \char`\"{}ghost pieces\char`\"{}. Note that x and y can actually be negative, and likewise y + 4 can be \texorpdfstring{$>$}{>}= BOARD\+\_\+\+WIDTH. It is the caller\textquotesingle{}s responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words, looking at piece-\/\texorpdfstring{$>$}{>}shape, {\bfseries{only zeroes}} can end up outside of the board. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{147 \{}
+\DoxyCodeLine{148     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{149 }
+\DoxyCodeLine{150     \textcolor{keywordflow}{for} (i = 0; i < 4; ++i) \{}
+\DoxyCodeLine{151         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j) \{}
+\DoxyCodeLine{152             \textcolor{keywordflow}{if} (p-\/>\mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}}[i][j]) board[p-\/>\mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}} + i][p-\/>\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}} + j] = type;}
+\DoxyCodeLine{153         \}}
+\DoxyCodeLine{154     \}}
+\DoxyCodeLine{155 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}\label{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}} 
+\index{tetris.h@{tetris.h}!rotate\_shape\_cw@{rotate\_shape\_cw}}
+\index{rotate\_shape\_cw@{rotate\_shape\_cw}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{rotate\_shape\_cw()}{rotate\_shape\_cw()}}
+{\footnotesize\ttfamily void rotate\+\_\+shape\+\_\+cw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}}}]{shape }\end{DoxyParamCaption})}
+
+Rotate a shape clockwise. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{117 \{}
+\DoxyCodeLine{118     \textcolor{comment}{/* }}
+\DoxyCodeLine{119 \textcolor{comment}{     * Dumb but it works :P}}
+\DoxyCodeLine{120 \textcolor{comment}{     *}}
+\DoxyCodeLine{121 \textcolor{comment}{     * (0,0) (0,1) (0,2) (0,3)      (3,0) (2,0) (1,0) (0,0)}}
+\DoxyCodeLine{122 \textcolor{comment}{     * (1,0) (1,1) (1,2) (1,3)  -\/>  (3,1) (2,1) (1,1) (0,1)}}
+\DoxyCodeLine{123 \textcolor{comment}{     * (2,0) (2,1) (2,2) (2,3)      (3,2) (2,2) (1,2) (0,2)}}
+\DoxyCodeLine{124 \textcolor{comment}{     * (3,0) (3,1) (3,2) (3,3)      (3,3) (2,3) (1,3) (0,3)}}
+\DoxyCodeLine{125 \textcolor{comment}{     */}}
+\DoxyCodeLine{126     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{127     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} t;}
+\DoxyCodeLine{128 }
+\DoxyCodeLine{129     \textcolor{comment}{/* rotate outer ring */}}
+\DoxyCodeLine{130     \textcolor{keywordflow}{for} (i = 0; i < 3; ++i) \{}
+\DoxyCodeLine{131         t = shape[0][i];}
+\DoxyCodeLine{132         shape[0][i] = shape[3-\/i][0];}
+\DoxyCodeLine{133         shape[3-\/i][0] = shape[3][3-\/i];}
+\DoxyCodeLine{134         shape[3][3-\/i] = shape[i][3];}
+\DoxyCodeLine{135         shape[i][3] = t;}
+\DoxyCodeLine{136     \}}
+\DoxyCodeLine{137     \textcolor{comment}{/* rotate inner ring */}}
+\DoxyCodeLine{138     t = shape[1][1];}
+\DoxyCodeLine{139     shape[1][1] = shape[2][1];}
+\DoxyCodeLine{140     shape[2][1] = shape[2][2];}
+\DoxyCodeLine{141     shape[2][2] = shape[1][2];}
+\DoxyCodeLine{142     shape[1][2] = t;}
+\DoxyCodeLine{143 \}}
+
+\end{DoxyCode}

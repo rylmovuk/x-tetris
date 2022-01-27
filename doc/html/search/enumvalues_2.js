@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['game_5faction_5fchoose_5fi_0',['Game_action_Choose_I',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b',1,'tetris.h']]],
+  ['game_5faction_5fchoose_5fj_1',['Game_action_Choose_J',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8',1,'tetris.h']]],
+  ['game_5faction_5fchoose_5fl_2',['Game_action_Choose_L',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90',1,'tetris.h']]],
+  ['game_5faction_5fchoose_5fo_3',['Game_action_Choose_O',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb',1,'tetris.h']]],
+  ['game_5faction_5fchoose_5fs_4',['Game_action_Choose_S',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e',1,'tetris.h']]],
+  ['game_5faction_5fchoose_5ft_5',['Game_action_Choose_T',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e',1,'tetris.h']]],
+  ['game_5faction_5fchoose_5fz_6',['Game_action_Choose_Z',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb',1,'tetris.h']]],
+  ['game_5faction_5fdrop_7',['Game_action_Drop',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133',1,'tetris.h']]],
+  ['game_5faction_5ffinish_5fclearing_8',['Game_action_Finish_clearing',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb',1,'tetris.h']]],
+  ['game_5faction_5fleft_9',['Game_action_Left',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce',1,'tetris.h']]],
+  ['game_5faction_5fqueue_5fempty_10',['Game_action_Queue_empty',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5',1,'tetris.h']]],
+  ['game_5faction_5fright_11',['Game_action_Right',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5',1,'tetris.h']]],
+  ['game_5faction_5frotate_12',['Game_action_Rotate',['../tetris_8h.html#a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8',1,'tetris.h']]],
+  ['game_5fkind_5fsingleplayer_13',['Game_kind_Singleplayer',['../tetris_8h.html#abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160',1,'tetris.h']]],
+  ['game_5fkind_5fvs_5fai_14',['Game_kind_Vs_ai',['../tetris_8h.html#abb3bdc682854082cbc8eb050784e764ca77efbdfbda479f73dffea6fd26b3c806',1,'tetris.h']]],
+  ['game_5fkind_5fvs_5fplayer_15',['Game_kind_Vs_player',['../tetris_8h.html#abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860',1,'tetris.h']]],
+  ['game_5fstate_5fchoose_16',['Game_state_Choose',['../tetris_8h.html#a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d',1,'tetris.h']]],
+  ['game_5fstate_5fcleared_17',['Game_state_Cleared',['../tetris_8h.html#a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46',1,'tetris.h']]],
+  ['game_5fstate_5flose_18',['Game_state_Lose',['../tetris_8h.html#a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543',1,'tetris.h']]],
+  ['game_5fstate_5fplace_19',['Game_state_Place',['../tetris_8h.html#a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4',1,'tetris.h']]],
+  ['game_5fstate_5fwin_20',['Game_state_Win',['../tetris_8h.html#a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2',1,'tetris.h']]]
+];

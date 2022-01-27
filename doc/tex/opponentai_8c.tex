@@ -1,0 +1,276 @@
+\hypertarget{opponentai_8c}{}\doxysection{opponentai.\+c File Reference}
+\label{opponentai_8c}\index{opponentai.c@{opponentai.c}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}util.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tetris.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}opponentai.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}{HEIGHT\+\_\+\+COEFF}}~(-\/55.\+0)
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_a39f961f8003048936a9863fb1f44ac81}{LINES\+\_\+\+COEFF}}~(+70.\+0)
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_a35dd193948ff6743bbdf853670261963}{HOLES\+\_\+\+COEFF}}~(-\/35.\+0)
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_a5b7f998b4b3d6418d1228b79bb2205de}{BUMPS\+\_\+\+COEFF}}~(-\/40.\+0)
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_afce108411525f29eadbb893de32d2bb4}{FUTURE\+\_\+\+COEFF}}~(+0.\+90)
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_a17218f2ad9c095faa3d90fececbe5830}{PENALTY\+\_\+\+COEFF}}~(+80.\+0)
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}{RECURSE\+\_\+\+DEPTH}}~1
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static double \mbox{\hyperlink{opponentai_8c_a5e4ad375a509dfbac4e476df86b34b26}{choose\+\_\+best\+\_\+move}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$, unsigned char const \mbox{[}7\mbox{]}, int)
+\item 
+static double \mbox{\hyperlink{opponentai_8c_a50f35494fc4bb1c0465fb777c0e2fd1d}{heuristic}} (\mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} const)
+\item 
+\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ \mbox{\hyperlink{opponentai_8c_a0576dad202a49831da7b17d1b675f257}{ai\+\_\+create}} ()
+\item 
+void \mbox{\hyperlink{opponentai_8c_a4373b744f4c3654010158f2b2f9bae58}{ai\+\_\+destroy}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ai)
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \mbox{\hyperlink{opponentai_8c_add24b9f8bb71dd140652b2e85e9ac68f}{ai\+\_\+next\+\_\+action}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ai, \mbox{\hyperlink{struct_game}{Game}} const $\ast$game)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{opponentai_8c_a5b7f998b4b3d6418d1228b79bb2205de}\label{opponentai_8c_a5b7f998b4b3d6418d1228b79bb2205de}} 
+\index{opponentai.c@{opponentai.c}!BUMPS\_COEFF@{BUMPS\_COEFF}}
+\index{BUMPS\_COEFF@{BUMPS\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{BUMPS\_COEFF}{BUMPS\_COEFF}}
+{\footnotesize\ttfamily \#define BUMPS\+\_\+\+COEFF~(-\/40.\+0)}
+
+\mbox{\Hypertarget{opponentai_8c_afce108411525f29eadbb893de32d2bb4}\label{opponentai_8c_afce108411525f29eadbb893de32d2bb4}} 
+\index{opponentai.c@{opponentai.c}!FUTURE\_COEFF@{FUTURE\_COEFF}}
+\index{FUTURE\_COEFF@{FUTURE\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{FUTURE\_COEFF}{FUTURE\_COEFF}}
+{\footnotesize\ttfamily \#define FUTURE\+\_\+\+COEFF~(+0.\+90)}
+
+\mbox{\Hypertarget{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}\label{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}} 
+\index{opponentai.c@{opponentai.c}!HEIGHT\_COEFF@{HEIGHT\_COEFF}}
+\index{HEIGHT\_COEFF@{HEIGHT\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{HEIGHT\_COEFF}{HEIGHT\_COEFF}}
+{\footnotesize\ttfamily \#define HEIGHT\+\_\+\+COEFF~(-\/55.\+0)}
+
+Coefficients for the heuristic used to evaluate a particular move. Metrics loosely inspired by open source AI projects for classic Tetris. Values determined by guessing and common sense \+:) \mbox{\Hypertarget{opponentai_8c_a35dd193948ff6743bbdf853670261963}\label{opponentai_8c_a35dd193948ff6743bbdf853670261963}} 
+\index{opponentai.c@{opponentai.c}!HOLES\_COEFF@{HOLES\_COEFF}}
+\index{HOLES\_COEFF@{HOLES\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{HOLES\_COEFF}{HOLES\_COEFF}}
+{\footnotesize\ttfamily \#define HOLES\+\_\+\+COEFF~(-\/35.\+0)}
+
+\mbox{\Hypertarget{opponentai_8c_a39f961f8003048936a9863fb1f44ac81}\label{opponentai_8c_a39f961f8003048936a9863fb1f44ac81}} 
+\index{opponentai.c@{opponentai.c}!LINES\_COEFF@{LINES\_COEFF}}
+\index{LINES\_COEFF@{LINES\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{LINES\_COEFF}{LINES\_COEFF}}
+{\footnotesize\ttfamily \#define LINES\+\_\+\+COEFF~(+70.\+0)}
+
+\mbox{\Hypertarget{opponentai_8c_a17218f2ad9c095faa3d90fececbe5830}\label{opponentai_8c_a17218f2ad9c095faa3d90fececbe5830}} 
+\index{opponentai.c@{opponentai.c}!PENALTY\_COEFF@{PENALTY\_COEFF}}
+\index{PENALTY\_COEFF@{PENALTY\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{PENALTY\_COEFF}{PENALTY\_COEFF}}
+{\footnotesize\ttfamily \#define PENALTY\+\_\+\+COEFF~(+80.\+0)}
+
+\mbox{\Hypertarget{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}\label{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}} 
+\index{opponentai.c@{opponentai.c}!RECURSE\_DEPTH@{RECURSE\_DEPTH}}
+\index{RECURSE\_DEPTH@{RECURSE\_DEPTH}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{RECURSE\_DEPTH}{RECURSE\_DEPTH}}
+{\footnotesize\ttfamily \#define RECURSE\+\_\+\+DEPTH~1}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{opponentai_8c_a0576dad202a49831da7b17d1b675f257}\label{opponentai_8c_a0576dad202a49831da7b17d1b675f257}} 
+\index{opponentai.c@{opponentai.c}!ai\_create@{ai\_create}}
+\index{ai\_create@{ai\_create}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{ai\_create()}{ai\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ ai\+\_\+create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Allocate and initialize an \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}. Exits on failure. ~\newline
+ Caller owns the returned object and must call {\ttfamily ai\+\_\+destroy} to correctly clean up. ~\newline
+ \begin{DoxyReturn}{Returns}
+a pointer to a valid instance of \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{41 \{}
+\DoxyCodeLine{42     \mbox{\hyperlink{struct_opponent__ai}{Opponent\_ai}} *ai = \mbox{\hyperlink{util_8c_ae6019b6343c07934f27a553cdb12e437}{malloc\_or\_die}}(\textcolor{keyword}{sizeof} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\_ai}}));}
+\DoxyCodeLine{43 }
+\DoxyCodeLine{44     srand((\textcolor{keywordtype}{unsigned}) time(NULL));}
+\DoxyCodeLine{45     \textcolor{keywordflow}{return} ai;}
+\DoxyCodeLine{46 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8c_a4373b744f4c3654010158f2b2f9bae58}\label{opponentai_8c_a4373b744f4c3654010158f2b2f9bae58}} 
+\index{opponentai.c@{opponentai.c}!ai\_destroy@{ai\_destroy}}
+\index{ai\_destroy@{ai\_destroy}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{ai\_destroy()}{ai\_destroy()}}
+{\footnotesize\ttfamily void ai\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai }\end{DoxyParamCaption})}
+
+Deinitialize and deallocate an \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}, which must have been initialized by {\ttfamily ai\+\_\+create}. ~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{50 \{}
+\DoxyCodeLine{51     free(ai);}
+\DoxyCodeLine{52 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8c_add24b9f8bb71dd140652b2e85e9ac68f}\label{opponentai_8c_add24b9f8bb71dd140652b2e85e9ac68f}} 
+\index{opponentai.c@{opponentai.c}!ai\_next\_action@{ai\_next\_action}}
+\index{ai\_next\_action@{ai\_next\_action}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{ai\_next\_action()}{ai\_next\_action()}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} ai\+\_\+next\+\_\+action (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{56 \{}
+\DoxyCodeLine{57     \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{58     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}:}
+\DoxyCodeLine{59         \textcolor{comment}{/* ai-\/>x = (rand() \% 10) -\/ 4;}}
+\DoxyCodeLine{60 \textcolor{comment}{        ai-\/>rots = rand() \% 3;}}
+\DoxyCodeLine{61 \textcolor{comment}{        ai-\/>type = Tetrimino\_type\_I + (rand() \% 7); */}}
+\DoxyCodeLine{62         memcpy(ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}}, game-\/>board[1], \textcolor{keyword}{sizeof} ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}});}
+\DoxyCodeLine{63         ai-\/>\mbox{\hyperlink{struct_opponent__ai_adb044259835560c1132ca01509c9b80b}{last\_x}} = ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}};}
+\DoxyCodeLine{64         \mbox{\hyperlink{opponentai_8c_a5e4ad375a509dfbac4e476df86b34b26}{choose\_best\_move}}(ai, game-\/>pieces\_left, \mbox{\hyperlink{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}{RECURSE\_DEPTH}});}
+\DoxyCodeLine{65         \textcolor{keywordflow}{return} ai-\/>\mbox{\hyperlink{struct_opponent__ai_ae08ff24352e6c186f5376904bf8cb944}{type}} -\/ \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}{Tetrimino\_type\_I}} + \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}{Game\_action\_Choose\_I}};}
+\DoxyCodeLine{66     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}}:}
+\DoxyCodeLine{67         \textcolor{keywordflow}{if} (ai-\/>\mbox{\hyperlink{struct_opponent__ai_a9749f95d8cbaeb40cffaf2d572b0005b}{rots}}) \{}
+\DoxyCodeLine{68             -\/-\/ai-\/>\mbox{\hyperlink{struct_opponent__ai_a9749f95d8cbaeb40cffaf2d572b0005b}{rots}};}
+\DoxyCodeLine{69             \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}{Game\_action\_Rotate}};}
+\DoxyCodeLine{70         \}}
+\DoxyCodeLine{71         \textcolor{comment}{/* if we are not moving anymore, too bad: drop the piece and whatever happens happens */}}
+\DoxyCodeLine{72         \textcolor{keywordflow}{if} (game-\/>active\_piece.x != ai-\/>\mbox{\hyperlink{struct_opponent__ai_adb044259835560c1132ca01509c9b80b}{last\_x}}) \{}
+\DoxyCodeLine{73             \textcolor{keywordflow}{if} ((ai-\/>\mbox{\hyperlink{struct_opponent__ai_adb044259835560c1132ca01509c9b80b}{last\_x}} = game-\/>active\_piece.x) < ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}})}
+\DoxyCodeLine{74                 \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}{Game\_action\_Right}};}
+\DoxyCodeLine{75             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (game-\/>active\_piece.x > ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}})}
+\DoxyCodeLine{76                 \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}{Game\_action\_Left}};}
+\DoxyCodeLine{77         \}}
+\DoxyCodeLine{78         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}{Game\_action\_Drop}};}
+\DoxyCodeLine{79     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}:}
+\DoxyCodeLine{80         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}{Game\_action\_Finish\_clearing}};}
+\DoxyCodeLine{81     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}}:}
+\DoxyCodeLine{82     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}}:}
+\DoxyCodeLine{83         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}{Game\_action\_Queue\_empty}};}
+\DoxyCodeLine{84     \}}
+\DoxyCodeLine{85 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8c_a5e4ad375a509dfbac4e476df86b34b26}\label{opponentai_8c_a5e4ad375a509dfbac4e476df86b34b26}} 
+\index{opponentai.c@{opponentai.c}!choose\_best\_move@{choose\_best\_move}}
+\index{choose\_best\_move@{choose\_best\_move}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{choose\_best\_move()}{choose\_best\_move()}}
+{\footnotesize\ttfamily double choose\+\_\+best\+\_\+move (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai,  }\item[{unsigned char const}]{pieces\+\_\+left\mbox{[}7\mbox{]},  }\item[{int}]{depth }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{135                                                                                  \{}
+\DoxyCodeLine{136     \mbox{\hyperlink{struct_piece}{Piece}} piece;}
+\DoxyCodeLine{137     \textcolor{keywordtype}{double} score, max\_score = -\/1e20;}
+\DoxyCodeLine{138 }
+\DoxyCodeLine{139     \textcolor{comment}{/* try every piece type, in every rotation, at every available column */}    }
+\DoxyCodeLine{140     \textcolor{keywordflow}{for} (piece.\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}} = \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}{Tetrimino\_type\_I}}; piece.\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}} <= \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a2113653042b8a52f5f5013254d03bede}{Tetrimino\_type\_O}}; ++piece.\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}}) \{}
+\DoxyCodeLine{141         \textcolor{keywordtype}{int} rots;}
+\DoxyCodeLine{142         \textcolor{keywordflow}{if} (pieces\_left[piece.\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}}-\/1] == 0)}
+\DoxyCodeLine{143             \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{144 }
+\DoxyCodeLine{145         \mbox{\hyperlink{tetris_8c_a4f68ceddf81ce075c77a82fec2809857}{init\_piece\_shape}}(\&piece);}
+\DoxyCodeLine{146         \textcolor{keywordflow}{for} (rots = 0; rots < 4; ++rots) \{}
+\DoxyCodeLine{147             \mbox{\hyperlink{tetris_8c_a86e91addc3f965d33baf599e5fae4623}{lift\_piece}}(\&piece, ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}});}
+\DoxyCodeLine{148             \textcolor{keywordflow}{for} (piece.\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}} = -\/2; piece.\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}} + 2 < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++piece.\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}}) \{}
+\DoxyCodeLine{149                 \textcolor{keywordflow}{if} (\mbox{\hyperlink{tetris_8c_ae93305c912b6fb144419f2188274e01a}{collides}}(\&piece, ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}}))}
+\DoxyCodeLine{150                     \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{151                 \mbox{\hyperlink{tetris_8c_a68a0a1695ef69fb932b71defe1775bb3}{drop\_piece}}(\&piece, ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}});}
+\DoxyCodeLine{152                 \mbox{\hyperlink{tetris_8c_a63db510ab66e5f8fa3594aa1cc466bca}{place\_piece}}(\&piece, ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}}, piece.\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}});}
+\DoxyCodeLine{153 }
+\DoxyCodeLine{154                 \textcolor{comment}{/* fprintf(stderr, "{}(\%d, \%d, \%d) -\/> \(\backslash\)t\(\backslash\)t"{}, piece.type, rots, piece.x); */}}
+\DoxyCodeLine{155                 score = \mbox{\hyperlink{opponentai_8c_a50f35494fc4bb1c0465fb777c0e2fd1d}{heuristic}}(ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}});}
+\DoxyCodeLine{156                 \textcolor{comment}{/* recursive call with board state that includes the current piece:}}
+\DoxyCodeLine{157 \textcolor{comment}{                   take into account the next step's best move in our calculations */}}
+\DoxyCodeLine{158                 \textcolor{keywordflow}{if} (depth > 0)}
+\DoxyCodeLine{159                     score += \mbox{\hyperlink{opponentai_8c_afce108411525f29eadbb893de32d2bb4}{FUTURE\_COEFF}} * \mbox{\hyperlink{opponentai_8c_a5e4ad375a509dfbac4e476df86b34b26}{choose\_best\_move}}(ai, pieces\_left, depth-\/1);}
+\DoxyCodeLine{160                 \textcolor{comment}{/* reset board state to previous condition */}}
+\DoxyCodeLine{161                 \mbox{\hyperlink{tetris_8c_a63db510ab66e5f8fa3594aa1cc466bca}{place\_piece}}(\&piece, ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}}, \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a4dcfcb5b3a5780ac8849159ba91c58f0}{Block\_type\_Empty}});}
+\DoxyCodeLine{162                 \textcolor{keywordflow}{if} (score > max\_score) \{}
+\DoxyCodeLine{163                     max\_score = score;}
+\DoxyCodeLine{164                     ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}} = piece.\mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}};}
+\DoxyCodeLine{165                     ai-\/>\mbox{\hyperlink{struct_opponent__ai_a9749f95d8cbaeb40cffaf2d572b0005b}{rots}} = rots;}
+\DoxyCodeLine{166                     ai-\/>\mbox{\hyperlink{struct_opponent__ai_ae08ff24352e6c186f5376904bf8cb944}{type}} = piece.\mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}}; }
+\DoxyCodeLine{167                 \}}
+\DoxyCodeLine{168             \}}
+\DoxyCodeLine{169             \mbox{\hyperlink{tetris_8c_a0278303c0ee8b4dbf6db70001c5eeac2}{rotate\_shape\_cw}}(piece.\mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}});}
+\DoxyCodeLine{170         \}}
+\DoxyCodeLine{171     \}}
+\DoxyCodeLine{172     \textcolor{keywordflow}{return} max\_score;}
+\DoxyCodeLine{173 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8c_a50f35494fc4bb1c0465fb777c0e2fd1d}\label{opponentai_8c_a50f35494fc4bb1c0465fb777c0e2fd1d}} 
+\index{opponentai.c@{opponentai.c}!heuristic@{heuristic}}
+\index{heuristic@{heuristic}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{heuristic()}{heuristic()}}
+{\footnotesize\ttfamily double heuristic (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} const}]{board }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{89 \{}
+\DoxyCodeLine{90     \textcolor{keywordtype}{double} heu;}
+\DoxyCodeLine{91     \textcolor{keywordtype}{int} heights[\mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}];}
+\DoxyCodeLine{92     \textcolor{keywordtype}{int} i, j, max\_height = 0, lines = 0, holes = 0, bumps = 0;}
+\DoxyCodeLine{93 }
+\DoxyCodeLine{94     \textcolor{comment}{/* compute heights per column */}}
+\DoxyCodeLine{95     \textcolor{keywordflow}{for} (j = 0; j < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++j) \{}
+\DoxyCodeLine{96         \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}} \&\& !board[i][j]; ++i) \textcolor{comment}{/* nop */};}
+\DoxyCodeLine{97         heights[j] = \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}} -\/ i;}
+\DoxyCodeLine{98     \}}
+\DoxyCodeLine{99 }
+\DoxyCodeLine{100     \textcolor{comment}{/* find max height */}}
+\DoxyCodeLine{101     \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++i)}
+\DoxyCodeLine{102         \textcolor{keywordflow}{if} (heights[i] > max\_height)}
+\DoxyCodeLine{103             max\_height = heights[i];}
+\DoxyCodeLine{104 }
+\DoxyCodeLine{105     \textcolor{comment}{/* count full lines */}}
+\DoxyCodeLine{106     \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}; ++i) \{}
+\DoxyCodeLine{107         \textcolor{keywordtype}{int} full = 1;}
+\DoxyCodeLine{108         \textcolor{keywordflow}{for} (j = 0; full \&\& j < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++j) \{}
+\DoxyCodeLine{109             \textcolor{keywordflow}{if} (!board[i][j])}
+\DoxyCodeLine{110                 full = 0;}
+\DoxyCodeLine{111         \}}
+\DoxyCodeLine{112         lines += full;}
+\DoxyCodeLine{113     \}}
+\DoxyCodeLine{114 }
+\DoxyCodeLine{115     \textcolor{comment}{/* count holes */}}
+\DoxyCodeLine{116     \textcolor{keywordflow}{for} (j = 0; j < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++j) \{}
+\DoxyCodeLine{117         \textcolor{keywordflow}{for} (i = \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}} -\/ heights[j] + 1; i < \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}; ++i) \{}
+\DoxyCodeLine{118             \textcolor{keywordflow}{if} (!board[i][j])}
+\DoxyCodeLine{119                 ++holes;}
+\DoxyCodeLine{120         \}}
+\DoxyCodeLine{121     \}}
+\DoxyCodeLine{122 }
+\DoxyCodeLine{123     \textcolor{comment}{/* count "{}bumps"{} (height difference between adjacent columns) */}}
+\DoxyCodeLine{124     \textcolor{keywordflow}{for} (i = 1; i < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++i)}
+\DoxyCodeLine{125         bumps += abs(heights[i] -\/ heights[i-\/1]);}
+\DoxyCodeLine{126 }
+\DoxyCodeLine{127     \textcolor{comment}{/* return final heuristic */}}
+\DoxyCodeLine{128     heu = \mbox{\hyperlink{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}{HEIGHT\_COEFF}} * max\_height + \mbox{\hyperlink{opponentai_8c_a39f961f8003048936a9863fb1f44ac81}{LINES\_COEFF}} * lines + \mbox{\hyperlink{opponentai_8c_a17218f2ad9c095faa3d90fececbe5830}{PENALTY\_COEFF}} * (lines >= 3)}
+\DoxyCodeLine{129             + \mbox{\hyperlink{opponentai_8c_a35dd193948ff6743bbdf853670261963}{HOLES\_COEFF}} * holes + \mbox{\hyperlink{opponentai_8c_a5b7f998b4b3d6418d1228b79bb2205de}{BUMPS\_COEFF}} * bumps;}
+\DoxyCodeLine{130     \textcolor{comment}{/* fprintf(stderr, "{}h=\%d l=\%d o=\%d b=\%d\(\backslash\)theu=\%.3lf\(\backslash\)n"{}, max\_height, lines, holes, bumps, heu); */}}
+\DoxyCodeLine{131     \textcolor{keywordflow}{return} heu;}
+\DoxyCodeLine{132 \}}
+
+\end{DoxyCode}

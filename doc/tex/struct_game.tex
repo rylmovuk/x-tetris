@@ -1,0 +1,84 @@
+\hypertarget{struct_game}{}\doxysection{Game Struct Reference}
+\label{struct_game}\index{Game@{Game}}
+
+
+{\ttfamily \#include $<$tetris.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764c}{Game\+\_\+kind}} \mbox{\hyperlink{struct_game_af36ebcac0bb468b054623db998b355db}{kind}}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\+\_\+state}} \mbox{\hyperlink{struct_game_a8165c9a2aeda9216b6a42822ec94695c}{state}}
+\item 
+\mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} \mbox{\hyperlink{struct_game_a8955f2f33c1b953e025ddd8ba55103b7}{board}} \mbox{[}2\mbox{]}
+\item 
+\mbox{\hyperlink{struct_piece}{Piece}} \mbox{\hyperlink{struct_game_a1d19d73044280572c8b0f0ba8f777440}{active\+\_\+piece}}
+\item 
+int \mbox{\hyperlink{struct_game_a2f323963a7ce257605465ceee93585c1}{score}} \mbox{[}2\mbox{]}
+\item 
+unsigned char \mbox{\hyperlink{struct_game_a85dfa288bec1b02b2aa9d2f67281b274}{pieces\+\_\+left}} \mbox{[}7\mbox{]}
+\item 
+int \mbox{\hyperlink{struct_game_afeb5745072b6665b23e64a94aae2a4a2}{lines\+\_\+cleared}}
+\item 
+int \mbox{\hyperlink{struct_game_a9e8725fd8b83dbd424f3e60a3dee2864}{current\+\_\+player}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Struct representing the entire game state. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{struct_game_a1d19d73044280572c8b0f0ba8f777440}\label{struct_game_a1d19d73044280572c8b0f0ba8f777440}} 
+\index{Game@{Game}!active\_piece@{active\_piece}}
+\index{active\_piece@{active\_piece}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{active\_piece}{active\_piece}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_piece}{Piece}} Game\+::active\+\_\+piece}
+
+A piece that has been selected and is \char`\"{}about to be placed\char`\"{}. \mbox{\Hypertarget{struct_game_a8955f2f33c1b953e025ddd8ba55103b7}\label{struct_game_a8955f2f33c1b953e025ddd8ba55103b7}} 
+\index{Game@{Game}!board@{board}}
+\index{board@{board}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{board}{board}}
+{\footnotesize\ttfamily \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} Game\+::board\mbox{[}2\mbox{]}}
+
+Playing fields for both players. \mbox{\Hypertarget{struct_game_a9e8725fd8b83dbd424f3e60a3dee2864}\label{struct_game_a9e8725fd8b83dbd424f3e60a3dee2864}} 
+\index{Game@{Game}!current\_player@{current\_player}}
+\index{current\_player@{current\_player}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{current\_player}{current\_player}}
+{\footnotesize\ttfamily int Game\+::current\+\_\+player}
+
+Index of current player\+: 0 or 1. \mbox{\Hypertarget{struct_game_af36ebcac0bb468b054623db998b355db}\label{struct_game_af36ebcac0bb468b054623db998b355db}} 
+\index{Game@{Game}!kind@{kind}}
+\index{kind@{kind}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{kind}{kind}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764c}{Game\+\_\+kind}} Game\+::kind}
+
+\mbox{\Hypertarget{struct_game_afeb5745072b6665b23e64a94aae2a4a2}\label{struct_game_afeb5745072b6665b23e64a94aae2a4a2}} 
+\index{Game@{Game}!lines\_cleared@{lines\_cleared}}
+\index{lines\_cleared@{lines\_cleared}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{lines\_cleared}{lines\_cleared}}
+{\footnotesize\ttfamily int Game\+::lines\+\_\+cleared}
+
+Amount of lines cleared after last move. \mbox{\Hypertarget{struct_game_a85dfa288bec1b02b2aa9d2f67281b274}\label{struct_game_a85dfa288bec1b02b2aa9d2f67281b274}} 
+\index{Game@{Game}!pieces\_left@{pieces\_left}}
+\index{pieces\_left@{pieces\_left}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{pieces\_left}{pieces\_left}}
+{\footnotesize\ttfamily unsigned char Game\+::pieces\+\_\+left\mbox{[}7\mbox{]}}
+
+A count for the amount of each piece left. \mbox{\Hypertarget{struct_game_a2f323963a7ce257605465ceee93585c1}\label{struct_game_a2f323963a7ce257605465ceee93585c1}} 
+\index{Game@{Game}!score@{score}}
+\index{score@{score}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{score}{score}}
+{\footnotesize\ttfamily int Game\+::score\mbox{[}2\mbox{]}}
+
+Scores for both players. \mbox{\Hypertarget{struct_game_a8165c9a2aeda9216b6a42822ec94695c}\label{struct_game_a8165c9a2aeda9216b6a42822ec94695c}} 
+\index{Game@{Game}!state@{state}}
+\index{state@{state}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\+\_\+state}} Game\+::state}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{tetris_8h}{tetris.\+h}}\end{DoxyCompactItemize}

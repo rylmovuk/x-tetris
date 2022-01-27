@@ -1,0 +1,139 @@
+\hypertarget{opponentai_8c}{}\doxysection{opponentai.\+c File Reference}
+\label{opponentai_8c}\index{opponentai.c@{opponentai.c}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}util.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tetris.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}opponentai.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}{HEIGHT\+\_\+\+COEFF}}~(-\/55.\+0)
+\item 
+\mbox{\Hypertarget{opponentai_8c_a39f961f8003048936a9863fb1f44ac81}\label{opponentai_8c_a39f961f8003048936a9863fb1f44ac81}} 
+\#define {\bfseries LINES\+\_\+\+COEFF}~(+70.\+0)
+\item 
+\mbox{\Hypertarget{opponentai_8c_a35dd193948ff6743bbdf853670261963}\label{opponentai_8c_a35dd193948ff6743bbdf853670261963}} 
+\#define {\bfseries HOLES\+\_\+\+COEFF}~(-\/35.\+0)
+\item 
+\mbox{\Hypertarget{opponentai_8c_a5b7f998b4b3d6418d1228b79bb2205de}\label{opponentai_8c_a5b7f998b4b3d6418d1228b79bb2205de}} 
+\#define {\bfseries BUMPS\+\_\+\+COEFF}~(-\/40.\+0)
+\item 
+\mbox{\Hypertarget{opponentai_8c_afce108411525f29eadbb893de32d2bb4}\label{opponentai_8c_afce108411525f29eadbb893de32d2bb4}} 
+\#define {\bfseries FUTURE\+\_\+\+COEFF}~(+0.\+90)
+\item 
+\mbox{\Hypertarget{opponentai_8c_a17218f2ad9c095faa3d90fececbe5830}\label{opponentai_8c_a17218f2ad9c095faa3d90fececbe5830}} 
+\#define {\bfseries PENALTY\+\_\+\+COEFF}~(+80.\+0)
+\item 
+\mbox{\Hypertarget{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}\label{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}} 
+\#define {\bfseries RECURSE\+\_\+\+DEPTH}~1
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ \mbox{\hyperlink{opponentai_8c_a0576dad202a49831da7b17d1b675f257}{ai\+\_\+create}} ()
+\item 
+void \mbox{\hyperlink{opponentai_8c_a4373b744f4c3654010158f2b2f9bae58}{ai\+\_\+destroy}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ai)
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \mbox{\hyperlink{opponentai_8c_add24b9f8bb71dd140652b2e85e9ac68f}{ai\+\_\+next\+\_\+action}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ai, \mbox{\hyperlink{struct_game}{Game}} const $\ast$game)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}\label{opponentai_8c_ab7c9aa5fa595b1d5de2fb19900496988}} 
+\index{opponentai.c@{opponentai.c}!HEIGHT\_COEFF@{HEIGHT\_COEFF}}
+\index{HEIGHT\_COEFF@{HEIGHT\_COEFF}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{HEIGHT\_COEFF}{HEIGHT\_COEFF}}
+{\footnotesize\ttfamily \#define HEIGHT\+\_\+\+COEFF~(-\/55.\+0)}
+
+Coefficients for the heuristic used to evaluate a particular move. Metrics loosely inspired by open source AI projects for classic Tetris. Values determined by guessing and common sense \+:) 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{opponentai_8c_a0576dad202a49831da7b17d1b675f257}\label{opponentai_8c_a0576dad202a49831da7b17d1b675f257}} 
+\index{opponentai.c@{opponentai.c}!ai\_create@{ai\_create}}
+\index{ai\_create@{ai\_create}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{ai\_create()}{ai\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ ai\+\_\+create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Allocate and initialize an \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}. Exits on failure. ~\newline
+ Caller owns the returned object and must call {\ttfamily ai\+\_\+destroy} to correctly clean up. ~\newline
+ \begin{DoxyReturn}{Returns}
+a pointer to a valid instance of \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{41 \{}
+\DoxyCodeLine{42     \mbox{\hyperlink{struct_opponent__ai}{Opponent\_ai}} *ai = \mbox{\hyperlink{util_8c_ae6019b6343c07934f27a553cdb12e437}{malloc\_or\_die}}(\textcolor{keyword}{sizeof} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\_ai}}));}
+\DoxyCodeLine{43 }
+\DoxyCodeLine{44     srand((\textcolor{keywordtype}{unsigned}) time(NULL));}
+\DoxyCodeLine{45     \textcolor{keywordflow}{return} ai;}
+\DoxyCodeLine{46 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8c_a4373b744f4c3654010158f2b2f9bae58}\label{opponentai_8c_a4373b744f4c3654010158f2b2f9bae58}} 
+\index{opponentai.c@{opponentai.c}!ai\_destroy@{ai\_destroy}}
+\index{ai\_destroy@{ai\_destroy}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{ai\_destroy()}{ai\_destroy()}}
+{\footnotesize\ttfamily void ai\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai }\end{DoxyParamCaption})}
+
+Deinitialize and deallocate an \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}, which must have been initialized by {\ttfamily ai\+\_\+create}. ~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{50 \{}
+\DoxyCodeLine{51     free(ai);}
+\DoxyCodeLine{52 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8c_add24b9f8bb71dd140652b2e85e9ac68f}\label{opponentai_8c_add24b9f8bb71dd140652b2e85e9ac68f}} 
+\index{opponentai.c@{opponentai.c}!ai\_next\_action@{ai\_next\_action}}
+\index{ai\_next\_action@{ai\_next\_action}!opponentai.c@{opponentai.c}}
+\doxysubsubsection{\texorpdfstring{ai\_next\_action()}{ai\_next\_action()}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} ai\+\_\+next\+\_\+action (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{56 \{}
+\DoxyCodeLine{57     \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{58     \textcolor{keywordflow}{case} Game\_state\_Choose:}
+\DoxyCodeLine{59         \textcolor{comment}{/* ai-\/>x = (rand() \% 10) -\/ 4;}}
+\DoxyCodeLine{60 \textcolor{comment}{        ai-\/>rots = rand() \% 3;}}
+\DoxyCodeLine{61 \textcolor{comment}{        ai-\/>type = Tetrimino\_type\_I + (rand() \% 7); */}}
+\DoxyCodeLine{62         memcpy(ai-\/>sim\_board, game-\/>board[1], \textcolor{keyword}{sizeof} ai-\/>sim\_board);}
+\DoxyCodeLine{63         ai-\/>last\_x = ai-\/>x;}
+\DoxyCodeLine{64         choose\_best\_move(ai, game-\/>pieces\_left, RECURSE\_DEPTH);}
+\DoxyCodeLine{65         \textcolor{keywordflow}{return} ai-\/>type -\/ Tetrimino\_type\_I + Game\_action\_Choose\_I;}
+\DoxyCodeLine{66     \textcolor{keywordflow}{case} Game\_state\_Place:}
+\DoxyCodeLine{67         \textcolor{keywordflow}{if} (ai-\/>rots) \{}
+\DoxyCodeLine{68             -\/-\/ai-\/>rots;}
+\DoxyCodeLine{69             \textcolor{keywordflow}{return} Game\_action\_Rotate;}
+\DoxyCodeLine{70         \}}
+\DoxyCodeLine{71         \textcolor{comment}{/* if we are not moving anymore, too bad: drop the piece and whatever happens happens */}}
+\DoxyCodeLine{72         \textcolor{keywordflow}{if} (game-\/>active\_piece.x != ai-\/>last\_x) \{}
+\DoxyCodeLine{73             \textcolor{keywordflow}{if} ((ai-\/>last\_x = game-\/>active\_piece.x) < ai-\/>x)}
+\DoxyCodeLine{74                 \textcolor{keywordflow}{return} Game\_action\_Right;}
+\DoxyCodeLine{75             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (game-\/>active\_piece.x > ai-\/>x)}
+\DoxyCodeLine{76                 \textcolor{keywordflow}{return} Game\_action\_Left;}
+\DoxyCodeLine{77         \}}
+\DoxyCodeLine{78         \textcolor{keywordflow}{return} Game\_action\_Drop;}
+\DoxyCodeLine{79     \textcolor{keywordflow}{case} Game\_state\_Cleared:}
+\DoxyCodeLine{80         \textcolor{keywordflow}{return} Game\_action\_Finish\_clearing;}
+\DoxyCodeLine{81     \textcolor{keywordflow}{case} Game\_state\_Lose:}
+\DoxyCodeLine{82     \textcolor{keywordflow}{case} Game\_state\_Win:}
+\DoxyCodeLine{83         \textcolor{keywordflow}{return} Game\_action\_Queue\_empty;}
+\DoxyCodeLine{84     \}}
+\DoxyCodeLine{85 \}}
+
+\end{DoxyCode}

@@ -1,0 +1,849 @@
+\hypertarget{iohandler_8c}{}\doxysection{iohandler.\+c File Reference}
+\label{iohandler_8c}\index{iohandler.c@{iohandler.c}}
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}util.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}iohandler.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\+\_\+\+LINES}}~17
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_abdf2b1b03f57eaac22b4192ec57c4738}{SCREEN\+\_\+\+COLUMNS\+\_\+1P}}~54
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a777340ef44f6fe8e820665679a6cf20c}{SCREEN\+\_\+\+COLUMNS\+\_\+2P}}~78
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\+\_\+\+LENGTH}}~25
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a61f53234ff661840649407b5b815e423}{INPUT\+\_\+\+BUF\+\_\+\+LEN}}~32
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}{KEY\+\_\+\+LEFT}}~\textquotesingle{}h\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}{KEY\+\_\+\+RIGHT}}~\textquotesingle{}l\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}{KEY\+\_\+\+DROP}}~\textquotesingle{}j\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}{KEY\+\_\+\+ROTATE}}~\textquotesingle{}r\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}{KEY\+\_\+I}}~\textquotesingle{}i\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_adb39050b8845e8b16f503a747e196749}{KEY\+\_\+T}}~\textquotesingle{}t\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}{KEY\+\_\+J}}~\textquotesingle{}j\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}{KEY\+\_\+L}}~\textquotesingle{}l\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}{KEY\+\_\+S}}~\textquotesingle{}s\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}{KEY\+\_\+Z}}~\textquotesingle{}z\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}{KEY\+\_\+O}}~\textquotesingle{}o\textquotesingle{}
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(c)~((c) -\/ \textquotesingle{}a\textquotesingle{} + \textquotesingle{}A\textquotesingle{})
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a28ae7dbb347f869b0ad144a0c72d53c8}{STR\+\_\+\+EXPAND}}(a)~\#a
+\item 
+\#define \mbox{\hyperlink{iohandler_8c_a51840e7e288c8d25587ce062de9d9515}{STRINGIFY}}(a)~\mbox{\hyperlink{iohandler_8c_a28ae7dbb347f869b0ad144a0c72d53c8}{STR\+\_\+\+EXPAND}}(a)
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49}{Updatable\+\_\+field}} \{ \newline
+\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}{fld\+\_\+playing\+\_\+field1}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a250a5d5a2d627597e31d02bc3cd7200c}{fld\+\_\+playing\+\_\+field2}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}{fld\+\_\+mid\+\_\+score}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}{fld\+\_\+p1\+\_\+score}}
+, \newline
+\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a202f262d4fa4385fe1ce50845fe1d315}{fld\+\_\+p2\+\_\+score}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}{fld\+\_\+message\+\_\+bubble}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}{fld\+\_\+count\+\_\+i}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac91174447e188dd253ff76907b6e9ca2}{fld\+\_\+count\+\_\+t}}
+, \newline
+\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ab5d384ab07d88f11f7fffd6cbb039606}{fld\+\_\+count\+\_\+j}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a1bed3e71115aa62fea0758a8758ad683}{fld\+\_\+count\+\_\+l}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae45477ff3cf79171cc91cb39407915b9}{fld\+\_\+count\+\_\+s}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a5ada3c546fa934a20d8d6534c757e2ff}{fld\+\_\+count\+\_\+z}}
+, \newline
+\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a35b3deda92b647705a827f1bb5c66970}{fld\+\_\+count\+\_\+o}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}{fld\+\_\+key\+\_\+i}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a199cfd02a25c09bb41e6642bef5dc919}{fld\+\_\+key\+\_\+t}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a8397dcbdd46c2fdcd2baa2c4c7f0cb2b}{fld\+\_\+key\+\_\+j}}
+, \newline
+\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49abb286328a5b46368f5d66ebe1c8b945a}{fld\+\_\+key\+\_\+l}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a4bac3b01585d10f1617a0461af46fc87}{fld\+\_\+key\+\_\+s}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac68023a59a28dda00148ec3af5a01752}{fld\+\_\+key\+\_\+z}}
+, \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a2c353e6685c49a531288bb1981592266}{fld\+\_\+key\+\_\+o}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{iohandler_8c_af042740706566a9026fa196186ed75f5}{update\+\_\+screen\+\_\+1p}} (char $\ast$$\ast$, \mbox{\hyperlink{struct_game}{Game}} const $\ast$)
+\item 
+\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ \mbox{\hyperlink{iohandler_8c_a4439919e3e5da577126633f26ef18e1e}{iohandler\+\_\+create}} (int multiplayer)
+\item 
+void \mbox{\hyperlink{iohandler_8c_ae945c0ac6a7616d7661f8e00ca851957}{iohandler\+\_\+destroy}} (\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ioh)
+\item 
+void \mbox{\hyperlink{iohandler_8c_ade2c9e00cb912434cf154e0d6d6ec8df}{update\+\_\+screen\+\_\+2p}} (char $\ast$$\ast$scr, \mbox{\hyperlink{struct_game}{Game}} const $\ast$game)
+\item 
+void \mbox{\hyperlink{iohandler_8c_a1b78aa859fc210ec5f29c6bce98cc9a5}{iohandler\+\_\+draw\+\_\+and\+\_\+read}} (\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ioh, \mbox{\hyperlink{struct_game}{Game}} const $\ast$game)
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \mbox{\hyperlink{iohandler_8c_aba6ecb3983b2a99483364faffd8e8284}{iohandler\+\_\+next\+\_\+action\+\_\+1p}} (\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ioh, \mbox{\hyperlink{struct_game}{Game}} const $\ast$game)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static const char \mbox{\hyperlink{iohandler_8c_a97dfec0922297fddee94833538475c98}{screen\+\_\+init\+\_\+state}} \mbox{[}\mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\+\_\+\+LINES}}\mbox{]}\mbox{[}\mbox{\hyperlink{iohandler_8c_a777340ef44f6fe8e820665679a6cf20c}{SCREEN\+\_\+\+COLUMNS\+\_\+2P}}\mbox{]}
+\item 
+static char const \mbox{\hyperlink{iohandler_8c_ad2b5c6b75557b702f361fd13bd8ffd03}{block\+\_\+types}} \mbox{[}$\,$\mbox{]}\mbox{[}2\mbox{]}
+\item 
+static char const \mbox{\hyperlink{iohandler_8c_aacea0d107c5f932052c7ac3d1bb94d57}{cleared\+\_\+lines\+\_\+messages}} \mbox{[}$\,$\mbox{]}\mbox{[}\mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\+\_\+\+LENGTH}}\mbox{]}
+\item 
+static char const  $\ast$ \mbox{\hyperlink{iohandler_8c_ae2b1b97da2cef8ceb399d6c93c8ce4f8}{prompts}} \mbox{[}$\,$\mbox{]}
+\item 
+static int const \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\+\_\+coords}} \mbox{[}$\,$\mbox{]}\mbox{[}2\mbox{]}
+\item 
+static char const \mbox{\hyperlink{iohandler_8c_ac43325af1ba1488c07e780aeab20e0fc}{key\+\_\+hints}} \mbox{[}7\mbox{]} = \{ \mbox{\hyperlink{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}{KEY\+\_\+I}}, \mbox{\hyperlink{iohandler_8c_adb39050b8845e8b16f503a747e196749}{KEY\+\_\+T}}, \mbox{\hyperlink{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}{KEY\+\_\+J}}, \mbox{\hyperlink{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}{KEY\+\_\+L}}, \mbox{\hyperlink{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}{KEY\+\_\+S}}, \mbox{\hyperlink{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}{KEY\+\_\+Z}}, \mbox{\hyperlink{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}{KEY\+\_\+O}} \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}\label{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}} 
+\index{iohandler.c@{iohandler.c}!CHARUPPER@{CHARUPPER}}
+\index{CHARUPPER@{CHARUPPER}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{CHARUPPER}{CHARUPPER}}
+{\footnotesize\ttfamily \#define CHARUPPER(\begin{DoxyParamCaption}\item[{}]{c }\end{DoxyParamCaption})~((c) -\/ \textquotesingle{}a\textquotesingle{} + \textquotesingle{}A\textquotesingle{})}
+
+\mbox{\Hypertarget{iohandler_8c_a61f53234ff661840649407b5b815e423}\label{iohandler_8c_a61f53234ff661840649407b5b815e423}} 
+\index{iohandler.c@{iohandler.c}!INPUT\_BUF\_LEN@{INPUT\_BUF\_LEN}}
+\index{INPUT\_BUF\_LEN@{INPUT\_BUF\_LEN}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{INPUT\_BUF\_LEN}{INPUT\_BUF\_LEN}}
+{\footnotesize\ttfamily \#define INPUT\+\_\+\+BUF\+\_\+\+LEN~32}
+
+\mbox{\Hypertarget{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}\label{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}} 
+\index{iohandler.c@{iohandler.c}!KEY\_DROP@{KEY\_DROP}}
+\index{KEY\_DROP@{KEY\_DROP}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_DROP}{KEY\_DROP}}
+{\footnotesize\ttfamily \#define KEY\+\_\+\+DROP~\textquotesingle{}j\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}\label{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}} 
+\index{iohandler.c@{iohandler.c}!KEY\_I@{KEY\_I}}
+\index{KEY\_I@{KEY\_I}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_I}{KEY\_I}}
+{\footnotesize\ttfamily \#define KEY\+\_\+I~\textquotesingle{}i\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}\label{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}} 
+\index{iohandler.c@{iohandler.c}!KEY\_J@{KEY\_J}}
+\index{KEY\_J@{KEY\_J}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_J}{KEY\_J}}
+{\footnotesize\ttfamily \#define KEY\+\_\+J~\textquotesingle{}j\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}\label{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}} 
+\index{iohandler.c@{iohandler.c}!KEY\_L@{KEY\_L}}
+\index{KEY\_L@{KEY\_L}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_L}{KEY\_L}}
+{\footnotesize\ttfamily \#define KEY\+\_\+L~\textquotesingle{}l\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}\label{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}} 
+\index{iohandler.c@{iohandler.c}!KEY\_LEFT@{KEY\_LEFT}}
+\index{KEY\_LEFT@{KEY\_LEFT}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_LEFT}{KEY\_LEFT}}
+{\footnotesize\ttfamily \#define KEY\+\_\+\+LEFT~\textquotesingle{}h\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}\label{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}} 
+\index{iohandler.c@{iohandler.c}!KEY\_O@{KEY\_O}}
+\index{KEY\_O@{KEY\_O}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_O}{KEY\_O}}
+{\footnotesize\ttfamily \#define KEY\+\_\+O~\textquotesingle{}o\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}\label{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}} 
+\index{iohandler.c@{iohandler.c}!KEY\_RIGHT@{KEY\_RIGHT}}
+\index{KEY\_RIGHT@{KEY\_RIGHT}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_RIGHT}{KEY\_RIGHT}}
+{\footnotesize\ttfamily \#define KEY\+\_\+\+RIGHT~\textquotesingle{}l\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}\label{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}} 
+\index{iohandler.c@{iohandler.c}!KEY\_ROTATE@{KEY\_ROTATE}}
+\index{KEY\_ROTATE@{KEY\_ROTATE}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_ROTATE}{KEY\_ROTATE}}
+{\footnotesize\ttfamily \#define KEY\+\_\+\+ROTATE~\textquotesingle{}r\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}\label{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}} 
+\index{iohandler.c@{iohandler.c}!KEY\_S@{KEY\_S}}
+\index{KEY\_S@{KEY\_S}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_S}{KEY\_S}}
+{\footnotesize\ttfamily \#define KEY\+\_\+S~\textquotesingle{}s\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_adb39050b8845e8b16f503a747e196749}\label{iohandler_8c_adb39050b8845e8b16f503a747e196749}} 
+\index{iohandler.c@{iohandler.c}!KEY\_T@{KEY\_T}}
+\index{KEY\_T@{KEY\_T}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_T}{KEY\_T}}
+{\footnotesize\ttfamily \#define KEY\+\_\+T~\textquotesingle{}t\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}\label{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}} 
+\index{iohandler.c@{iohandler.c}!KEY\_Z@{KEY\_Z}}
+\index{KEY\_Z@{KEY\_Z}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{KEY\_Z}{KEY\_Z}}
+{\footnotesize\ttfamily \#define KEY\+\_\+Z~\textquotesingle{}z\textquotesingle{}}
+
+\mbox{\Hypertarget{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}\label{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}} 
+\index{iohandler.c@{iohandler.c}!MSG\_LENGTH@{MSG\_LENGTH}}
+\index{MSG\_LENGTH@{MSG\_LENGTH}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{MSG\_LENGTH}{MSG\_LENGTH}}
+{\footnotesize\ttfamily \#define MSG\+\_\+\+LENGTH~25}
+
+\mbox{\Hypertarget{iohandler_8c_abdf2b1b03f57eaac22b4192ec57c4738}\label{iohandler_8c_abdf2b1b03f57eaac22b4192ec57c4738}} 
+\index{iohandler.c@{iohandler.c}!SCREEN\_COLUMNS\_1P@{SCREEN\_COLUMNS\_1P}}
+\index{SCREEN\_COLUMNS\_1P@{SCREEN\_COLUMNS\_1P}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{SCREEN\_COLUMNS\_1P}{SCREEN\_COLUMNS\_1P}}
+{\footnotesize\ttfamily \#define SCREEN\+\_\+\+COLUMNS\+\_\+1P~54}
+
+\mbox{\Hypertarget{iohandler_8c_a777340ef44f6fe8e820665679a6cf20c}\label{iohandler_8c_a777340ef44f6fe8e820665679a6cf20c}} 
+\index{iohandler.c@{iohandler.c}!SCREEN\_COLUMNS\_2P@{SCREEN\_COLUMNS\_2P}}
+\index{SCREEN\_COLUMNS\_2P@{SCREEN\_COLUMNS\_2P}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{SCREEN\_COLUMNS\_2P}{SCREEN\_COLUMNS\_2P}}
+{\footnotesize\ttfamily \#define SCREEN\+\_\+\+COLUMNS\+\_\+2P~78}
+
+\mbox{\Hypertarget{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}\label{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}} 
+\index{iohandler.c@{iohandler.c}!SCREEN\_LINES@{SCREEN\_LINES}}
+\index{SCREEN\_LINES@{SCREEN\_LINES}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{SCREEN\_LINES}{SCREEN\_LINES}}
+{\footnotesize\ttfamily \#define SCREEN\+\_\+\+LINES~17}
+
+\mbox{\Hypertarget{iohandler_8c_a28ae7dbb347f869b0ad144a0c72d53c8}\label{iohandler_8c_a28ae7dbb347f869b0ad144a0c72d53c8}} 
+\index{iohandler.c@{iohandler.c}!STR\_EXPAND@{STR\_EXPAND}}
+\index{STR\_EXPAND@{STR\_EXPAND}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{STR\_EXPAND}{STR\_EXPAND}}
+{\footnotesize\ttfamily \#define STR\+\_\+\+EXPAND(\begin{DoxyParamCaption}\item[{}]{a }\end{DoxyParamCaption})~\#a}
+
+\mbox{\Hypertarget{iohandler_8c_a51840e7e288c8d25587ce062de9d9515}\label{iohandler_8c_a51840e7e288c8d25587ce062de9d9515}} 
+\index{iohandler.c@{iohandler.c}!STRINGIFY@{STRINGIFY}}
+\index{STRINGIFY@{STRINGIFY}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{STRINGIFY}{STRINGIFY}}
+{\footnotesize\ttfamily \#define STRINGIFY(\begin{DoxyParamCaption}\item[{}]{a }\end{DoxyParamCaption})~\mbox{\hyperlink{iohandler_8c_a28ae7dbb347f869b0ad144a0c72d53c8}{STR\+\_\+\+EXPAND}}(a)}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49}} 
+\index{iohandler.c@{iohandler.c}!Updatable\_field@{Updatable\_field}}
+\index{Updatable\_field@{Updatable\_field}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{Updatable\_field}{Updatable\_field}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49}{Updatable\+\_\+field}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_playing\_field1@{fld\_playing\_field1}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_playing\_field1@{fld\_playing\_field1}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}} 
+fld\+\_\+playing\+\_\+field1&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_playing\_field2@{fld\_playing\_field2}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_playing\_field2@{fld\_playing\_field2}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a250a5d5a2d627597e31d02bc3cd7200c}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a250a5d5a2d627597e31d02bc3cd7200c}} 
+fld\+\_\+playing\+\_\+field2&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_mid\_score@{fld\_mid\_score}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_mid\_score@{fld\_mid\_score}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}} 
+fld\+\_\+mid\+\_\+score&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_p1\_score@{fld\_p1\_score}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_p1\_score@{fld\_p1\_score}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}} 
+fld\+\_\+p1\+\_\+score&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_p2\_score@{fld\_p2\_score}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_p2\_score@{fld\_p2\_score}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a202f262d4fa4385fe1ce50845fe1d315}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a202f262d4fa4385fe1ce50845fe1d315}} 
+fld\+\_\+p2\+\_\+score&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_message\_bubble@{fld\_message\_bubble}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_message\_bubble@{fld\_message\_bubble}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}} 
+fld\+\_\+message\+\_\+bubble&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_i@{fld\_count\_i}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_i@{fld\_count\_i}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}} 
+fld\+\_\+count\+\_\+i&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_t@{fld\_count\_t}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_t@{fld\_count\_t}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac91174447e188dd253ff76907b6e9ca2}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac91174447e188dd253ff76907b6e9ca2}} 
+fld\+\_\+count\+\_\+t&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_j@{fld\_count\_j}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_j@{fld\_count\_j}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ab5d384ab07d88f11f7fffd6cbb039606}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ab5d384ab07d88f11f7fffd6cbb039606}} 
+fld\+\_\+count\+\_\+j&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_l@{fld\_count\_l}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_l@{fld\_count\_l}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a1bed3e71115aa62fea0758a8758ad683}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a1bed3e71115aa62fea0758a8758ad683}} 
+fld\+\_\+count\+\_\+l&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_s@{fld\_count\_s}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_s@{fld\_count\_s}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae45477ff3cf79171cc91cb39407915b9}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae45477ff3cf79171cc91cb39407915b9}} 
+fld\+\_\+count\+\_\+s&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_z@{fld\_count\_z}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_z@{fld\_count\_z}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a5ada3c546fa934a20d8d6534c757e2ff}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a5ada3c546fa934a20d8d6534c757e2ff}} 
+fld\+\_\+count\+\_\+z&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_count\_o@{fld\_count\_o}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_count\_o@{fld\_count\_o}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a35b3deda92b647705a827f1bb5c66970}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a35b3deda92b647705a827f1bb5c66970}} 
+fld\+\_\+count\+\_\+o&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_i@{fld\_key\_i}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_i@{fld\_key\_i}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}} 
+fld\+\_\+key\+\_\+i&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_t@{fld\_key\_t}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_t@{fld\_key\_t}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a199cfd02a25c09bb41e6642bef5dc919}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a199cfd02a25c09bb41e6642bef5dc919}} 
+fld\+\_\+key\+\_\+t&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_j@{fld\_key\_j}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_j@{fld\_key\_j}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a8397dcbdd46c2fdcd2baa2c4c7f0cb2b}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a8397dcbdd46c2fdcd2baa2c4c7f0cb2b}} 
+fld\+\_\+key\+\_\+j&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_l@{fld\_key\_l}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_l@{fld\_key\_l}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49abb286328a5b46368f5d66ebe1c8b945a}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49abb286328a5b46368f5d66ebe1c8b945a}} 
+fld\+\_\+key\+\_\+l&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_s@{fld\_key\_s}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_s@{fld\_key\_s}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a4bac3b01585d10f1617a0461af46fc87}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a4bac3b01585d10f1617a0461af46fc87}} 
+fld\+\_\+key\+\_\+s&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_z@{fld\_key\_z}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_z@{fld\_key\_z}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac68023a59a28dda00148ec3af5a01752}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac68023a59a28dda00148ec3af5a01752}} 
+fld\+\_\+key\+\_\+z&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{fld\_key\_o@{fld\_key\_o}!iohandler.c@{iohandler.c}}\index{iohandler.c@{iohandler.c}!fld\_key\_o@{fld\_key\_o}}}\mbox{\Hypertarget{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a2c353e6685c49a531288bb1981592266}\label{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a2c353e6685c49a531288bb1981592266}} 
+fld\+\_\+key\+\_\+o&\\
+\hline
+
+\end{DoxyEnumFields}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{94                      \{}
+\DoxyCodeLine{95     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}{fld\_playing\_field1}},}
+\DoxyCodeLine{96     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a250a5d5a2d627597e31d02bc3cd7200c}{fld\_playing\_field2}},}
+\DoxyCodeLine{97     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}{fld\_mid\_score}},}
+\DoxyCodeLine{98     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}{fld\_p1\_score}},}
+\DoxyCodeLine{99     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a202f262d4fa4385fe1ce50845fe1d315}{fld\_p2\_score}},}
+\DoxyCodeLine{100     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}{fld\_message\_bubble}},}
+\DoxyCodeLine{101     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}{fld\_count\_i}},}
+\DoxyCodeLine{102     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac91174447e188dd253ff76907b6e9ca2}{fld\_count\_t}},}
+\DoxyCodeLine{103     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ab5d384ab07d88f11f7fffd6cbb039606}{fld\_count\_j}},}
+\DoxyCodeLine{104     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a1bed3e71115aa62fea0758a8758ad683}{fld\_count\_l}},}
+\DoxyCodeLine{105     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae45477ff3cf79171cc91cb39407915b9}{fld\_count\_s}},}
+\DoxyCodeLine{106     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a5ada3c546fa934a20d8d6534c757e2ff}{fld\_count\_z}},}
+\DoxyCodeLine{107     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a35b3deda92b647705a827f1bb5c66970}{fld\_count\_o}},}
+\DoxyCodeLine{108     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}{fld\_key\_i}},}
+\DoxyCodeLine{109     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a199cfd02a25c09bb41e6642bef5dc919}{fld\_key\_t}},}
+\DoxyCodeLine{110     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a8397dcbdd46c2fdcd2baa2c4c7f0cb2b}{fld\_key\_j}},}
+\DoxyCodeLine{111     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49abb286328a5b46368f5d66ebe1c8b945a}{fld\_key\_l}},}
+\DoxyCodeLine{112     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a4bac3b01585d10f1617a0461af46fc87}{fld\_key\_s}},}
+\DoxyCodeLine{113     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ac68023a59a28dda00148ec3af5a01752}{fld\_key\_z}},}
+\DoxyCodeLine{114     \mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a2c353e6685c49a531288bb1981592266}{fld\_key\_o}}}
+\DoxyCodeLine{115 \};}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{iohandler_8c_a4439919e3e5da577126633f26ef18e1e}\label{iohandler_8c_a4439919e3e5da577126633f26ef18e1e}} 
+\index{iohandler.c@{iohandler.c}!iohandler\_create@{iohandler\_create}}
+\index{iohandler\_create@{iohandler\_create}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{iohandler\_create()}{iohandler\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ iohandler\+\_\+create (\begin{DoxyParamCaption}\item[{int}]{multiplayer }\end{DoxyParamCaption})}
+
+Allocate and initialize an \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}. Exits on failure. ~\newline
+ Caller owns the returned object and must call {\ttfamily iohandler\+\_\+destroy} to correctly clean up. ~\newline
+ \begin{DoxyReturn}{Returns}
+a pointer to a valid instance of \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{144 \{}
+\DoxyCodeLine{145     \textcolor{keywordtype}{int} i, scr\_cols;}
+\DoxyCodeLine{146 }
+\DoxyCodeLine{147     \mbox{\hyperlink{struct_io__handler}{Io\_handler}} *ioh = \mbox{\hyperlink{util_8c_ae6019b6343c07934f27a553cdb12e437}{malloc\_or\_die}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_io__handler}{Io\_handler}}));}
+\DoxyCodeLine{148 }
+\DoxyCodeLine{149     scr\_cols = multiplayer ? \mbox{\hyperlink{iohandler_8c_a777340ef44f6fe8e820665679a6cf20c}{SCREEN\_COLUMNS\_2P}} : \mbox{\hyperlink{iohandler_8c_abdf2b1b03f57eaac22b4192ec57c4738}{SCREEN\_COLUMNS\_1P}};}
+\DoxyCodeLine{150     ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}} = \mbox{\hyperlink{util_8c_ae98d933ff052c21025d879dddf5d60be}{alloc\_many\_or\_die}}(\mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\_LINES}}, scr\_cols);}
+\DoxyCodeLine{151     \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\_LINES}}; ++i) \{}
+\DoxyCodeLine{152         memcpy(ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}[i], \mbox{\hyperlink{iohandler_8c_a97dfec0922297fddee94833538475c98}{screen\_init\_state}}[i], scr\_cols);}
+\DoxyCodeLine{153         ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}[i][scr\_cols-\/1] = 0;}
+\DoxyCodeLine{154     \}}
+\DoxyCodeLine{155 }
+\DoxyCodeLine{156     \textcolor{keywordflow}{if} (multiplayer) \{}
+\DoxyCodeLine{157         memcpy(\&ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}[\mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}{fld\_mid\_score}}][0]][\mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}{fld\_mid\_score}}][1] -\/ 9], \textcolor{stringliteral}{"{}   scores:  "{}}, 12);}
+\DoxyCodeLine{158     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{159         memset(\&ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}[\mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}{fld\_p1\_score}}][0]][\mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}{fld\_p1\_score}}][1] -\/ 4], \textcolor{charliteral}{' '}, 23);}
+\DoxyCodeLine{160     \}}
+\DoxyCodeLine{161 }
+\DoxyCodeLine{162     ioh-\/>\mbox{\hyperlink{struct_io__handler_adb4efcfc53bcf957e2d8425eff102c52}{input\_i}} = 0;}
+\DoxyCodeLine{163     ioh-\/>\mbox{\hyperlink{struct_io__handler_adccd843c902bfde040da9583b3c1a2c4}{input\_buf}}[0] = 0;}
+\DoxyCodeLine{164 }
+\DoxyCodeLine{165     setvbuf(stdout, NULL, \_IOFBF, 4096);}
+\DoxyCodeLine{166     \textcolor{keywordflow}{return} ioh;}
+\DoxyCodeLine{167 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_ae945c0ac6a7616d7661f8e00ca851957}\label{iohandler_8c_ae945c0ac6a7616d7661f8e00ca851957}} 
+\index{iohandler.c@{iohandler.c}!iohandler\_destroy@{iohandler\_destroy}}
+\index{iohandler\_destroy@{iohandler\_destroy}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{iohandler\_destroy()}{iohandler\_destroy()}}
+{\footnotesize\ttfamily void iohandler\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$}]{ioh }\end{DoxyParamCaption})}
+
+Deinitialize and deallocate an \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}, which must have been initialized by {\ttfamily iohandler\+\_\+create}. ~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{171 \{}
+\DoxyCodeLine{172     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{173     \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\_LINES}}; ++i)}
+\DoxyCodeLine{174         free(ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}[i]);}
+\DoxyCodeLine{175     free(ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}});}
+\DoxyCodeLine{176     }
+\DoxyCodeLine{177     free(ioh);}
+\DoxyCodeLine{178 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_a1b78aa859fc210ec5f29c6bce98cc9a5}\label{iohandler_8c_a1b78aa859fc210ec5f29c6bce98cc9a5}} 
+\index{iohandler.c@{iohandler.c}!iohandler\_draw\_and\_read@{iohandler\_draw\_and\_read}}
+\index{iohandler\_draw\_and\_read@{iohandler\_draw\_and\_read}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{iohandler\_draw\_and\_read()}{iohandler\_draw\_and\_read()}}
+{\footnotesize\ttfamily void iohandler\+\_\+draw\+\_\+and\+\_\+read (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$}]{ioh,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+Given a game state prepared for drawing, update the visual representation of the board; reset the input handler state, since inputs cannot be carried over from a previous game loop iteration. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{373 \{}
+\DoxyCodeLine{374     \textcolor{comment}{/* Update the screen, display it, and print the prompt.  }}
+\DoxyCodeLine{375 \textcolor{comment}{       Due to the "{}asyncronous"{} nature of this style of interaction, we can immediately read and store the input}}
+\DoxyCodeLine{376 \textcolor{comment}{       to be processed later by the other function. */}}
+\DoxyCodeLine{377     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{378 }
+\DoxyCodeLine{379     \textcolor{keywordflow}{if} (game-\/>kind == \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160}{Game\_kind\_Singleplayer}})}
+\DoxyCodeLine{380         \mbox{\hyperlink{iohandler_8c_af042740706566a9026fa196186ed75f5}{update\_screen\_1p}}(ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}, game);}
+\DoxyCodeLine{381     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{382         \mbox{\hyperlink{iohandler_8c_ade2c9e00cb912434cf154e0d6d6ec8df}{update\_screen\_2p}}(ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}, game);}
+\DoxyCodeLine{383 }
+\DoxyCodeLine{384     fputs(\textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)n\(\backslash\)n\(\backslash\)n\(\backslash\)n"{}}, stdout);}
+\DoxyCodeLine{385     \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\_LINES}}; ++i) \{}
+\DoxyCodeLine{386         puts(ioh-\/>\mbox{\hyperlink{struct_io__handler_a467f5f82eeaa623a84a4dab3e9199b11}{screen}}[i]);}
+\DoxyCodeLine{387     \}}
+\DoxyCodeLine{388 }
+\DoxyCodeLine{389     \textcolor{keywordflow}{if} (game-\/>kind == \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860}{Game\_kind\_Vs\_player}})}
+\DoxyCodeLine{390         fputs(game-\/>current\_player == 0 ? \textcolor{stringliteral}{"{}\#\# PLAYER 1 \#\# "{}} : \textcolor{stringliteral}{"{}\#\# PLAYER 2 \#\# "{}}, stdout);}
+\DoxyCodeLine{391 }
+\DoxyCodeLine{392     fputs(\mbox{\hyperlink{iohandler_8c_ae2b1b97da2cef8ceb399d6c93c8ce4f8}{prompts}}[game-\/>state-\/1], stdout);}
+\DoxyCodeLine{393     fflush(stdout);}
+\DoxyCodeLine{394     ioh-\/>\mbox{\hyperlink{struct_io__handler_adb4efcfc53bcf957e2d8425eff102c52}{input\_i}} = 0;}
+\DoxyCodeLine{395 }
+\DoxyCodeLine{396     \textcolor{comment}{/*  scanf("{}\%31[\string^\(\backslash\)n]"{}, ioh-\/>input\_buf);}}
+\DoxyCodeLine{397 \textcolor{comment}{        if (strlen(ioh-\/>input\_buf) != INPUT\_BUF\_LEN-\/1)}}
+\DoxyCodeLine{398 \textcolor{comment}{           scanf("{}\%*[\string^\(\backslash\)n]"{});}}
+\DoxyCodeLine{399 \textcolor{comment}{    */}}
+\DoxyCodeLine{400     \textcolor{comment}{/* keep reading until newline but at most INPUT\_BUF\_LEN chars; throw out whatever is left */}}
+\DoxyCodeLine{401     \textcolor{keywordflow}{for} (i = 0; i < \mbox{\hyperlink{iohandler_8c_a61f53234ff661840649407b5b815e423}{INPUT\_BUF\_LEN}}-\/1; ++i) \{}
+\DoxyCodeLine{402         \textcolor{keywordflow}{if} ((ioh-\/>\mbox{\hyperlink{struct_io__handler_adccd843c902bfde040da9583b3c1a2c4}{input\_buf}}[i] = getchar()) == \textcolor{charliteral}{'\(\backslash\)n'})}
+\DoxyCodeLine{403             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{404     \} }
+\DoxyCodeLine{405     \textcolor{keywordflow}{if} (i == \mbox{\hyperlink{iohandler_8c_a61f53234ff661840649407b5b815e423}{INPUT\_BUF\_LEN}}-\/1) \{}
+\DoxyCodeLine{406         \textcolor{keywordflow}{while} (getchar() != \textcolor{charliteral}{'\(\backslash\)n'}) \textcolor{comment}{/* discard */};}
+\DoxyCodeLine{407     \} }
+\DoxyCodeLine{408     ioh-\/>\mbox{\hyperlink{struct_io__handler_adccd843c902bfde040da9583b3c1a2c4}{input\_buf}}[i] = 0;}
+\DoxyCodeLine{409 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_aba6ecb3983b2a99483364faffd8e8284}\label{iohandler_8c_aba6ecb3983b2a99483364faffd8e8284}} 
+\index{iohandler.c@{iohandler.c}!iohandler\_next\_action\_1p@{iohandler\_next\_action\_1p}}
+\index{iohandler\_next\_action\_1p@{iohandler\_next\_action\_1p}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{iohandler\_next\_action\_1p()}{iohandler\_next\_action\_1p()}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} iohandler\+\_\+next\+\_\+action\+\_\+1p (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$}]{ioh,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+Given the current game state, process one input and return a game action coherent with the game state. ~\newline
+ This function is called multiple times in a single game loop iteration. It must keep yielding actions until there are any valid inputs, then return a special value {\ttfamily Game\+\_\+action\+\_\+\+Queue\+\_\+empty} to signal that there are no more actions. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{413 \{}
+\DoxyCodeLine{414     \textcolor{keywordtype}{char} c;}
+\DoxyCodeLine{415     }
+\DoxyCodeLine{416     \textcolor{keywordflow}{do} \{}
+\DoxyCodeLine{417         c = ioh-\/>\mbox{\hyperlink{struct_io__handler_adccd843c902bfde040da9583b3c1a2c4}{input\_buf}}[ioh-\/>\mbox{\hyperlink{struct_io__handler_adb4efcfc53bcf957e2d8425eff102c52}{input\_i}}++];}
+\DoxyCodeLine{418     \} \textcolor{keywordflow}{while} (c == \textcolor{charliteral}{' '}); \textcolor{comment}{/* no buf overflow: will reach '\(\backslash\)0' eventually */} }
+\DoxyCodeLine{419 }
+\DoxyCodeLine{420     \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{421     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}:}
+\DoxyCodeLine{422         \textcolor{keywordflow}{switch} (c) \{}
+\DoxyCodeLine{423         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}{KEY\_I}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}{KEY\_I}}):}
+\DoxyCodeLine{424             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}{Game\_action\_Choose\_I}};}
+\DoxyCodeLine{425         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_adb39050b8845e8b16f503a747e196749}{KEY\_T}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_adb39050b8845e8b16f503a747e196749}{KEY\_T}}):}
+\DoxyCodeLine{426             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e}{Game\_action\_Choose\_T}};}
+\DoxyCodeLine{427         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}{KEY\_J}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}{KEY\_J}}):}
+\DoxyCodeLine{428             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8}{Game\_action\_Choose\_J}};}
+\DoxyCodeLine{429         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}{KEY\_L}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}{KEY\_L}}):}
+\DoxyCodeLine{430             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90}{Game\_action\_Choose\_L}};}
+\DoxyCodeLine{431         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}{KEY\_S}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}{KEY\_S}}):}
+\DoxyCodeLine{432             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e}{Game\_action\_Choose\_S}};}
+\DoxyCodeLine{433         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}{KEY\_Z}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}{KEY\_Z}}):}
+\DoxyCodeLine{434             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb}{Game\_action\_Choose\_Z}};}
+\DoxyCodeLine{435         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}{KEY\_O}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}{KEY\_O}}):}
+\DoxyCodeLine{436             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb}{Game\_action\_Choose\_O}};}
+\DoxyCodeLine{437         \}}
+\DoxyCodeLine{438         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{439     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}}:}
+\DoxyCodeLine{440         \textcolor{keywordflow}{switch} (c) \{}
+\DoxyCodeLine{441         \textcolor{keywordflow}{case}   \mbox{\hyperlink{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}{KEY\_LEFT}}: \textcolor{keywordflow}{case}   \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}{KEY\_LEFT}}):}
+\DoxyCodeLine{442             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}{Game\_action\_Left}};}
+\DoxyCodeLine{443         \textcolor{keywordflow}{case}  \mbox{\hyperlink{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}{KEY\_RIGHT}}: \textcolor{keywordflow}{case}  \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}{KEY\_RIGHT}}):}
+\DoxyCodeLine{444             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}{Game\_action\_Right}};}
+\DoxyCodeLine{445         \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}{KEY\_ROTATE}}: \textcolor{keywordflow}{case} \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}{KEY\_ROTATE}}):}
+\DoxyCodeLine{446             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}{Game\_action\_Rotate}};}
+\DoxyCodeLine{447         \textcolor{keywordflow}{case}   \mbox{\hyperlink{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}{KEY\_DROP}}: \textcolor{keywordflow}{case}   \mbox{\hyperlink{iohandler_8c_a776c7cbc4c27d94b189abf23a2042bf4}{CHARUPPER}}(\mbox{\hyperlink{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}{KEY\_DROP}}):}
+\DoxyCodeLine{448             return \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}{Game\_action\_Drop}};}
+\DoxyCodeLine{449         \}}
+\DoxyCodeLine{450         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{451     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}:}
+\DoxyCodeLine{452         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}{Game\_action\_Finish\_clearing}};}
+\DoxyCodeLine{453     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}}:}
+\DoxyCodeLine{454     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}}:}
+\DoxyCodeLine{455         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{456     \textcolor{comment}{/* exhaustive */}}
+\DoxyCodeLine{457     \}}
+\DoxyCodeLine{458 }
+\DoxyCodeLine{459     \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}{Game\_action\_Queue\_empty}};}
+\DoxyCodeLine{460 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_af042740706566a9026fa196186ed75f5}\label{iohandler_8c_af042740706566a9026fa196186ed75f5}} 
+\index{iohandler.c@{iohandler.c}!update\_screen\_1p@{update\_screen\_1p}}
+\index{update\_screen\_1p@{update\_screen\_1p}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{update\_screen\_1p()}{update\_screen\_1p()}}
+{\footnotesize\ttfamily void update\+\_\+screen\+\_\+1p (\begin{DoxyParamCaption}\item[{char $\ast$$\ast$}]{scr,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Update every field on the screen to reflect the game state. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{185 \{}
+\DoxyCodeLine{186     \textcolor{keywordtype}{int} line, col, i;}
+\DoxyCodeLine{187     \textcolor{keywordtype}{char} buf[32];}
+\DoxyCodeLine{188     \{ \textcolor{comment}{/* update board */}}
+\DoxyCodeLine{189         \textcolor{keywordtype}{int} y, x;}
+\DoxyCodeLine{190         line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}{fld\_playing\_field1}}][0];}
+\DoxyCodeLine{191         col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}{fld\_playing\_field1}}][1];}
+\DoxyCodeLine{192         \textcolor{keywordflow}{for} (y = 0; y < \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}; ++y) \{}
+\DoxyCodeLine{193             \textcolor{keywordflow}{for} (x = 0; x < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++x) \{}
+\DoxyCodeLine{194                 memcpy(}
+\DoxyCodeLine{195                     \&scr[line + y][col + x*2],}
+\DoxyCodeLine{196                     \mbox{\hyperlink{iohandler_8c_ad2b5c6b75557b702f361fd13bd8ffd03}{block\_types}}[game-\/>board[0][y][x]],}
+\DoxyCodeLine{197                     2}
+\DoxyCodeLine{198                 );}
+\DoxyCodeLine{199             \}}
+\DoxyCodeLine{200         \}}
+\DoxyCodeLine{201     \}}
+\DoxyCodeLine{202 }
+\DoxyCodeLine{203     \{ \textcolor{comment}{/* update score */}}
+\DoxyCodeLine{204         line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}{fld\_mid\_score}}][0];}
+\DoxyCodeLine{205         col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49af2ba3c721093c74f2651843257a9fdf9}{fld\_mid\_score}}][1];}
+\DoxyCodeLine{206         sprintf(buf, \textcolor{stringliteral}{"{}\%3d"{}}, game-\/>score[0]);}
+\DoxyCodeLine{207         memcpy(\&scr[line][col], buf, 3);}
+\DoxyCodeLine{208     \}}
+\DoxyCodeLine{209 }
+\DoxyCodeLine{210     \{ \textcolor{comment}{/* update message */} }
+\DoxyCodeLine{211         line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}{fld\_message\_bubble}}][0];}
+\DoxyCodeLine{212         col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}{fld\_message\_bubble}}][1];}
+\DoxyCodeLine{213         \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{214         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}:}
+\DoxyCodeLine{215             memcpy(\&scr[line][col],   \textcolor{stringliteral}{"{}  choose which tetrimino "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{216             memcpy(\&scr[line+1][col], \textcolor{stringliteral}{"{}    you want to place    "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{217             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{218         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}}:}
+\DoxyCodeLine{219             sprintf(buf, \textcolor{stringliteral}{"{}<\%c>, <\%c> move left, right"{}}, \mbox{\hyperlink{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}{KEY\_LEFT}}, \mbox{\hyperlink{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}{KEY\_RIGHT}});}
+\DoxyCodeLine{220             memcpy(\&scr[line][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{221             sprintf(buf, \textcolor{stringliteral}{"{}  <\%c> rotate   <\%c> drop  "{}}, \mbox{\hyperlink{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}{KEY\_ROTATE}}, \mbox{\hyperlink{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}{KEY\_DROP}});}
+\DoxyCodeLine{222             memcpy(\&scr[line+1][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{223             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{224         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}}:}
+\DoxyCodeLine{225             memcpy(\&scr[line][col], \textcolor{stringliteral}{"{}    oh no... you lost!   "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{226             memcpy(\&scr[line+1][col], \textcolor{stringliteral}{"{}can't place another piece"{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{227             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{228         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}}:}
+\DoxyCodeLine{229             memcpy(\&scr[line][col], \textcolor{stringliteral}{"{}congratulations! you won!"{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{230             memcpy(\&scr[line+1][col], \textcolor{stringliteral}{"{} check your final score  "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{231             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{232         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}:}
+\DoxyCodeLine{233             memcpy(\&scr[line][col], \mbox{\hyperlink{iohandler_8c_aacea0d107c5f932052c7ac3d1bb94d57}{cleared\_lines\_messages}}[game-\/>lines\_cleared-\/1], \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{234             sprintf(}
+\DoxyCodeLine{235                 buf,}
+\DoxyCodeLine{236                 \textcolor{stringliteral}{"{}   you earned \%2d \%s  "{}},}
+\DoxyCodeLine{237                 \mbox{\hyperlink{constants_8h_a5b29921eac7e38ec603d1b4d5c101c70}{score\_per\_lines}}[game-\/>lines\_cleared-\/1],}
+\DoxyCodeLine{238                 (\mbox{\hyperlink{constants_8h_a5b29921eac7e38ec603d1b4d5c101c70}{score\_per\_lines}}[game-\/>lines\_cleared-\/1] == 1) ? \textcolor{stringliteral}{"{}point "{}} : \textcolor{stringliteral}{"{}points"{}}}
+\DoxyCodeLine{239             );}
+\DoxyCodeLine{240             memcpy(\&scr[line+1][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{241             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{242         \}}
+\DoxyCodeLine{243     \}}
+\DoxyCodeLine{244 }
+\DoxyCodeLine{245     \{ \textcolor{comment}{/* update piece counts */}}
+\DoxyCodeLine{246         \textcolor{keywordflow}{for} (i = 0; i <= 7; ++i) \{}
+\DoxyCodeLine{247             line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}{fld\_count\_i}} + i][0];}
+\DoxyCodeLine{248             col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}{fld\_count\_i}} + i][1];}
+\DoxyCodeLine{249             sprintf(buf, \textcolor{stringliteral}{"{}\%-\/2hu"{}}, (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{short})game-\/>pieces\_left[i]);}
+\DoxyCodeLine{250             memcpy(\&scr[line][col], buf, 2);}
+\DoxyCodeLine{251         \}}
+\DoxyCodeLine{252     \}}
+\DoxyCodeLine{253 }
+\DoxyCodeLine{254     \{ \textcolor{comment}{/* update key hints */}}
+\DoxyCodeLine{255         \textcolor{keywordflow}{for} (i = 0; i < 7; ++i) \{}
+\DoxyCodeLine{256             line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}{fld\_key\_i}} + i][0];}
+\DoxyCodeLine{257             col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}{fld\_key\_i}} + i][1];}
+\DoxyCodeLine{258             \textcolor{keywordflow}{if} (game-\/>state == \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}) }
+\DoxyCodeLine{259                 sprintf(buf, \textcolor{stringliteral}{"{}<\%c>"{}}, \mbox{\hyperlink{iohandler_8c_ac43325af1ba1488c07e780aeab20e0fc}{key\_hints}}[i]);}
+\DoxyCodeLine{260             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{261                 buf[0] = buf[1] = buf[2] = \textcolor{charliteral}{' '};}
+\DoxyCodeLine{262             memcpy(\&scr[line][col], buf, 3);}
+\DoxyCodeLine{263         \}}
+\DoxyCodeLine{264     \}}
+\DoxyCodeLine{265 }
+\DoxyCodeLine{266 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_ade2c9e00cb912434cf154e0d6d6ec8df}\label{iohandler_8c_ade2c9e00cb912434cf154e0d6d6ec8df}} 
+\index{iohandler.c@{iohandler.c}!update\_screen\_2p@{update\_screen\_2p}}
+\index{update\_screen\_2p@{update\_screen\_2p}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{update\_screen\_2p()}{update\_screen\_2p()}}
+{\footnotesize\ttfamily void update\+\_\+screen\+\_\+2p (\begin{DoxyParamCaption}\item[{char $\ast$$\ast$}]{scr,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{269                                                \{}
+\DoxyCodeLine{270     \textcolor{keywordtype}{int} line, col, i;}
+\DoxyCodeLine{271     \textcolor{keywordtype}{char} buf[32];}
+\DoxyCodeLine{272     \{ \textcolor{comment}{/* update both boards */}}
+\DoxyCodeLine{273         \textcolor{keywordtype}{int} y, x, line2, col2;}
+\DoxyCodeLine{274         line  = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}{fld\_playing\_field1}}][0];}
+\DoxyCodeLine{275         col   = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a244efa6d452eb24ee8dd32404e0f830f}{fld\_playing\_field1}}][1];}
+\DoxyCodeLine{276         line2 = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a250a5d5a2d627597e31d02bc3cd7200c}{fld\_playing\_field2}}][0];}
+\DoxyCodeLine{277         col2  = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a250a5d5a2d627597e31d02bc3cd7200c}{fld\_playing\_field2}}][1];}
+\DoxyCodeLine{278         \textcolor{keywordflow}{for} (y = 0; y < \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}; ++y) \{}
+\DoxyCodeLine{279             \textcolor{keywordflow}{for} (x = 0; x < \mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}; ++x) \{}
+\DoxyCodeLine{280                 memcpy(}
+\DoxyCodeLine{281                     \&scr[line + y][col + x*2],}
+\DoxyCodeLine{282                     \mbox{\hyperlink{iohandler_8c_ad2b5c6b75557b702f361fd13bd8ffd03}{block\_types}}[game-\/>board[0][y][x]],}
+\DoxyCodeLine{283                     2}
+\DoxyCodeLine{284                 );}
+\DoxyCodeLine{285                 memcpy(}
+\DoxyCodeLine{286                     \&scr[line2 + y][col2 + x*2],}
+\DoxyCodeLine{287                     \mbox{\hyperlink{iohandler_8c_ad2b5c6b75557b702f361fd13bd8ffd03}{block\_types}}[game-\/>board[1][y][x]],}
+\DoxyCodeLine{288                     2}
+\DoxyCodeLine{289                 );}
+\DoxyCodeLine{290             \}}
+\DoxyCodeLine{291         \}}
+\DoxyCodeLine{292     \}}
+\DoxyCodeLine{293 }
+\DoxyCodeLine{294     \{ \textcolor{comment}{/* update scores */}}
+\DoxyCodeLine{295         line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}{fld\_p1\_score}}][0];}
+\DoxyCodeLine{296         col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa222621a4c8bce1daace00002142cb79}{fld\_p1\_score}}][1];}
+\DoxyCodeLine{297         sprintf(buf, \textcolor{stringliteral}{"{}\%3d"{}}, game-\/>score[0]);}
+\DoxyCodeLine{298         memcpy(\&scr[line][col], buf, 3);}
+\DoxyCodeLine{299         line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a202f262d4fa4385fe1ce50845fe1d315}{fld\_p2\_score}}][0];}
+\DoxyCodeLine{300         col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49a202f262d4fa4385fe1ce50845fe1d315}{fld\_p2\_score}}][1];}
+\DoxyCodeLine{301         sprintf(buf, \textcolor{stringliteral}{"{}\%3d"{}}, game-\/>score[1]);}
+\DoxyCodeLine{302         memcpy(\&scr[line][col], buf, 3);}
+\DoxyCodeLine{303     \}}
+\DoxyCodeLine{304 }
+\DoxyCodeLine{305     \{ \textcolor{comment}{/* update message */} }
+\DoxyCodeLine{306         line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}{fld\_message\_bubble}}][0];}
+\DoxyCodeLine{307         col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49ae61f423b0efd3189dbf108588aa57e04}{fld\_message\_bubble}}][1];}
+\DoxyCodeLine{308         \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{309         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}:}
+\DoxyCodeLine{310             memcpy(\&scr[line][col],   \textcolor{stringliteral}{"{}  choose which tetrimino "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{311             memcpy(\&scr[line+1][col], \textcolor{stringliteral}{"{}    you want to place    "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{312             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{313         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}}:}
+\DoxyCodeLine{314             sprintf(buf, \textcolor{stringliteral}{"{}<\%c>, <\%c> move left, right"{}}, \mbox{\hyperlink{iohandler_8c_af4d1b8a2912354646c74cf36c69f8223}{KEY\_LEFT}}, \mbox{\hyperlink{iohandler_8c_a004194639b9ad76cea01d9e93716d4d6}{KEY\_RIGHT}});}
+\DoxyCodeLine{315             memcpy(\&scr[line][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{316             sprintf(buf, \textcolor{stringliteral}{"{}  <\%c> rotate   <\%c> drop  "{}}, \mbox{\hyperlink{iohandler_8c_a8b6b2509168f6d327345f863e261ac76}{KEY\_ROTATE}}, \mbox{\hyperlink{iohandler_8c_a7f10af6283ef3db5b0a76573f13273c7}{KEY\_DROP}});}
+\DoxyCodeLine{317             memcpy(\&scr[line+1][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{318             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{319         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}}:}
+\DoxyCodeLine{320             sprintf(buf, \textcolor{stringliteral}{"{}   player \%c, you win!!!  "{}}, game-\/>current\_player ? \textcolor{charliteral}{'1'} : \textcolor{charliteral}{'2'});}
+\DoxyCodeLine{321             memcpy(\&scr[line][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{322             sprintf(buf, \textcolor{stringliteral}{"{} P\%c is stuck... too bad! "{}}, game-\/>current\_player ? \textcolor{charliteral}{'2'} : \textcolor{charliteral}{'1'});}
+\DoxyCodeLine{323             memcpy(\&scr[line+1][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{324             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{325         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}}:}
+\DoxyCodeLine{326             \textcolor{keywordflow}{if} (game-\/>score[0] == game-\/>score[1]) \{}
+\DoxyCodeLine{327                 memcpy(\&scr[line][col], \textcolor{stringliteral}{"{}    wow!! it's a tie!    "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{328                 memcpy(\&scr[line+1][col], \textcolor{stringliteral}{"{} you got the same score! "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{329             \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{330                 sprintf(buf, \textcolor{stringliteral}{"{} congrats, P\%c! you won!!!"{}}, (game-\/>score[0] > game-\/>score[1] ? \textcolor{charliteral}{'1'} : \textcolor{charliteral}{'2'}));}
+\DoxyCodeLine{331                 memcpy(\&scr[line][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{332                 memcpy(\&scr[line+1][col], \textcolor{stringliteral}{"{} you got a higher score! "{}}, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{333             \}}
+\DoxyCodeLine{334                 }
+\DoxyCodeLine{335             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{336         \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}:}
+\DoxyCodeLine{337             memcpy(\&scr[line][col], \mbox{\hyperlink{iohandler_8c_aacea0d107c5f932052c7ac3d1bb94d57}{cleared\_lines\_messages}}[game-\/>lines\_cleared-\/1], \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{338             sprintf(}
+\DoxyCodeLine{339                 buf,}
+\DoxyCodeLine{340                 \textcolor{stringliteral}{"{}   you earned \%2d \%s  "{}},}
+\DoxyCodeLine{341                 \mbox{\hyperlink{constants_8h_a5b29921eac7e38ec603d1b4d5c101c70}{score\_per\_lines}}[game-\/>lines\_cleared-\/1],}
+\DoxyCodeLine{342                 (\mbox{\hyperlink{constants_8h_a5b29921eac7e38ec603d1b4d5c101c70}{score\_per\_lines}}[game-\/>lines\_cleared-\/1] == 1) ? \textcolor{stringliteral}{"{}point "{}} : \textcolor{stringliteral}{"{}points"{}}}
+\DoxyCodeLine{343             );}
+\DoxyCodeLine{344             memcpy(\&scr[line+1][col], buf, \mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\_LENGTH}});}
+\DoxyCodeLine{345             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{346         \}}
+\DoxyCodeLine{347     \}}
+\DoxyCodeLine{348 }
+\DoxyCodeLine{349     \{ \textcolor{comment}{/* update piece counts */}}
+\DoxyCodeLine{350         \textcolor{keywordflow}{for} (i = 0; i <= 7; ++i) \{}
+\DoxyCodeLine{351             line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}{fld\_count\_i}} + i][0];}
+\DoxyCodeLine{352             col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aa11dbe39f547361e0385ffb52bc16e5a}{fld\_count\_i}} + i][1];}
+\DoxyCodeLine{353             sprintf(buf, \textcolor{stringliteral}{"{}\%-\/2hu"{}}, (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{short})game-\/>pieces\_left[i]);}
+\DoxyCodeLine{354             memcpy(\&scr[line][col], buf, 2);}
+\DoxyCodeLine{355         \}}
+\DoxyCodeLine{356     \}}
+\DoxyCodeLine{357 }
+\DoxyCodeLine{358     \{ \textcolor{comment}{/* update key hints */}}
+\DoxyCodeLine{359         \textcolor{keywordflow}{for} (i = 0; i < 7; ++i) \{}
+\DoxyCodeLine{360             line = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}{fld\_key\_i}} + i][0];}
+\DoxyCodeLine{361             col = \mbox{\hyperlink{iohandler_8c_a7966396864a38d917b7d167708d54616}{field\_coords}}[\mbox{\hyperlink{iohandler_8c_a48fef6d13231adf54d427fb68d981f49aabc39bbf337f7d22c35d761dd26a806b}{fld\_key\_i}} + i][1];}
+\DoxyCodeLine{362             \textcolor{keywordflow}{if} (game-\/>state == \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}) }
+\DoxyCodeLine{363                 sprintf(buf, \textcolor{stringliteral}{"{}<\%c>"{}}, \mbox{\hyperlink{iohandler_8c_ac43325af1ba1488c07e780aeab20e0fc}{key\_hints}}[i]);}
+\DoxyCodeLine{364             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{365                 buf[0] = buf[1] = buf[2] = \textcolor{charliteral}{' '};}
+\DoxyCodeLine{366             memcpy(\&scr[line][col], buf, 3);}
+\DoxyCodeLine{367         \}}
+\DoxyCodeLine{368     \}}
+\DoxyCodeLine{369 \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{iohandler_8c_ad2b5c6b75557b702f361fd13bd8ffd03}\label{iohandler_8c_ad2b5c6b75557b702f361fd13bd8ffd03}} 
+\index{iohandler.c@{iohandler.c}!block\_types@{block\_types}}
+\index{block\_types@{block\_types}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{block\_types}{block\_types}}
+{\footnotesize\ttfamily char const block\+\_\+types\mbox{[}$\,$\mbox{]}\mbox{[}2\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}  "{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}@@"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}\#\#"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}\$\$"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}\%\%"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}@@"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}\#\#"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}\$\$"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}()"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}><"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}!!"{}}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_aacea0d107c5f932052c7ac3d1bb94d57}\label{iohandler_8c_aacea0d107c5f932052c7ac3d1bb94d57}} 
+\index{iohandler.c@{iohandler.c}!cleared\_lines\_messages@{cleared\_lines\_messages}}
+\index{cleared\_lines\_messages@{cleared\_lines\_messages}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{cleared\_lines\_messages}{cleared\_lines\_messages}}
+{\footnotesize\ttfamily char const cleared\+\_\+lines\+\_\+messages\mbox{[}$\,$\mbox{]}\mbox{[}\mbox{\hyperlink{iohandler_8c_aa204ec58d846f2354e6bd239460db89f}{MSG\+\_\+\+LENGTH}}\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}          line!          "{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}         double!!        "{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}        triple!!!        "{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}      !! TETRIS !!       "{}}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_a7966396864a38d917b7d167708d54616}\label{iohandler_8c_a7966396864a38d917b7d167708d54616}} 
+\index{iohandler.c@{iohandler.c}!field\_coords@{field\_coords}}
+\index{field\_coords@{field\_coords}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{field\_coords}{field\_coords}}
+{\footnotesize\ttfamily int const field\+\_\+coords\mbox{[}$\,$\mbox{]}\mbox{[}2\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{     \{ 1,  1\},}
+\DoxyCodeLine{     \{ 1, 56\},}
+\DoxyCodeLine{     \{ 3, 41\},}
+\DoxyCodeLine{     \{ 4, 31\},}
+\DoxyCodeLine{     \{ 4, 47\},}
+\DoxyCodeLine{     \{ 6, 26\},}
+\DoxyCodeLine{     \{11, 27\},}
+\DoxyCodeLine{     \{11, 35\},}
+\DoxyCodeLine{     \{11, 43\},}
+\DoxyCodeLine{     \{11, 51\},}
+\DoxyCodeLine{     \{14, 32\},}
+\DoxyCodeLine{     \{14, 40\},}
+\DoxyCodeLine{     \{14, 48\},}
+\DoxyCodeLine{     \{12, 26\},}
+\DoxyCodeLine{     \{12, 34\},}
+\DoxyCodeLine{     \{12, 42\},}
+\DoxyCodeLine{     \{12, 50\},}
+\DoxyCodeLine{     \{15, 31\},}
+\DoxyCodeLine{     \{15, 39\},}
+\DoxyCodeLine{     \{15, 47\}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_ac43325af1ba1488c07e780aeab20e0fc}\label{iohandler_8c_ac43325af1ba1488c07e780aeab20e0fc}} 
+\index{iohandler.c@{iohandler.c}!key\_hints@{key\_hints}}
+\index{key\_hints@{key\_hints}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{key\_hints}{key\_hints}}
+{\footnotesize\ttfamily char const key\+\_\+hints\mbox{[}7\mbox{]} = \{ \mbox{\hyperlink{iohandler_8c_a31ae832a3de882f92710ed9cb0b46e0a}{KEY\+\_\+I}}, \mbox{\hyperlink{iohandler_8c_adb39050b8845e8b16f503a747e196749}{KEY\+\_\+T}}, \mbox{\hyperlink{iohandler_8c_a5e90bac1d19a8a6b8bc79be340470271}{KEY\+\_\+J}}, \mbox{\hyperlink{iohandler_8c_a600bb1ce7eb7b6ca4dcbb41546c32ec5}{KEY\+\_\+L}}, \mbox{\hyperlink{iohandler_8c_a6f09e2899747f5db41369ce1dae11ebd}{KEY\+\_\+S}}, \mbox{\hyperlink{iohandler_8c_a7c655f9f55336c6db42503e356028f4d}{KEY\+\_\+Z}}, \mbox{\hyperlink{iohandler_8c_adc0df72b7f6cbb006adeabff653ebeac}{KEY\+\_\+O}} \}\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{iohandler_8c_ae2b1b97da2cef8ceb399d6c93c8ce4f8}\label{iohandler_8c_ae2b1b97da2cef8ceb399d6c93c8ce4f8}} 
+\index{iohandler.c@{iohandler.c}!prompts@{prompts}}
+\index{prompts@{prompts}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{prompts}{prompts}}
+{\footnotesize\ttfamily char const$\ast$ prompts\mbox{[}$\,$\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}[itjlszo] > "{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}[hlrj]+ > "{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}(game over)"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}(game over)"{}},}
+\DoxyCodeLine{     \textcolor{stringliteral}{"{}[<enter>] > "{}},}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8c_a97dfec0922297fddee94833538475c98}\label{iohandler_8c_a97dfec0922297fddee94833538475c98}} 
+\index{iohandler.c@{iohandler.c}!screen\_init\_state@{screen\_init\_state}}
+\index{screen\_init\_state@{screen\_init\_state}!iohandler.c@{iohandler.c}}
+\doxysubsubsection{\texorpdfstring{screen\_init\_state}{screen\_init\_state}}
+{\footnotesize\ttfamily const char screen\+\_\+init\+\_\+state\mbox{[}\mbox{\hyperlink{iohandler_8c_aa15b9a2eaaa860e3768ad5d0c0039fea}{SCREEN\+\_\+\+LINES}}\mbox{]}\mbox{[}\mbox{\hyperlink{iohandler_8c_a777340ef44f6fe8e820665679a6cf20c}{SCREEN\+\_\+\+COLUMNS\+\_\+2P}}\mbox{]}\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}+-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/+                                 +-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/+"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |     =*= X -\/ T E T R I S =*=     |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |                                 |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |          score:   000           |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |     P1: 000         P2: 000     |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |   ...........................   |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |  ' x x x x x x x x x x x x x '  |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |  '  x x x x x x x x x x x x  '  |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |  '...........................'  |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |                             \(\backslash\)\(\backslash\)   |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |                                 |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |  I x00   T x00   J x00   L x00  |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |    < >     < >     < >     < >  |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |                                 |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |       S x00   Z x00   O x00     |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}|                    |         < >     < >     < >     |                    |"{}},}
+\DoxyCodeLine{    \textcolor{stringliteral}{"{}+-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/+                                 +-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/+"{}},}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}

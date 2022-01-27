@@ -1,0 +1,91 @@
+\hypertarget{tetris_8h_source}{}\doxysection{tetris.\+h}
+\mbox{\hyperlink{tetris_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#ifndef XTETRIS\_TETRIS\_H}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#define XTETRIS\_TETRIS\_H}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{constants_8h}{constants.h}}"{}}}
+\DoxyCodeLine{9 }
+\DoxyCodeLine{15 \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}{Tetrimino\_type}} \{}
+\DoxyCodeLine{16     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}{Tetrimino\_type\_I}} = 1,}
+\DoxyCodeLine{17     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a522a63cf0cf42e8e57dcb189cbee06b5}{Tetrimino\_type\_T}},}
+\DoxyCodeLine{18     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a920f0f6047370f07387897bd674ef87b}{Tetrimino\_type\_J}},}
+\DoxyCodeLine{19     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a908e729a4392fc00acf18df840a035f2}{Tetrimino\_type\_L}},}
+\DoxyCodeLine{20     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a777b9090cb0c97b42b0343a063c52ebf}{Tetrimino\_type\_S}},}
+\DoxyCodeLine{21     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a21511387c2096866955bcdb4bccc3269}{Tetrimino\_type\_Z}},}
+\DoxyCodeLine{22     \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86a2113653042b8a52f5f5013254d03bede}{Tetrimino\_type\_O}}}
+\DoxyCodeLine{23 \};}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{29 \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}{Block\_type}} \{}
+\DoxyCodeLine{30     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a4dcfcb5b3a5780ac8849159ba91c58f0}{Block\_type\_Empty}} = 0,}
+\DoxyCodeLine{31     \textcolor{comment}{/* tetrimino block types -\/-\/> 1 ... 7 */}}
+\DoxyCodeLine{32     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a2213d9bd6d67d80014cf8d88532379e8}{Block\_type\_Ghost}} = 8,}
+\DoxyCodeLine{33     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a3e705d0d8fd9bb7d0ed4eebd98dae5dc}{Block\_type\_Clear}},}
+\DoxyCodeLine{34     \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4a03362100e003766141e31ae583548ef4}{Block\_type\_Badbk}}}
+\DoxyCodeLine{35 \};}
+\DoxyCodeLine{36 }
+\DoxyCodeLine{40 \textcolor{keyword}{typedef} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} \mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\_shape}}[4][4];}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{47 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_piece}{Piece}} \{}
+\DoxyCodeLine{48     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} \mbox{\hyperlink{struct_piece_a4dc3b1f70e7db766658f73be20c6506f}{type}};}
+\DoxyCodeLine{49     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_piece_a97d61c9e42873e2274620c91178e879b}{y}}, \mbox{\hyperlink{struct_piece_a895b6803ce74fe8574d6168d66ac6bb5}{x}};}
+\DoxyCodeLine{50     \mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\_shape}} \mbox{\hyperlink{struct_piece_ab192dd2218a56fcdea112d61113b361e}{shape}};}
+\DoxyCodeLine{51 \} \mbox{\hyperlink{tetris_8h_aa4af7edfda369a730cbb122096033fa6}{Piece}};}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{56 \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\_state}} \{}
+\DoxyCodeLine{58     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}} = 1,}
+\DoxyCodeLine{60     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}},}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}},}
+\DoxyCodeLine{63     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}},}
+\DoxyCodeLine{64 }
+\DoxyCodeLine{66     \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}}
+\DoxyCodeLine{67 \};}
+\DoxyCodeLine{68 }
+\DoxyCodeLine{70 \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764c}{Game\_kind}} \{}
+\DoxyCodeLine{71     \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca60235b105a82c5e77974efee640c7160}{Game\_kind\_Singleplayer}},}
+\DoxyCodeLine{72     \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764cac823b867fbc7d4e4a3cfd8de7ba2c860}{Game\_kind\_Vs\_player}},}
+\DoxyCodeLine{73     \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764ca77efbdfbda479f73dffea6fd26b3c806}{Game\_kind\_Vs\_ai}}}
+\DoxyCodeLine{74 \};}
+\DoxyCodeLine{75 }
+\DoxyCodeLine{84 \textcolor{keyword}{typedef} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}[\mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}][\mbox{\hyperlink{constants_8h_a8d325fa33dd590065a0ddb96e687f528}{BOARD\_COLS}}];}
+\DoxyCodeLine{85 }
+\DoxyCodeLine{89 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_game}{Game}} \{}
+\DoxyCodeLine{90     \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_abb3bdc682854082cbc8eb050784e764c}{Game\_kind}} \mbox{\hyperlink{struct_game_af36ebcac0bb468b054623db998b355db}{kind}};}
+\DoxyCodeLine{91     \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\_state}} \mbox{\hyperlink{struct_game_a8165c9a2aeda9216b6a42822ec94695c}{state}};}
+\DoxyCodeLine{93     \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} \mbox{\hyperlink{struct_game_a8955f2f33c1b953e025ddd8ba55103b7}{board}}[2];}
+\DoxyCodeLine{95     \mbox{\hyperlink{struct_piece}{Piece}} \mbox{\hyperlink{struct_game_a1d19d73044280572c8b0f0ba8f777440}{active\_piece}};}
+\DoxyCodeLine{97     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_game_a2f323963a7ce257605465ceee93585c1}{score}}[2];}
+\DoxyCodeLine{99     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} \mbox{\hyperlink{struct_game_a85dfa288bec1b02b2aa9d2f67281b274}{pieces\_left}}[7];}
+\DoxyCodeLine{101     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_game_afeb5745072b6665b23e64a94aae2a4a2}{lines\_cleared}};}
+\DoxyCodeLine{103     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_game_a9e8725fd8b83dbd424f3e60a3dee2864}{current\_player}};}
+\DoxyCodeLine{104 \} \mbox{\hyperlink{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}{Game}};}
+\DoxyCodeLine{105 }
+\DoxyCodeLine{111 \textcolor{keyword}{enum} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\_action}} \{}
+\DoxyCodeLine{112     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}{Game\_action\_Queue\_empty}} = 0,}
+\DoxyCodeLine{113 }
+\DoxyCodeLine{114     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}{Game\_action\_Choose\_I}} = \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}} << 5,}
+\DoxyCodeLine{115     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cad9d179fcda3f966c34efb90c50c12f2e}{Game\_action\_Choose\_T}},}
+\DoxyCodeLine{116     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca149d271b7bb49407df2e7f3606c277b8}{Game\_action\_Choose\_J}},}
+\DoxyCodeLine{117     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caa922970cc6c6ef5bc5bccd13aaa41b90}{Game\_action\_Choose\_L}},}
+\DoxyCodeLine{118     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca7a46cc18deb1027dd59800b4a21c122e}{Game\_action\_Choose\_S}},}
+\DoxyCodeLine{119     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cac22f28f3a1b0fb253f5464bff2a3b3fb}{Game\_action\_Choose\_Z}},}
+\DoxyCodeLine{120     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8bbb32699758b57792d3627cc16da9bb}{Game\_action\_Choose\_O}},}
+\DoxyCodeLine{121 }
+\DoxyCodeLine{122     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}{Game\_action\_Left}} = \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}} << 5,}
+\DoxyCodeLine{123     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}{Game\_action\_Right}},}
+\DoxyCodeLine{124     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}{Game\_action\_Rotate}},}
+\DoxyCodeLine{125     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}{Game\_action\_Drop}},}
+\DoxyCodeLine{126 }
+\DoxyCodeLine{127     \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}{Game\_action\_Finish\_clearing}} = \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}} << 5}
+\DoxyCodeLine{128 \};}
+\DoxyCodeLine{129 }
+\DoxyCodeLine{133 \textcolor{keywordtype}{void} \mbox{\hyperlink{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}{init\_piece\_shape}}(\mbox{\hyperlink{struct_piece}{Piece}} *);}
+\DoxyCodeLine{137 \textcolor{keywordtype}{void} \mbox{\hyperlink{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}{rotate\_shape\_cw}}(\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\_shape}});}
+\DoxyCodeLine{146 \textcolor{keywordtype}{void} \mbox{\hyperlink{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}{place\_piece}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_piece}{Piece}} *, \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char});}
+\DoxyCodeLine{150 \textcolor{keywordtype}{int} \mbox{\hyperlink{tetris_8h_a3059d73b19301c1d0c51365996be6058}{collides}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_piece}{Piece}} *, \textcolor{keyword}{const} \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}});}
+\DoxyCodeLine{155 \textcolor{keywordtype}{void} \mbox{\hyperlink{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}{drop\_piece}}(\mbox{\hyperlink{struct_piece}{Piece}} *, \textcolor{keyword}{const} \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}});}
+\DoxyCodeLine{159 \textcolor{keywordtype}{void} \mbox{\hyperlink{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}{lift\_piece}}(\mbox{\hyperlink{struct_piece}{Piece}} *, \textcolor{keyword}{const} \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}});}
+\DoxyCodeLine{160 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/* ifndef XTETRIS\_TETRIS\_H */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

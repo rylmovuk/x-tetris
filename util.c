@@ -1,3 +1,8 @@
+/**
+ * @file util.c
+ * @author Maksim Kovalkov
+ */
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>

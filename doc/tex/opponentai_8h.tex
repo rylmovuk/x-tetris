@@ -1,0 +1,110 @@
+\hypertarget{opponentai_8h}{}\doxysection{opponentai.\+h File Reference}
+\label{opponentai_8h}\index{opponentai.h@{opponentai.h}}
+{\ttfamily \#include \char`\"{}tetris.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} \mbox{\hyperlink{opponentai_8h_a4b4ed01a04dbb936081b72692d909e73}{Opponent\+\_\+ai}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ \mbox{\hyperlink{opponentai_8h_a9f0d1a481bb9404e0e56b6e3778d8528}{ai\+\_\+create}} (void)
+\item 
+void \mbox{\hyperlink{opponentai_8h_a59559fbfce1921dcb84f0880081778fe}{ai\+\_\+destroy}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$)
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \mbox{\hyperlink{opponentai_8h_acde45ecf14b79dfc3ef12676efe217b0}{ai\+\_\+next\+\_\+action}} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$, \mbox{\hyperlink{struct_game}{Game}} const $\ast$)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{opponentai_8h_a4b4ed01a04dbb936081b72692d909e73}\label{opponentai_8h_a4b4ed01a04dbb936081b72692d909e73}} 
+\index{opponentai.h@{opponentai.h}!Opponent\_ai@{Opponent\_ai}}
+\index{Opponent\_ai@{Opponent\_ai}!opponentai.h@{opponentai.h}}
+\doxysubsubsection{\texorpdfstring{Opponent\_ai}{Opponent\_ai}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{opponentai_8h_a9f0d1a481bb9404e0e56b6e3778d8528}\label{opponentai_8h_a9f0d1a481bb9404e0e56b6e3778d8528}} 
+\index{opponentai.h@{opponentai.h}!ai\_create@{ai\_create}}
+\index{ai\_create@{ai\_create}!opponentai.h@{opponentai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_create()}{ai\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ ai\+\_\+create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Allocate and initialize an \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}. Exits on failure. ~\newline
+ Caller owns the returned object and must call {\ttfamily ai\+\_\+destroy} to correctly clean up. ~\newline
+ \begin{DoxyReturn}{Returns}
+a pointer to a valid instance of \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{41 \{}
+\DoxyCodeLine{42     \mbox{\hyperlink{struct_opponent__ai}{Opponent\_ai}} *ai = \mbox{\hyperlink{util_8c_ae6019b6343c07934f27a553cdb12e437}{malloc\_or\_die}}(\textcolor{keyword}{sizeof} (\mbox{\hyperlink{struct_opponent__ai}{Opponent\_ai}}));}
+\DoxyCodeLine{43 }
+\DoxyCodeLine{44     srand((\textcolor{keywordtype}{unsigned}) time(NULL));}
+\DoxyCodeLine{45     \textcolor{keywordflow}{return} ai;}
+\DoxyCodeLine{46 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8h_a59559fbfce1921dcb84f0880081778fe}\label{opponentai_8h_a59559fbfce1921dcb84f0880081778fe}} 
+\index{opponentai.h@{opponentai.h}!ai\_destroy@{ai\_destroy}}
+\index{ai\_destroy@{ai\_destroy}!opponentai.h@{opponentai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_destroy()}{ai\_destroy()}}
+{\footnotesize\ttfamily void ai\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai }\end{DoxyParamCaption})}
+
+Deinitialize and deallocate an \mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}}, which must have been initialized by {\ttfamily ai\+\_\+create}. ~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{50 \{}
+\DoxyCodeLine{51     free(ai);}
+\DoxyCodeLine{52 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{opponentai_8h_acde45ecf14b79dfc3ef12676efe217b0}\label{opponentai_8h_acde45ecf14b79dfc3ef12676efe217b0}} 
+\index{opponentai.h@{opponentai.h}!ai\_next\_action@{ai\_next\_action}}
+\index{ai\_next\_action@{ai\_next\_action}!opponentai.h@{opponentai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_next\_action()}{ai\_next\_action()}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} ai\+\_\+next\+\_\+action (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$}]{ai,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{56 \{}
+\DoxyCodeLine{57     \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{58     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4974dc92a2b3e3d35f57caebe64dd40d}{Game\_state\_Choose}}:}
+\DoxyCodeLine{59         \textcolor{comment}{/* ai-\/>x = (rand() \% 10) -\/ 4;}}
+\DoxyCodeLine{60 \textcolor{comment}{        ai-\/>rots = rand() \% 3;}}
+\DoxyCodeLine{61 \textcolor{comment}{        ai-\/>type = Tetrimino\_type\_I + (rand() \% 7); */}}
+\DoxyCodeLine{62         memcpy(ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}}, game-\/>board[1], \textcolor{keyword}{sizeof} ai-\/>\mbox{\hyperlink{struct_opponent__ai_acfacb7feda0627f68d461e48a586e63f}{sim\_board}});}
+\DoxyCodeLine{63         ai-\/>\mbox{\hyperlink{struct_opponent__ai_adb044259835560c1132ca01509c9b80b}{last\_x}} = ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}};}
+\DoxyCodeLine{64         \mbox{\hyperlink{opponentai_8c_a5e4ad375a509dfbac4e476df86b34b26}{choose\_best\_move}}(ai, game-\/>pieces\_left, \mbox{\hyperlink{opponentai_8c_ab9dc188183a36a42a2d204336669c6ad}{RECURSE\_DEPTH}});}
+\DoxyCodeLine{65         \textcolor{keywordflow}{return} ai-\/>\mbox{\hyperlink{struct_opponent__ai_ae08ff24352e6c186f5376904bf8cb944}{type}} -\/ \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86ab3ceb8dddc210fc7ef18f02a8c354b28}{Tetrimino\_type\_I}} + \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733caefe4fa2dd5ef7224d67766cd0352720b}{Game\_action\_Choose\_I}};}
+\DoxyCodeLine{66     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a74a1c24f0ebabe958057024772257ef4}{Game\_state\_Place}}:}
+\DoxyCodeLine{67         \textcolor{keywordflow}{if} (ai-\/>\mbox{\hyperlink{struct_opponent__ai_a9749f95d8cbaeb40cffaf2d572b0005b}{rots}}) \{}
+\DoxyCodeLine{68             -\/-\/ai-\/>\mbox{\hyperlink{struct_opponent__ai_a9749f95d8cbaeb40cffaf2d572b0005b}{rots}};}
+\DoxyCodeLine{69             \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca081418596b881277bc92f9b26b7e5ac8}{Game\_action\_Rotate}};}
+\DoxyCodeLine{70         \}}
+\DoxyCodeLine{71         \textcolor{comment}{/* if we are not moving anymore, too bad: drop the piece and whatever happens happens */}}
+\DoxyCodeLine{72         \textcolor{keywordflow}{if} (game-\/>active\_piece.x != ai-\/>\mbox{\hyperlink{struct_opponent__ai_adb044259835560c1132ca01509c9b80b}{last\_x}}) \{}
+\DoxyCodeLine{73             \textcolor{keywordflow}{if} ((ai-\/>\mbox{\hyperlink{struct_opponent__ai_adb044259835560c1132ca01509c9b80b}{last\_x}} = game-\/>active\_piece.x) < ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}})}
+\DoxyCodeLine{74                 \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca150b8c55fe9416f21c6feaddfad052e5}{Game\_action\_Right}};}
+\DoxyCodeLine{75             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (game-\/>active\_piece.x > ai-\/>\mbox{\hyperlink{struct_opponent__ai_a3bc6e9eba0861d522b7d5152ee614f14}{x}})}
+\DoxyCodeLine{76                 \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca532ae02f8e848d155eaba2c12c8c02ce}{Game\_action\_Left}};}
+\DoxyCodeLine{77         \}}
+\DoxyCodeLine{78         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733cafa56237e3cbc90921481b92be7c31133}{Game\_action\_Drop}};}
+\DoxyCodeLine{79     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a4691cb43ffabf1ee61b3bebbaae1ec46}{Game\_state\_Cleared}}:}
+\DoxyCodeLine{80         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca60b2acffa2bffdea69413064285badfb}{Game\_action\_Finish\_clearing}};}
+\DoxyCodeLine{81     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a999c805b6310beb226e37a03fcaad543}{Game\_state\_Lose}}:}
+\DoxyCodeLine{82     \textcolor{keywordflow}{case} \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4a16520974ae27578e3b83b411b8fd64e2}{Game\_state\_Win}}:}
+\DoxyCodeLine{83         \textcolor{keywordflow}{return} \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733ca8ba58b6e78047deb62d70fee26bc2cd5}{Game\_action\_Queue\_empty}};}
+\DoxyCodeLine{84     \}}
+\DoxyCodeLine{85 \}}
+
+\end{DoxyCode}

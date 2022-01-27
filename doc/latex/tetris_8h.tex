@@ -1,0 +1,372 @@
+\hypertarget{tetris_8h}{}\doxysection{tetris.\+h File Reference}
+\label{tetris_8h}\index{tetris.h@{tetris.h}}
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_piece}{Piece}}
+\item 
+struct \mbox{\hyperlink{struct_game}{Game}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef unsigned char \mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}}\mbox{[}4\mbox{]}\mbox{[}4\mbox{]}
+\item 
+typedef struct \mbox{\hyperlink{struct_piece}{Piece}} \mbox{\hyperlink{tetris_8h_aa4af7edfda369a730cbb122096033fa6}{Piece}}
+\item 
+typedef unsigned char \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}\mbox{[}\mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\+\_\+\+ROWS}}\mbox{]}\mbox{[}BOARD\+\_\+\+COLS\mbox{]}
+\item 
+typedef struct \mbox{\hyperlink{struct_game}{Game}} \mbox{\hyperlink{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}{Game}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}{Tetrimino\+\_\+type}} \{ \newline
+{\bfseries Tetrimino\+\_\+type\+\_\+I} = 1
+, {\bfseries Tetrimino\+\_\+type\+\_\+T}
+, {\bfseries Tetrimino\+\_\+type\+\_\+J}
+, {\bfseries Tetrimino\+\_\+type\+\_\+L}
+, \newline
+{\bfseries Tetrimino\+\_\+type\+\_\+S}
+, {\bfseries Tetrimino\+\_\+type\+\_\+Z}
+, {\bfseries Tetrimino\+\_\+type\+\_\+O}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}{Block\+\_\+type}} \{ {\bfseries Block\+\_\+type\+\_\+\+Empty} = 0
+, {\bfseries Block\+\_\+type\+\_\+\+Ghost} = 8
+, {\bfseries Block\+\_\+type\+\_\+\+Clear}
+, {\bfseries Block\+\_\+type\+\_\+\+Badbk}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\+\_\+state}} \{ \newline
+{\bfseries Game\+\_\+state\+\_\+\+Choose} = 1
+, {\bfseries Game\+\_\+state\+\_\+\+Place}
+, {\bfseries Game\+\_\+state\+\_\+\+Lose}
+, {\bfseries Game\+\_\+state\+\_\+\+Win}
+, \newline
+{\bfseries Game\+\_\+state\+\_\+\+Cleared}
+ \}
+\item 
+enum {\bfseries Game\+\_\+kind} \{ {\bfseries Game\+\_\+kind\+\_\+\+Singleplayer}
+, {\bfseries Game\+\_\+kind\+\_\+\+Vs\+\_\+player}
+, {\bfseries Game\+\_\+kind\+\_\+\+Vs\+\_\+ai}
+ \}
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \{ \newline
+{\bfseries Game\+\_\+action\+\_\+\+Queue\+\_\+empty} = 0
+, {\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+I} = Game\+\_\+state\+\_\+\+Choose \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+, {\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+T}
+, {\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+J}
+, \newline
+{\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+L}
+, {\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+S}
+, {\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+Z}
+, {\bfseries Game\+\_\+action\+\_\+\+Choose\+\_\+O}
+, \newline
+{\bfseries Game\+\_\+action\+\_\+\+Left} = Game\+\_\+state\+\_\+\+Place \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+, {\bfseries Game\+\_\+action\+\_\+\+Right}
+, {\bfseries Game\+\_\+action\+\_\+\+Rotate}
+, {\bfseries Game\+\_\+action\+\_\+\+Drop}
+, \newline
+{\bfseries Game\+\_\+action\+\_\+\+Finish\+\_\+clearing} = Game\+\_\+state\+\_\+\+Cleared \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}{init\+\_\+piece\+\_\+shape}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$)
+\item 
+void \mbox{\hyperlink{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}{rotate\+\_\+shape\+\_\+cw}} (\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}})
+\item 
+void \mbox{\hyperlink{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}{place\+\_\+piece}} (const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$, \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}, unsigned char)
+\item 
+int \mbox{\hyperlink{tetris_8h_a3059d73b19301c1d0c51365996be6058}{collides}} (const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}})
+\item 
+void \mbox{\hyperlink{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}{drop\+\_\+piece}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}})
+\item 
+void \mbox{\hyperlink{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}{lift\+\_\+piece}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}\label{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}} 
+\index{tetris.h@{tetris.h}!Board@{Board}}
+\index{Board@{Board}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Board}{Board}}
+{\footnotesize\ttfamily typedef unsigned char Board\mbox{[}\mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\+\_\+\+ROWS}}\mbox{]}\mbox{[}BOARD\+\_\+\+COLS\mbox{]}}
+
+Representation of the playing field. ~\newline
+ Does not only represent the presence or absence of a block\+: the meaning of the cells is related to (but still distinct from) the visual presentation the user sees in the end. ~\newline
+
+\begin{DoxyItemize}
+\item Normally it includes the \char`\"{}type\char`\"{} (\char`\"{}color\char`\"{}) of each block. ~\newline
+
+\item When some lines are cleared, the blocks in these lines are marked, and removed only on the next game update.
+\item In the draw stage, the board includes the active piece at the top, and the \char`\"{}ghost\char`\"{} piece at the bottom. 
+\end{DoxyItemize}\mbox{\Hypertarget{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}\label{tetris_8h_a69b5df78d315f81ed77df30fdbfb7002}} 
+\index{tetris.h@{tetris.h}!Game@{Game}}
+\index{Game@{Game}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game}{Game}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_game}{Game}} \mbox{\hyperlink{struct_game}{Game}}}
+
+Struct representing the entire game state. \mbox{\Hypertarget{tetris_8h_aa4af7edfda369a730cbb122096033fa6}\label{tetris_8h_aa4af7edfda369a730cbb122096033fa6}} 
+\index{tetris.h@{tetris.h}!Piece@{Piece}}
+\index{Piece@{Piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Piece}{Piece}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{struct_piece}{Piece}} \mbox{\hyperlink{struct_piece}{Piece}}}
+
+Struct representing a piece \char`\"{}that we care about\char`\"{}, containing its shape and coordinates. Note that a valid state {\itshape can} contain x and/or y that are out of bounds relative to the game board\+: but in that case any cell at {\ttfamily shape\mbox{[}i\mbox{]}\mbox{[}j\mbox{]}} {\itshape must} be 0 if {\ttfamily board\mbox{[}y+i\mbox{]}\mbox{[}x+j\mbox{]}} is out of bounds. \mbox{\Hypertarget{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}\label{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}} 
+\index{tetris.h@{tetris.h}!Tetrimino\_shape@{Tetrimino\_shape}}
+\index{Tetrimino\_shape@{Tetrimino\_shape}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Tetrimino\_shape}{Tetrimino\_shape}}
+{\footnotesize\ttfamily typedef unsigned char Tetrimino\+\_\+shape\mbox{[}4\mbox{]}\mbox{[}4\mbox{]}}
+
+4x4 grid to represent each tetrimino shape. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}\label{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}} 
+\index{tetris.h@{tetris.h}!Block\_type@{Block\_type}}
+\index{Block\_type@{Block\_type}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Block\_type}{Block\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_ac17ac97b3c3034af945d92e30cde90e4}{Block\+\_\+type}}}
+
+Enum to represent types of block that show up when the game board is printed. This includes the tetrimino types, which are not redefined here (use {\ttfamily enum Tetrimino\+\_\+type}). 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{29                 \{}
+\DoxyCodeLine{30     Block\_type\_Empty = 0,}
+\DoxyCodeLine{31     \textcolor{comment}{/* tetrimino block types -\/-\/> 1 ... 7 */}}
+\DoxyCodeLine{32     Block\_type\_Ghost = 8,}
+\DoxyCodeLine{33     Block\_type\_Clear,}
+\DoxyCodeLine{34     Block\_type\_Badbk}
+\DoxyCodeLine{35 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a80edd34c3b94a368ca215539076f733c}\label{tetris_8h_a80edd34c3b94a368ca215539076f733c}} 
+\index{tetris.h@{tetris.h}!Game\_action@{Game\_action}}
+\index{Game\_action@{Game\_action}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game\_action}{Game\_action}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}}}
+
+A player action that can be performed. An \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} transforms valid player inputs into these actions. ~\newline
+ Each action is only valid for a certain state. To check that the action is coherent with the state (for debugging purposes), use {\ttfamily (game\+\_\+action \& 0xe0) == (game\+\_\+state \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 5)}. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{105                  \{}
+\DoxyCodeLine{106     Game\_action\_Queue\_empty = 0,}
+\DoxyCodeLine{107 }
+\DoxyCodeLine{108     Game\_action\_Choose\_I = Game\_state\_Choose << 5,}
+\DoxyCodeLine{109     Game\_action\_Choose\_T,}
+\DoxyCodeLine{110     Game\_action\_Choose\_J,}
+\DoxyCodeLine{111     Game\_action\_Choose\_L,}
+\DoxyCodeLine{112     Game\_action\_Choose\_S,}
+\DoxyCodeLine{113     Game\_action\_Choose\_Z,}
+\DoxyCodeLine{114     Game\_action\_Choose\_O,}
+\DoxyCodeLine{115 }
+\DoxyCodeLine{116     Game\_action\_Left = Game\_state\_Place << 5,}
+\DoxyCodeLine{117     Game\_action\_Right,}
+\DoxyCodeLine{118     Game\_action\_Rotate,}
+\DoxyCodeLine{119     Game\_action\_Drop,}
+\DoxyCodeLine{120 }
+\DoxyCodeLine{121     Game\_action\_Finish\_clearing = Game\_state\_Cleared << 5}
+\DoxyCodeLine{122 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_abb3bdc682854082cbc8eb050784e764c}\label{tetris_8h_abb3bdc682854082cbc8eb050784e764c}} 
+\index{tetris.h@{tetris.h}!Game\_kind@{Game\_kind}}
+\index{Game\_kind@{Game\_kind}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game\_kind}{Game\_kind}}
+{\footnotesize\ttfamily enum Game\+\_\+kind}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{69                \{}
+\DoxyCodeLine{70     Game\_kind\_Singleplayer,}
+\DoxyCodeLine{71     Game\_kind\_Vs\_player,}
+\DoxyCodeLine{72     Game\_kind\_Vs\_ai}
+\DoxyCodeLine{73 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a33e243da48884e73997b5c5fa62864d4}\label{tetris_8h_a33e243da48884e73997b5c5fa62864d4}} 
+\index{tetris.h@{tetris.h}!Game\_state@{Game\_state}}
+\index{Game\_state@{Game\_state}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Game\_state}{Game\_state}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a33e243da48884e73997b5c5fa62864d4}{Game\+\_\+state}}}
+
+One of the possible named states the game can be in. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{56                 \{}
+\DoxyCodeLine{57     \textcolor{comment}{/* The player must choose the next piece. */}}
+\DoxyCodeLine{58     Game\_state\_Choose = 1,}
+\DoxyCodeLine{59     \textcolor{comment}{/* The player is moving the piece to the desired location. */}}
+\DoxyCodeLine{60     Game\_state\_Place,}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62     Game\_state\_Lose,}
+\DoxyCodeLine{63     Game\_state\_Win,}
+\DoxyCodeLine{64 }
+\DoxyCodeLine{65     \textcolor{comment}{/* One or more lines have been cleared -\/-\/ show it to the player before removing them */}}
+\DoxyCodeLine{66     Game\_state\_Cleared}
+\DoxyCodeLine{67 \};}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}\label{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}} 
+\index{tetris.h@{tetris.h}!Tetrimino\_type@{Tetrimino\_type}}
+\index{Tetrimino\_type@{Tetrimino\_type}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{Tetrimino\_type}{Tetrimino\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a6b9a263d9a0327727ed75740ef1cfd86}{Tetrimino\+\_\+type}}}
+
+Enum to represent the possible types of tetrimino, as well as the type (\char`\"{}color\char`\"{}, like in the \char`\"{}standardized\char`\"{} versions of Tetris) of each block on the game board (when interpreted as a {\ttfamily enum Block\+\_\+type}). 0 is not used as it represents \char`\"{}empty space\char`\"{}. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{15                     \{}
+\DoxyCodeLine{16     Tetrimino\_type\_I = 1,}
+\DoxyCodeLine{17     Tetrimino\_type\_T,}
+\DoxyCodeLine{18     Tetrimino\_type\_J,}
+\DoxyCodeLine{19     Tetrimino\_type\_L,}
+\DoxyCodeLine{20     Tetrimino\_type\_S,}
+\DoxyCodeLine{21     Tetrimino\_type\_Z,}
+\DoxyCodeLine{22     Tetrimino\_type\_O}
+\DoxyCodeLine{23 \};}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{tetris_8h_a3059d73b19301c1d0c51365996be6058}\label{tetris_8h_a3059d73b19301c1d0c51365996be6058}} 
+\index{tetris.h@{tetris.h}!collides@{collides}}
+\index{collides@{collides}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{collides()}{collides()}}
+{\footnotesize\ttfamily int collides (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Check if the piece, when placed, would collide with existing blocks or with the outer bounds of the board. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{162 \{}
+\DoxyCodeLine{163     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{164 }
+\DoxyCodeLine{165     \textcolor{keywordflow}{for} (i = 0; i < 4; ++i) \{}
+\DoxyCodeLine{166         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j) \{}
+\DoxyCodeLine{167             \textcolor{comment}{/* only looking at the coordinates of actual blocks that form the piece */}}
+\DoxyCodeLine{168             \textcolor{keywordflow}{if} (!p-\/>shape[i][j]) \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{169             \textcolor{comment}{/* if the block collides with the outside frame */}}
+\DoxyCodeLine{170             \textcolor{keywordflow}{if} (p-\/>y + i < 0 || p-\/>y + i >= \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}}
+\DoxyCodeLine{171              || p-\/>x + j < 0 || p-\/>x + j >= BOARD\_COLS)}
+\DoxyCodeLine{172                \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{173             \textcolor{comment}{/* if the block collides with another block */}}
+\DoxyCodeLine{174             \textcolor{keywordflow}{if} (board[p-\/>y + i][p-\/>x + j]) \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{175         \}}
+\DoxyCodeLine{176     \}}
+\DoxyCodeLine{177     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{178 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}\label{tetris_8h_aa8c7c0ed992d07f1274c818db227b0a0}} 
+\index{tetris.h@{tetris.h}!drop\_piece@{drop\_piece}}
+\index{drop\_piece@{drop\_piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{drop\_piece()}{drop\_piece()}}
+{\footnotesize\ttfamily void drop\+\_\+piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{piece,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Drop the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting its y value to put it as low as possible on the board without colliding with other pieces. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{182 \{}
+\DoxyCodeLine{183     \textcolor{keywordflow}{for} (;;) \{}
+\DoxyCodeLine{184         ++piece-\/>y;}
+\DoxyCodeLine{185         \textcolor{keywordflow}{if} (\mbox{\hyperlink{tetris_8c_ae93305c912b6fb144419f2188274e01a}{collides}}(piece, board)) \{}
+\DoxyCodeLine{186             -\/-\/piece-\/>y;}
+\DoxyCodeLine{187             \textcolor{keywordflow}{return};}
+\DoxyCodeLine{188         \}}
+\DoxyCodeLine{189     \}}
+\DoxyCodeLine{190 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}\label{tetris_8h_a1394b4f6543c1611d6f337c62f0ce657}} 
+\index{tetris.h@{tetris.h}!init\_piece\_shape@{init\_piece\_shape}}
+\index{init\_piece\_shape@{init\_piece\_shape}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_piece\_shape()}{init\_piece\_shape()}}
+{\footnotesize\ttfamily void init\+\_\+piece\+\_\+shape (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p }\end{DoxyParamCaption})}
+
+Convenience function to set the shape of a piece during initialization, by reading the {\ttfamily type} field. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{114 \{}
+\DoxyCodeLine{115     memcpy(\&p-\/>shape, tetrimino\_shapes[p-\/>type-\/1], \textcolor{keyword}{sizeof} p-\/>shape);}
+\DoxyCodeLine{116 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}\label{tetris_8h_a2315ef47f6bd3cf6ac221fbec1779f9f}} 
+\index{tetris.h@{tetris.h}!lift\_piece@{lift\_piece}}
+\index{lift\_piece@{lift\_piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{lift\_piece()}{lift\_piece()}}
+{\footnotesize\ttfamily void lift\+\_\+piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{piece,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Leave a piece\textquotesingle{}s x value unchanged, and set its y value so that the piece is in the topmost position on the screen. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{194 \{}
+\DoxyCodeLine{195     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{196     piece-\/>y = 0;}
+\DoxyCodeLine{197     \textcolor{keywordflow}{for} (i = 0; i < 3; ++i) \{}
+\DoxyCodeLine{198         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j)}
+\DoxyCodeLine{199             \textcolor{keywordflow}{if} (piece-\/>shape[i][j]) \textcolor{keywordflow}{return};}
+\DoxyCodeLine{200         -\/-\/piece-\/>y;}
+\DoxyCodeLine{201     \}}
+\DoxyCodeLine{202 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}\label{tetris_8h_a95ddfe3186ac607838c3206ddb83077c}} 
+\index{tetris.h@{tetris.h}!place\_piece@{place\_piece}}
+\index{place\_piece@{place\_piece}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{place\_piece()}{place\_piece()}}
+{\footnotesize\ttfamily void place\+\_\+piece (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p,  }\item[{\mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}}]{board,  }\item[{unsigned char}]{type }\end{DoxyParamCaption})}
+
+Place a piece on the board with no \char`\"{}collision\char`\"{} checking and assuming it fits inside the bounds, setting each cell occupied by the piece to {\ttfamily type}. Can be used to \char`\"{}cut out\char`\"{} a piece by filling with empty space or to draw \char`\"{}ghost pieces\char`\"{}. Note that x and y can actually be negative, and likewise y + 4 can be \texorpdfstring{$>$}{>}= BOARD\+\_\+\+WIDTH. It is the caller\textquotesingle{}s responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words, looking at piece-\/\texorpdfstring{$>$}{>}shape, {\bfseries{only zeroes}} can end up outside of the board. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{150 \{}
+\DoxyCodeLine{151     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{152 }
+\DoxyCodeLine{153     \textcolor{keywordflow}{for} (i = 0; i < 4; ++i) \{}
+\DoxyCodeLine{154         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j) \{}
+\DoxyCodeLine{155             \textcolor{keywordflow}{if} (p-\/>shape[i][j]) board[p-\/>y + i][p-\/>x + j] = type;}
+\DoxyCodeLine{156         \}}
+\DoxyCodeLine{157     \}}
+\DoxyCodeLine{158 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}\label{tetris_8h_aee85f4dc2fc1eddd20a2f3b0d5b4c5fa}} 
+\index{tetris.h@{tetris.h}!rotate\_shape\_cw@{rotate\_shape\_cw}}
+\index{rotate\_shape\_cw@{rotate\_shape\_cw}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{rotate\_shape\_cw()}{rotate\_shape\_cw()}}
+{\footnotesize\ttfamily void rotate\+\_\+shape\+\_\+cw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}}}]{shape }\end{DoxyParamCaption})}
+
+Rotate a shape clockwise. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{120 \{}
+\DoxyCodeLine{121     \textcolor{comment}{/* }}
+\DoxyCodeLine{122 \textcolor{comment}{     * Dumb but it works :P}}
+\DoxyCodeLine{123 \textcolor{comment}{     *}}
+\DoxyCodeLine{124 \textcolor{comment}{     * (0,0) (0,1) (0,2) (0,3)      (3,0) (2,0) (1,0) (0,0)}}
+\DoxyCodeLine{125 \textcolor{comment}{     * (1,0) (1,1) (1,2) (1,3)  -\/>  (3,1) (2,1) (1,1) (0,1)}}
+\DoxyCodeLine{126 \textcolor{comment}{     * (2,0) (2,1) (2,2) (2,3)      (3,2) (2,2) (1,2) (0,2)}}
+\DoxyCodeLine{127 \textcolor{comment}{     * (3,0) (3,1) (3,2) (3,3)      (3,3) (2,3) (1,3) (0,3)}}
+\DoxyCodeLine{128 \textcolor{comment}{     */}}
+\DoxyCodeLine{129     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{130     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} t;}
+\DoxyCodeLine{131 }
+\DoxyCodeLine{132     \textcolor{comment}{/* rotate outer ring */}}
+\DoxyCodeLine{133     \textcolor{keywordflow}{for} (i = 0; i < 3; ++i) \{}
+\DoxyCodeLine{134         t = shape[0][i];}
+\DoxyCodeLine{135         shape[0][i] = shape[3-\/i][0];}
+\DoxyCodeLine{136         shape[3-\/i][0] = shape[3][3-\/i];}
+\DoxyCodeLine{137         shape[3][3-\/i] = shape[i][3];}
+\DoxyCodeLine{138         shape[i][3] = t;}
+\DoxyCodeLine{139     \}}
+\DoxyCodeLine{140     \textcolor{comment}{/* rotate inner ring */}}
+\DoxyCodeLine{141     t = shape[1][1];}
+\DoxyCodeLine{142     shape[1][1] = shape[2][1];}
+\DoxyCodeLine{143     shape[2][1] = shape[2][2];}
+\DoxyCodeLine{144     shape[2][2] = shape[1][2];}
+\DoxyCodeLine{145     shape[1][2] = t;}
+\DoxyCodeLine{146 \}}
+
+\end{DoxyCode}

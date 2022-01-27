@@ -1,3 +1,8 @@
+/**
+ * @file opponentai.c
+ * @author Maksim Kovalkov
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

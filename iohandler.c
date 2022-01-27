@@ -1,3 +1,8 @@
+/**
+ * @file iohandler.c
+ * @author Maksim Kovalkov
+ */
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -364,7 +369,7 @@ update_screen_2p(char **scr, Game const *game) {
 }
 
 void
-iohandler_draw_1p(Io_handler *ioh, Game const *game)
+iohandler_draw_and_read(Io_handler *ioh, Game const *game)
 {
     /* Update the screen, display it, and print the prompt.  
        Due to the "asyncronous" nature of this style of interaction, we can immediately read and store the input

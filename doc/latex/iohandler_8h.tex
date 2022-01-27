@@ -1,0 +1,193 @@
+\hypertarget{iohandler_8h}{}\doxysection{iohandler.\+h File Reference}
+\label{iohandler_8h}\index{iohandler.h@{iohandler.h}}
+{\ttfamily \#include \char`\"{}tetris.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{iohandler_8h_a90ccdfc86c32cc40fd212122b89ba8b4}\label{iohandler_8h_a90ccdfc86c32cc40fd212122b89ba8b4}} 
+typedef struct \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} {\bfseries Io\+\_\+handler}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ \mbox{\hyperlink{iohandler_8h_a7225498f309a1f7961f131dd0ee42aab}{iohandler\+\_\+create}} (int)
+\item 
+void \mbox{\hyperlink{iohandler_8h_a41558aa0cd7e92a6a582e96aceb97686}{iohandler\+\_\+destroy}} (\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$)
+\item 
+enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} \mbox{\hyperlink{iohandler_8h_a66ef6abebdcd985e3aa3fd99b05b2afe}{iohandler\+\_\+next\+\_\+action\+\_\+1p}} (\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$, \mbox{\hyperlink{struct_game}{Game}} const $\ast$)
+\item 
+void \mbox{\hyperlink{iohandler_8h_a48281b15bb64172002323a221b9199d1}{iohandler\+\_\+draw\+\_\+and\+\_\+read}} (\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$, \mbox{\hyperlink{struct_game}{Game}} const $\ast$)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{iohandler_8h_a7225498f309a1f7961f131dd0ee42aab}\label{iohandler_8h_a7225498f309a1f7961f131dd0ee42aab}} 
+\index{iohandler.h@{iohandler.h}!iohandler\_create@{iohandler\_create}}
+\index{iohandler\_create@{iohandler\_create}!iohandler.h@{iohandler.h}}
+\doxysubsubsection{\texorpdfstring{iohandler\_create()}{iohandler\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ iohandler\+\_\+create (\begin{DoxyParamCaption}\item[{int}]{multiplayer }\end{DoxyParamCaption})}
+
+Allocate and initialize an \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}. Exits on failure. ~\newline
+ Caller owns the returned object and must call {\ttfamily iohandler\+\_\+destroy} to correctly clean up. ~\newline
+ \begin{DoxyReturn}{Returns}
+a pointer to a valid instance of \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{144 \{}
+\DoxyCodeLine{145     \textcolor{keywordtype}{int} i, scr\_cols;}
+\DoxyCodeLine{146 }
+\DoxyCodeLine{147     \mbox{\hyperlink{struct_io__handler}{Io\_handler}} *ioh = \mbox{\hyperlink{util_8c_ae6019b6343c07934f27a553cdb12e437}{malloc\_or\_die}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_io__handler}{Io\_handler}}));}
+\DoxyCodeLine{148 }
+\DoxyCodeLine{149     scr\_cols = multiplayer ? SCREEN\_COLUMNS\_2P : SCREEN\_COLUMNS\_1P;}
+\DoxyCodeLine{150     ioh-\/>screen = \mbox{\hyperlink{util_8c_ae98d933ff052c21025d879dddf5d60be}{alloc\_many\_or\_die}}(SCREEN\_LINES, scr\_cols);}
+\DoxyCodeLine{151     \textcolor{keywordflow}{for} (i = 0; i < SCREEN\_LINES; ++i) \{}
+\DoxyCodeLine{152         memcpy(ioh-\/>screen[i], screen\_init\_state[i], scr\_cols);}
+\DoxyCodeLine{153         ioh-\/>screen[i][scr\_cols-\/1] = 0;}
+\DoxyCodeLine{154     \}}
+\DoxyCodeLine{155 }
+\DoxyCodeLine{156     \textcolor{keywordflow}{if} (multiplayer) \{}
+\DoxyCodeLine{157         memcpy(\&ioh-\/>screen[field\_coords[fld\_mid\_score][0]][field\_coords[fld\_mid\_score][1] -\/ 9], \textcolor{stringliteral}{"{}   scores:  "{}}, 12);}
+\DoxyCodeLine{158     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{159         memset(\&ioh-\/>screen[field\_coords[fld\_p1\_score][0]][field\_coords[fld\_p1\_score][1] -\/ 4], \textcolor{charliteral}{' '}, 23);}
+\DoxyCodeLine{160     \}}
+\DoxyCodeLine{161 }
+\DoxyCodeLine{162     ioh-\/>input\_i = 0;}
+\DoxyCodeLine{163     ioh-\/>input\_buf[0] = 0;}
+\DoxyCodeLine{164 }
+\DoxyCodeLine{165     setvbuf(stdout, NULL, \_IOFBF, 4096);}
+\DoxyCodeLine{166     \textcolor{keywordflow}{return} ioh;}
+\DoxyCodeLine{167 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8h_a41558aa0cd7e92a6a582e96aceb97686}\label{iohandler_8h_a41558aa0cd7e92a6a582e96aceb97686}} 
+\index{iohandler.h@{iohandler.h}!iohandler\_destroy@{iohandler\_destroy}}
+\index{iohandler\_destroy@{iohandler\_destroy}!iohandler.h@{iohandler.h}}
+\doxysubsubsection{\texorpdfstring{iohandler\_destroy()}{iohandler\_destroy()}}
+{\footnotesize\ttfamily void iohandler\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$}]{ioh }\end{DoxyParamCaption})}
+
+Deinitialize and deallocate an \mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}}, which must have been initialized by {\ttfamily iohandler\+\_\+create}. ~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{171 \{}
+\DoxyCodeLine{172     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{173     \textcolor{keywordflow}{for} (i = 0; i < SCREEN\_LINES; ++i)}
+\DoxyCodeLine{174         free(ioh-\/>screen[i]);}
+\DoxyCodeLine{175     free(ioh-\/>screen);}
+\DoxyCodeLine{176     }
+\DoxyCodeLine{177     free(ioh);}
+\DoxyCodeLine{178 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8h_a48281b15bb64172002323a221b9199d1}\label{iohandler_8h_a48281b15bb64172002323a221b9199d1}} 
+\index{iohandler.h@{iohandler.h}!iohandler\_draw\_and\_read@{iohandler\_draw\_and\_read}}
+\index{iohandler\_draw\_and\_read@{iohandler\_draw\_and\_read}!iohandler.h@{iohandler.h}}
+\doxysubsubsection{\texorpdfstring{iohandler\_draw\_and\_read()}{iohandler\_draw\_and\_read()}}
+{\footnotesize\ttfamily void iohandler\+\_\+draw\+\_\+and\+\_\+read (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$}]{ioh,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+Given a game state prepared for drawing, update the visual representation of the board; reset the input handler state, since inputs cannot be carried over from a previous game loop iteration. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{373 \{}
+\DoxyCodeLine{374     \textcolor{comment}{/* Update the screen, display it, and print the prompt.  }}
+\DoxyCodeLine{375 \textcolor{comment}{       Due to the "{}asyncronous"{} nature of this style of interaction, we can immediately read and store the input}}
+\DoxyCodeLine{376 \textcolor{comment}{       to be processed later by the other function. */}}
+\DoxyCodeLine{377     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{378 }
+\DoxyCodeLine{379     \textcolor{keywordflow}{if} (game-\/>kind == Game\_kind\_Singleplayer)}
+\DoxyCodeLine{380         update\_screen\_1p(ioh-\/>screen, game);}
+\DoxyCodeLine{381     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{382         update\_screen\_2p(ioh-\/>screen, game);}
+\DoxyCodeLine{383 }
+\DoxyCodeLine{384     fputs(\textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)n\(\backslash\)n\(\backslash\)n\(\backslash\)n"{}}, stdout);}
+\DoxyCodeLine{385     \textcolor{keywordflow}{for} (i = 0; i < SCREEN\_LINES; ++i) \{}
+\DoxyCodeLine{386         puts(ioh-\/>screen[i]);}
+\DoxyCodeLine{387     \}}
+\DoxyCodeLine{388 }
+\DoxyCodeLine{389     \textcolor{keywordflow}{if} (game-\/>kind == Game\_kind\_Vs\_player)}
+\DoxyCodeLine{390         fputs(game-\/>current\_player == 0 ? \textcolor{stringliteral}{"{}\#\# PLAYER 1 \#\# "{}} : \textcolor{stringliteral}{"{}\#\# PLAYER 2 \#\# "{}}, stdout);}
+\DoxyCodeLine{391 }
+\DoxyCodeLine{392     fputs(prompts[game-\/>state-\/1], stdout);}
+\DoxyCodeLine{393     fflush(stdout);}
+\DoxyCodeLine{394     ioh-\/>input\_i = 0;}
+\DoxyCodeLine{395 }
+\DoxyCodeLine{396     \textcolor{comment}{/*  scanf("{}\%31[\string^\(\backslash\)n]"{}, ioh-\/>input\_buf);}}
+\DoxyCodeLine{397 \textcolor{comment}{        if (strlen(ioh-\/>input\_buf) != INPUT\_BUF\_LEN-\/1)}}
+\DoxyCodeLine{398 \textcolor{comment}{           scanf("{}\%*[\string^\(\backslash\)n]"{});}}
+\DoxyCodeLine{399 \textcolor{comment}{    */}}
+\DoxyCodeLine{400     \textcolor{comment}{/* keep reading until newline but at most INPUT\_BUF\_LEN chars; throw out whatever is left */}}
+\DoxyCodeLine{401     \textcolor{keywordflow}{for} (i = 0; i < INPUT\_BUF\_LEN-\/1; ++i) \{}
+\DoxyCodeLine{402         \textcolor{keywordflow}{if} ((ioh-\/>input\_buf[i] = getchar()) == \textcolor{charliteral}{'\(\backslash\)n'})}
+\DoxyCodeLine{403             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{404     \} }
+\DoxyCodeLine{405     \textcolor{keywordflow}{if} (i == INPUT\_BUF\_LEN-\/1) \{}
+\DoxyCodeLine{406         \textcolor{keywordflow}{while} (getchar() != \textcolor{charliteral}{'\(\backslash\)n'}) \textcolor{comment}{/* discard */};}
+\DoxyCodeLine{407     \} }
+\DoxyCodeLine{408     ioh-\/>input\_buf[i] = 0;}
+\DoxyCodeLine{409 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{iohandler_8h_a66ef6abebdcd985e3aa3fd99b05b2afe}\label{iohandler_8h_a66ef6abebdcd985e3aa3fd99b05b2afe}} 
+\index{iohandler.h@{iohandler.h}!iohandler\_next\_action\_1p@{iohandler\_next\_action\_1p}}
+\index{iohandler\_next\_action\_1p@{iohandler\_next\_action\_1p}!iohandler.h@{iohandler.h}}
+\doxysubsubsection{\texorpdfstring{iohandler\_next\_action\_1p()}{iohandler\_next\_action\_1p()}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{tetris_8h_a80edd34c3b94a368ca215539076f733c}{Game\+\_\+action}} iohandler\+\_\+next\+\_\+action\+\_\+1p (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$}]{ioh,  }\item[{\mbox{\hyperlink{struct_game}{Game}} const $\ast$}]{game }\end{DoxyParamCaption})}
+
+Given the current game state, process one input and return a game action coherent with the game state. ~\newline
+ This function is called multiple times in a single game loop iteration. It must keep yielding actions until there are any valid inputs, then return a special value {\ttfamily Game\+\_\+action\+\_\+\+Queue\+\_\+empty} to signal that there are no more actions. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{413 \{}
+\DoxyCodeLine{414     \textcolor{keywordtype}{char} c;}
+\DoxyCodeLine{415     }
+\DoxyCodeLine{416     \textcolor{keywordflow}{do} \{}
+\DoxyCodeLine{417         c = ioh-\/>input\_buf[ioh-\/>input\_i++];}
+\DoxyCodeLine{418     \} \textcolor{keywordflow}{while} (c == \textcolor{charliteral}{' '}); \textcolor{comment}{/* no buf overflow: will reach '\(\backslash\)0' eventually */} }
+\DoxyCodeLine{419 }
+\DoxyCodeLine{420     \textcolor{keywordflow}{switch} (game-\/>state) \{}
+\DoxyCodeLine{421     \textcolor{keywordflow}{case} Game\_state\_Choose:}
+\DoxyCodeLine{422         \textcolor{keywordflow}{switch} (c) \{}
+\DoxyCodeLine{423         \textcolor{keywordflow}{case} KEY\_I: \textcolor{keywordflow}{case} CHARUPPER(KEY\_I):}
+\DoxyCodeLine{424             return Game\_action\_Choose\_I;}
+\DoxyCodeLine{425         \textcolor{keywordflow}{case} KEY\_T: \textcolor{keywordflow}{case} CHARUPPER(KEY\_T):}
+\DoxyCodeLine{426             return Game\_action\_Choose\_T;}
+\DoxyCodeLine{427         \textcolor{keywordflow}{case} KEY\_J: \textcolor{keywordflow}{case} CHARUPPER(KEY\_J):}
+\DoxyCodeLine{428             return Game\_action\_Choose\_J;}
+\DoxyCodeLine{429         \textcolor{keywordflow}{case} KEY\_L: \textcolor{keywordflow}{case} CHARUPPER(KEY\_L):}
+\DoxyCodeLine{430             return Game\_action\_Choose\_L;}
+\DoxyCodeLine{431         \textcolor{keywordflow}{case} KEY\_S: \textcolor{keywordflow}{case} CHARUPPER(KEY\_S):}
+\DoxyCodeLine{432             return Game\_action\_Choose\_S;}
+\DoxyCodeLine{433         \textcolor{keywordflow}{case} KEY\_Z: \textcolor{keywordflow}{case} CHARUPPER(KEY\_Z):}
+\DoxyCodeLine{434             return Game\_action\_Choose\_Z;}
+\DoxyCodeLine{435         \textcolor{keywordflow}{case} KEY\_O: \textcolor{keywordflow}{case} CHARUPPER(KEY\_O):}
+\DoxyCodeLine{436             return Game\_action\_Choose\_O;}
+\DoxyCodeLine{437         \}}
+\DoxyCodeLine{438         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{439     \textcolor{keywordflow}{case} Game\_state\_Place:}
+\DoxyCodeLine{440         \textcolor{keywordflow}{switch} (c) \{}
+\DoxyCodeLine{441         \textcolor{keywordflow}{case}   KEY\_LEFT: \textcolor{keywordflow}{case}   CHARUPPER(KEY\_LEFT):}
+\DoxyCodeLine{442             return Game\_action\_Left;}
+\DoxyCodeLine{443         \textcolor{keywordflow}{case}  KEY\_RIGHT: \textcolor{keywordflow}{case}  CHARUPPER(KEY\_RIGHT):}
+\DoxyCodeLine{444             return Game\_action\_Right;}
+\DoxyCodeLine{445         \textcolor{keywordflow}{case} KEY\_ROTATE: \textcolor{keywordflow}{case} CHARUPPER(KEY\_ROTATE):}
+\DoxyCodeLine{446             return Game\_action\_Rotate;}
+\DoxyCodeLine{447         \textcolor{keywordflow}{case}   KEY\_DROP: \textcolor{keywordflow}{case}   CHARUPPER(KEY\_DROP):}
+\DoxyCodeLine{448             return Game\_action\_Drop;}
+\DoxyCodeLine{449         \}}
+\DoxyCodeLine{450         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{451     \textcolor{keywordflow}{case} Game\_state\_Cleared:}
+\DoxyCodeLine{452         \textcolor{keywordflow}{return} Game\_action\_Finish\_clearing;}
+\DoxyCodeLine{453     \textcolor{keywordflow}{case} Game\_state\_Lose:}
+\DoxyCodeLine{454     \textcolor{keywordflow}{case} Game\_state\_Win:}
+\DoxyCodeLine{455         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{456     \textcolor{comment}{/* exhaustive */}}
+\DoxyCodeLine{457     \}}
+\DoxyCodeLine{458 }
+\DoxyCodeLine{459     \textcolor{keywordflow}{return} Game\_action\_Queue\_empty;}
+\DoxyCodeLine{460 \}}
+
+\end{DoxyCode}

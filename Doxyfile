@@ -1,0 +1,23 @@
+DOXYFILE_ENCODING      = UTF-8
+
+PROJECT_NAME           = "X-Tetris"
+
+OUTPUT_DIRECTORY       = doc
+
+OUTPUT_LANGUAGE        = English
+
+INPUT                  = tetris.c tetris.h iohandler.c iohandler.h opponentai.c opponentai.h util.c util.h constants.h
+
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+
+GENERATE_LATEX         = YES
+LATEX_OUTPUT           = tex
+
+OPTIMIZE_OUTPUT_FOR_C  = YES
+
+INLINE_SOURCES         = YES
+EXTRACT_ALL            = YES
+EXTRACT_PACKAGE        = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES

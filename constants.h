@@ -1,3 +1,8 @@
+/**
+ * @file constants.h
+ * @author Maksim Kovalkov
+ */
+
 #ifndef XTETRIS_CONSTANTS_H
 #define XTETRIS_CONSTANTS_H
 

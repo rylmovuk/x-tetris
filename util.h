@@ -1,3 +1,8 @@
+/**
+ * @file util.h
+ * @author Maksim Kovalkov
+ */
+
 #ifndef XTETRIS_UTIL_H
 #define XTETRIS_UTIL_H
 

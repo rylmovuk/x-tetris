@@ -1,3 +1,20 @@
+/**
+ * @file tetris.c
+ * @author Maksim Kovalkov
+ *
+ * @mainpage X - Tetris
+ * 
+ * @section install_sec Installing
+ * See @link md_README the README page. @endlink
+ * 
+ * @section files_sec Documentation per file
+ * @li tetris.c
+ * @li iohandler.c
+ * @li opponentai.c
+ * @li constants.h
+ * @li util.h
+ * 
+ */
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -89,18 +106,12 @@ Opponent_ai *g_opp_ai = NULL;
 
 /* ------ Functions ------ */
 
-/**
- * Convenience function to set the shape of a piece during initialization, by reading the `type` field.
- */
 void
 init_piece_shape(Piece *p)
 {
     memcpy(&p->shape, tetrimino_shapes[p->type-1], sizeof p->shape);
 }
 
-/**
- * Rotate a shape clockwise.
- */
 void
 rotate_shape_cw(Tetrimino_shape shape)
 {
@@ -131,14 +142,6 @@ rotate_shape_cw(Tetrimino_shape shape)
     shape[1][2] = t;
 }
 
-/**
- * Place a piece on the board with no "collision" checking and assuming it fits inside the bounds,
- * setting each cell occupied by the piece to `type`.
- * Can be used to "cut out" a piece by filling with empty space or to draw "ghost pieces".
- * Note that x and y can actually be negative, and likewise y + 4 can be >= BOARD_WIDTH. It is the caller's
- * responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words,
- * looking at piece->shape, **only zeroes** can end up outside of the board.
- */
 void
 place_piece(const Piece *p, Board board, unsigned char type)
 {
@@ -151,9 +154,6 @@ place_piece(const Piece *p, Board board, unsigned char type)
     }
 }
 
-/**
- * Check if the piece, when placed, would collide with existing blocks or with the outer bounds of the board.
- */
 int
 collides(const Piece *p, const Board board)
 {
@@ -174,10 +174,6 @@ collides(const Piece *p, const Board board)
     return 0;
 }
 
-/**
- * Drop the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting
- * its y value to put it as low as possible on the board without colliding with other pieces.
- */
 void
 drop_piece(Piece *piece, const Board board)
 {
@@ -190,9 +186,6 @@ drop_piece(Piece *piece, const Board board)
     }
 }
 
-/**
- * Leave a piece's x value unchanged, and set its y value so that the piece is in the topmost position on the screen.
- */
 void
 lift_piece(Piece *piece, const Board board)
 {
@@ -331,7 +324,7 @@ draw(Game *game, Io_handler *io_handler)
         place_piece(&game->active_piece, game->board[game->current_player], Block_type_Badbk);
     }
 
-    iohandler_draw_1p(io_handler, game);
+    iohandler_draw_and_read(io_handler, game);
 
     /* done drawing */
     fflush(stdout);
@@ -557,6 +550,9 @@ run_menu(char const * const *entries, int entries_n)
     return ans;
 }
 
+/**
+ * Main function.
+ */
 int
 main()
 {

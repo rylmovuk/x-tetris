@@ -1,3 +1,7 @@
+/**
+ * @file opponentai.h
+ * @author Maksim Kovalkov
+ */
 #ifndef XTETRIS_OPPONENTAI_H
 #define XTETRIS_OPPONENTAI_H
 

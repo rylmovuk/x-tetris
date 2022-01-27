@@ -1,0 +1,219 @@
+\hypertarget{tetris_8c}{}\doxysection{tetris.\+c File Reference}
+\label{tetris_8c}\index{tetris.c@{tetris.c}}
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tetris.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}iohandler.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}opponentai.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{tetris_8c_a4f68ceddf81ce075c77a82fec2809857}{init\+\_\+piece\+\_\+shape}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$p)
+\item 
+void \mbox{\hyperlink{tetris_8c_a0278303c0ee8b4dbf6db70001c5eeac2}{rotate\+\_\+shape\+\_\+cw}} (\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}} shape)
+\item 
+void \mbox{\hyperlink{tetris_8c_a63db510ab66e5f8fa3594aa1cc466bca}{place\+\_\+piece}} (const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$p, \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} board, unsigned char type)
+\item 
+int \mbox{\hyperlink{tetris_8c_ae93305c912b6fb144419f2188274e01a}{collides}} (const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$p, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} board)
+\item 
+void \mbox{\hyperlink{tetris_8c_a68a0a1695ef69fb932b71defe1775bb3}{drop\+\_\+piece}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$piece, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} board)
+\item 
+void \mbox{\hyperlink{tetris_8c_a86e91addc3f965d33baf599e5fae4623}{lift\+\_\+piece}} (\mbox{\hyperlink{struct_piece}{Piece}} $\ast$piece, const \mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}} board)
+\item 
+int \mbox{\hyperlink{tetris_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{tetris_8c_a1f6033465da154e79c30327bb9c05fb8}\label{tetris_8c_a1f6033465da154e79c30327bb9c05fb8}} 
+\mbox{\hyperlink{struct_game}{Game}} {\bfseries g\+\_\+game}
+\item 
+\mbox{\Hypertarget{tetris_8c_a663deea4bbc8f529ceee01b80ed97140}\label{tetris_8c_a663deea4bbc8f529ceee01b80ed97140}} 
+\mbox{\hyperlink{struct_io__handler}{Io\+\_\+handler}} $\ast$ {\bfseries g\+\_\+io\+\_\+handler} = NULL
+\item 
+\mbox{\Hypertarget{tetris_8c_a8c529e425fd9275cf8f90157370ba5db}\label{tetris_8c_a8c529e425fd9275cf8f90157370ba5db}} 
+\mbox{\hyperlink{struct_opponent__ai}{Opponent\+\_\+ai}} $\ast$ {\bfseries g\+\_\+opp\+\_\+ai} = NULL
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Maksim Kovalkov 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{tetris_8c_ae93305c912b6fb144419f2188274e01a}\label{tetris_8c_ae93305c912b6fb144419f2188274e01a}} 
+\index{tetris.c@{tetris.c}!collides@{collides}}
+\index{collides@{collides}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{collides()}{collides()}}
+{\footnotesize\ttfamily int collides (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Check if the piece, when placed, would collide with existing blocks or with the outer bounds of the board. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{162 \{}
+\DoxyCodeLine{163     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{164 }
+\DoxyCodeLine{165     \textcolor{keywordflow}{for} (i = 0; i < 4; ++i) \{}
+\DoxyCodeLine{166         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j) \{}
+\DoxyCodeLine{167             \textcolor{comment}{/* only looking at the coordinates of actual blocks that form the piece */}}
+\DoxyCodeLine{168             \textcolor{keywordflow}{if} (!p-\/>shape[i][j]) \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{169             \textcolor{comment}{/* if the block collides with the outside frame */}}
+\DoxyCodeLine{170             \textcolor{keywordflow}{if} (p-\/>y + i < 0 || p-\/>y + i >= \mbox{\hyperlink{constants_8h_afdeabcf1ceb950f88253cd775bacc441}{BOARD\_ROWS}}}
+\DoxyCodeLine{171              || p-\/>x + j < 0 || p-\/>x + j >= BOARD\_COLS)}
+\DoxyCodeLine{172                \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{173             \textcolor{comment}{/* if the block collides with another block */}}
+\DoxyCodeLine{174             \textcolor{keywordflow}{if} (board[p-\/>y + i][p-\/>x + j]) \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{175         \}}
+\DoxyCodeLine{176     \}}
+\DoxyCodeLine{177     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{178 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8c_a68a0a1695ef69fb932b71defe1775bb3}\label{tetris_8c_a68a0a1695ef69fb932b71defe1775bb3}} 
+\index{tetris.c@{tetris.c}!drop\_piece@{drop\_piece}}
+\index{drop\_piece@{drop\_piece}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{drop\_piece()}{drop\_piece()}}
+{\footnotesize\ttfamily void drop\+\_\+piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{piece,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Drop the piece, in the conventional Tetris sense. More precisely, this means keeping its x value, and setting its y value to put it as low as possible on the board without colliding with other pieces. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{182 \{}
+\DoxyCodeLine{183     \textcolor{keywordflow}{for} (;;) \{}
+\DoxyCodeLine{184         ++piece-\/>y;}
+\DoxyCodeLine{185         \textcolor{keywordflow}{if} (\mbox{\hyperlink{tetris_8c_ae93305c912b6fb144419f2188274e01a}{collides}}(piece, board)) \{}
+\DoxyCodeLine{186             -\/-\/piece-\/>y;}
+\DoxyCodeLine{187             \textcolor{keywordflow}{return};}
+\DoxyCodeLine{188         \}}
+\DoxyCodeLine{189     \}}
+\DoxyCodeLine{190 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8c_a4f68ceddf81ce075c77a82fec2809857}\label{tetris_8c_a4f68ceddf81ce075c77a82fec2809857}} 
+\index{tetris.c@{tetris.c}!init\_piece\_shape@{init\_piece\_shape}}
+\index{init\_piece\_shape@{init\_piece\_shape}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{init\_piece\_shape()}{init\_piece\_shape()}}
+{\footnotesize\ttfamily void init\+\_\+piece\+\_\+shape (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p }\end{DoxyParamCaption})}
+
+Convenience function to set the shape of a piece during initialization, by reading the {\ttfamily type} field. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{114 \{}
+\DoxyCodeLine{115     memcpy(\&p-\/>shape, tetrimino\_shapes[p-\/>type-\/1], \textcolor{keyword}{sizeof} p-\/>shape);}
+\DoxyCodeLine{116 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8c_a86e91addc3f965d33baf599e5fae4623}\label{tetris_8c_a86e91addc3f965d33baf599e5fae4623}} 
+\index{tetris.c@{tetris.c}!lift\_piece@{lift\_piece}}
+\index{lift\_piece@{lift\_piece}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{lift\_piece()}{lift\_piece()}}
+{\footnotesize\ttfamily void lift\+\_\+piece (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{piece,  }\item[{const}]{Board }\end{DoxyParamCaption})}
+
+Leave a piece\textquotesingle{}s x value unchanged, and set its y value so that the piece is in the topmost position on the screen. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{194 \{}
+\DoxyCodeLine{195     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{196     piece-\/>y = 0;}
+\DoxyCodeLine{197     \textcolor{keywordflow}{for} (i = 0; i < 3; ++i) \{}
+\DoxyCodeLine{198         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j)}
+\DoxyCodeLine{199             \textcolor{keywordflow}{if} (piece-\/>shape[i][j]) \textcolor{keywordflow}{return};}
+\DoxyCodeLine{200         -\/-\/piece-\/>y;}
+\DoxyCodeLine{201     \}}
+\DoxyCodeLine{202 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{tetris_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{tetris.c@{tetris.c}!main@{main}}
+\index{main@{main}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Main function. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{561 \{}
+\DoxyCodeLine{562     \textcolor{keywordtype}{char} \textcolor{keyword}{const} * \textcolor{keyword}{const} menu\_items[] = \{}
+\DoxyCodeLine{563         \textcolor{stringliteral}{"{}Single player"{}},}
+\DoxyCodeLine{564         \textcolor{stringliteral}{"{}Multiplayer -\/-\/ two players"{}},}
+\DoxyCodeLine{565         \textcolor{stringliteral}{"{}Multiplayer -\/-\/ vs. AI"{}}}
+\DoxyCodeLine{566     \};}
+\DoxyCodeLine{567     \textcolor{keywordtype}{int} choice;}
+\DoxyCodeLine{568 }
+\DoxyCodeLine{569     puts(}
+\DoxyCodeLine{570         \textcolor{stringliteral}{"{} \_       \_\_\_\_\_  \_\_\_\_ \_\_\_\_\_  \_\_\_   \_   \_\_ \(\backslash\)n"{}}}
+\DoxyCodeLine{571         \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\) \(\backslash\)\(\backslash\)\_/ \_\_  | |  | |\_   | |  | |\_) | | ( (`\(\backslash\)n"{}}}
+\DoxyCodeLine{572         \textcolor{stringliteral}{"{}/\_/ \(\backslash\)\(\backslash\)     |\_|  |\_|\_\_  |\_|  |\_| \(\backslash\)\(\backslash\) |\_| \_)\_)\(\backslash\)n"{}}}
+\DoxyCodeLine{573     );}
+\DoxyCodeLine{574     puts(\textcolor{stringliteral}{"{}Welcome! Choose a game mode:"{}});}
+\DoxyCodeLine{575     choice = run\_menu(menu\_items, 3);}
+\DoxyCodeLine{576 }
+\DoxyCodeLine{577     game\_init(\&g\_game, (\textcolor{keyword}{enum} Game\_kind) choice);}
+\DoxyCodeLine{578     g\_io\_handler = \mbox{\hyperlink{iohandler_8c_a4439919e3e5da577126633f26ef18e1e}{iohandler\_create}}(choice != 0);}
+\DoxyCodeLine{579     \textcolor{keywordflow}{if} (choice != 0)}
+\DoxyCodeLine{580         g\_opp\_ai = \mbox{\hyperlink{opponentai_8c_a0576dad202a49831da7b17d1b675f257}{ai\_create}}();}
+\DoxyCodeLine{581     atexit(\&atexit\_fn);}
+\DoxyCodeLine{582 }
+\DoxyCodeLine{583     game\_loop(\&g\_game, g\_io\_handler, g\_opp\_ai);}
+\DoxyCodeLine{584 }
+\DoxyCodeLine{585     \textcolor{keywordflow}{return} EXIT\_SUCCESS;}
+\DoxyCodeLine{586 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8c_a63db510ab66e5f8fa3594aa1cc466bca}\label{tetris_8c_a63db510ab66e5f8fa3594aa1cc466bca}} 
+\index{tetris.c@{tetris.c}!place\_piece@{place\_piece}}
+\index{place\_piece@{place\_piece}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{place\_piece()}{place\_piece()}}
+{\footnotesize\ttfamily void place\+\_\+piece (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_piece}{Piece}} $\ast$}]{p,  }\item[{\mbox{\hyperlink{tetris_8h_a37a6eb6da737b0484cc5c532330ef4c6}{Board}}}]{board,  }\item[{unsigned char}]{type }\end{DoxyParamCaption})}
+
+Place a piece on the board with no \char`\"{}collision\char`\"{} checking and assuming it fits inside the bounds, setting each cell occupied by the piece to {\ttfamily type}. Can be used to \char`\"{}cut out\char`\"{} a piece by filling with empty space or to draw \char`\"{}ghost pieces\char`\"{}. Note that x and y can actually be negative, and likewise y + 4 can be \texorpdfstring{$>$}{>}= BOARD\+\_\+\+WIDTH. It is the caller\textquotesingle{}s responsibility to ensure that no block compised by the piece ends up out of bounds -- in other words, looking at piece-\/\texorpdfstring{$>$}{>}shape, {\bfseries{only zeroes}} can end up outside of the board. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{150 \{}
+\DoxyCodeLine{151     \textcolor{keywordtype}{int} i, j;}
+\DoxyCodeLine{152 }
+\DoxyCodeLine{153     \textcolor{keywordflow}{for} (i = 0; i < 4; ++i) \{}
+\DoxyCodeLine{154         \textcolor{keywordflow}{for} (j = 0; j < 4; ++j) \{}
+\DoxyCodeLine{155             \textcolor{keywordflow}{if} (p-\/>shape[i][j]) board[p-\/>y + i][p-\/>x + j] = type;}
+\DoxyCodeLine{156         \}}
+\DoxyCodeLine{157     \}}
+\DoxyCodeLine{158 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{tetris_8c_a0278303c0ee8b4dbf6db70001c5eeac2}\label{tetris_8c_a0278303c0ee8b4dbf6db70001c5eeac2}} 
+\index{tetris.c@{tetris.c}!rotate\_shape\_cw@{rotate\_shape\_cw}}
+\index{rotate\_shape\_cw@{rotate\_shape\_cw}!tetris.c@{tetris.c}}
+\doxysubsubsection{\texorpdfstring{rotate\_shape\_cw()}{rotate\_shape\_cw()}}
+{\footnotesize\ttfamily void rotate\+\_\+shape\+\_\+cw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{tetris_8h_a85f28d860df7341f9d676fb1abe8ef38}{Tetrimino\+\_\+shape}}}]{shape }\end{DoxyParamCaption})}
+
+Rotate a shape clockwise. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{120 \{}
+\DoxyCodeLine{121     \textcolor{comment}{/* }}
+\DoxyCodeLine{122 \textcolor{comment}{     * Dumb but it works :P}}
+\DoxyCodeLine{123 \textcolor{comment}{     *}}
+\DoxyCodeLine{124 \textcolor{comment}{     * (0,0) (0,1) (0,2) (0,3)      (3,0) (2,0) (1,0) (0,0)}}
+\DoxyCodeLine{125 \textcolor{comment}{     * (1,0) (1,1) (1,2) (1,3)  -\/>  (3,1) (2,1) (1,1) (0,1)}}
+\DoxyCodeLine{126 \textcolor{comment}{     * (2,0) (2,1) (2,2) (2,3)      (3,2) (2,2) (1,2) (0,2)}}
+\DoxyCodeLine{127 \textcolor{comment}{     * (3,0) (3,1) (3,2) (3,3)      (3,3) (2,3) (1,3) (0,3)}}
+\DoxyCodeLine{128 \textcolor{comment}{     */}}
+\DoxyCodeLine{129     \textcolor{keywordtype}{int} i;}
+\DoxyCodeLine{130     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} t;}
+\DoxyCodeLine{131 }
+\DoxyCodeLine{132     \textcolor{comment}{/* rotate outer ring */}}
+\DoxyCodeLine{133     \textcolor{keywordflow}{for} (i = 0; i < 3; ++i) \{}
+\DoxyCodeLine{134         t = shape[0][i];}
+\DoxyCodeLine{135         shape[0][i] = shape[3-\/i][0];}
+\DoxyCodeLine{136         shape[3-\/i][0] = shape[3][3-\/i];}
+\DoxyCodeLine{137         shape[3][3-\/i] = shape[i][3];}
+\DoxyCodeLine{138         shape[i][3] = t;}
+\DoxyCodeLine{139     \}}
+\DoxyCodeLine{140     \textcolor{comment}{/* rotate inner ring */}}
+\DoxyCodeLine{141     t = shape[1][1];}
+\DoxyCodeLine{142     shape[1][1] = shape[2][1];}
+\DoxyCodeLine{143     shape[2][1] = shape[2][2];}
+\DoxyCodeLine{144     shape[2][2] = shape[1][2];}
+\DoxyCodeLine{145     shape[1][2] = t;}
+\DoxyCodeLine{146 \}}
+
+\end{DoxyCode}

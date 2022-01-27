@@ -1,3 +1,8 @@
+/**
+ * @file iohandler.h
+ * @author Maksim Kovalkov
+ */
+
 #ifndef XTETRIS_IOHANDLER_H
 #define XTETRIS_IOHANDLER_H
 
@@ -23,12 +28,10 @@ void iohandler_destroy(Io_handler *);
  * no more actions.
  */
 enum Game_action iohandler_next_action_1p(Io_handler *, Game const *);
-/* (?) enum Game_action iohandler_next_action_2p(Io_handler *, Game const *); */
 
 /**
  * Given a game state prepared for drawing, update the visual representation of the board; 
  * reset the input handler state, since inputs cannot be carried over from a previous game loop iteration.
  */
-void iohandler_draw_1p(Io_handler *, Game const *);
-/* (?) void iohandler_draw_2p(Io_handler *, Game *); */
+void iohandler_draw_and_read(Io_handler *, Game const *);
 #endif /* ifndef XTETRIS_IOHANDLER_H */
